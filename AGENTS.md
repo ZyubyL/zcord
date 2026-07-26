@@ -33,33 +33,41 @@ zcord/
 │   ├── channel.py
 │   ├── guild.py
 │   ├── interaction.py
-│   └── message.py
+│   ├── message.py
+│   └── sticker.py
 └── models/              # Frozen dataclass models
-    ├── base.py          # ZcordModel + from_payload deserialization
+    ├── base.py          # ZcordModel + from/to_payload, __len__
     ├── snowflake.py     # Snowflake(int) with to_datetime()
     ├── user.py
     ├── channel.py
     ├── guild.py
     ├── message.py
-    ├── embed.py
+    ├── embed.py         # Embed + builder pattern (set_* methods)
     ├── role.py
     ├── interaction.py
     ├── application.py
     ├── attachment.py
-    └── reaction.py
+    ├── reaction.py
+    ├── poll.py
+    └── sticker.py
 ```
 
 ## Conventions
 
 - **Models**: Frozen dataclasses with `slots=True`. Use `MISSING` sentinel for optional fields
   that distinguish "not provided" from `None`. Transform raw payloads via `_transforms` class var
-  and `_from_payload` classmethod.
+  and `_from_payload` classmethod. Serialize via `_to_payload()` which recursively converts
+  nested `ZcordModel` instances to dicts. `__len__` counts total string characters across all
+  fields (useful for Discord character limit validation).
 - **Enums**: Always `IntEnum` matching Discord API integer values.
 - **REST methods**: Static methods on `REST` class in `http/rest.py`, called via `ConnectionState`.
 - **HTTP**: All requests go through `HTTPClient.request()` which handles session lifecycle and
   error conversion.
 - **Type hints**: Use modern union syntax (`X | Y`), never `Optional[X]` or `Union[X, Y]`.
 - **Docstrings**: Google style. Models document every field in the class docstring.
+- **Embed builder**: `Embed.new()` staticmethod for construction, chainable `set_*()` methods
+  return new instances via `dataclasses.replace()`. `_to_payload()` overrides parent to enforce
+  `type: "rich"` for bot-sent embeds.
 - **No websocket/gateway**: Currently REST-only by design. Gateway/websocket support planned once most REST API endpoints are covered.
 
 ## AI Usage Policy

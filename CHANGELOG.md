@@ -8,6 +8,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
   - Models:
     - `Guild`
     - `Embed`
+      - `.new()` to create a new embed.
+      - `.set_*()` to set embed fields.
     - `Attachment`
     - `Reaction`
     - `Interaction`
@@ -25,6 +27,7 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
     - `fetch_answer_voters` to fetch answer voters
     - `end_poll` to end a poll
   - AI usage policy.
+  - `ZcordModel._to_payload()` to convert objects to json payload.
 
 ### Changed:
   - Moved API interaction to `REST` class

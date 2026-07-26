@@ -44,7 +44,6 @@ plugins:
       show_author: false
   - search:
       enabled: true
-      lang: en
   - mkdocstrings:
       handlers:
         python:

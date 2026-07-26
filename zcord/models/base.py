@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+from datetime import datetime
 from typing import Any
 
 from zcord.missing import MISSING
@@ -50,6 +51,42 @@ class ZcordModel:
         if hasattr(self, "id"):
             return self.id
 
+    def __len__(self) -> int:
+        count = 0
+        for f in dataclasses.fields(self):  # ty:ignore[invalid-argument-type]
+            value = getattr(self, f.name)
+            if value is MISSING:
+                continue
+            if isinstance(value, (str, ZcordModel)):
+                count += len(value)
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, ZcordModel):
+                        count += len(item)
+        return count
+
     @classmethod
     def _from_payload(cls, payload):
         return from_payload(cls, payload, **getattr(cls, "_transforms", {}))
+
+    def _to_payload(self) -> dict:
+        payload = {}
+        for f in dataclasses.fields(self):  # type: ignore
+            value = getattr(self, f.name)
+            if value is MISSING:
+                continue
+            # Nested ZcordModel
+            if isinstance(value, ZcordModel):
+                payload[f.name] = value._to_payload()
+            # Nested list of ZcordModel
+            elif (
+                isinstance(value, list)
+                and value
+                and isinstance(value[0], ZcordModel)
+            ):
+                payload[f.name] = [item._to_payload() for item in value]
+            elif isinstance(value, datetime):
+                payload[f.name] = value.isoformat()
+            else:
+                payload[f.name] = value
+        return payload

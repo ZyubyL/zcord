@@ -48,10 +48,18 @@ class REST:
         """
         Send a message to a channel.
         """
+        serialized = {}
+        for k, v in kwargs.items():
+            if v is MISSING:
+                continue
+            if k == "embeds":
+                serialized[k] = [val._to_payload() for val in v]
+            else:
+                serialized[k] = v
         resp = await http.request(
             "POST",
             f"/channels/{int(channel_id)}/messages",
-            json={"content": kwargs["content"]},
+            json=serialized,
         )
         return Message._from_payload(dict(resp))
 
