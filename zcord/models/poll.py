@@ -165,16 +165,15 @@ class Poll(ZcordModel):
     def set_question(self, question: str) -> Poll:
         return replace(self, question=PollMedia(text=question))
 
-    def set_answers(self, answers: list[str | PollAnswer]) -> Poll:
+    def set_answers(self, answers: list[str]) -> Poll:
         """Set the answers of the poll."""
-        if isinstance(answers, list):
-            answers = [
-                PollAnswer.new(text=answer)
-                if isinstance(answer, str)
-                else answer
-                for answer in answers
-            ]
-        return replace(self, answers=answers)
+        if len(answers) == 0:
+            # I'm not too sure to keep the poll object or raise an error.
+            return self
+        return replace(
+            self,
+            answers=[PollAnswer.new(text=answer) for answer in answers],
+        )
 
     def add_answer(self, text: str) -> Poll:
         """Add an answer to the poll."""
