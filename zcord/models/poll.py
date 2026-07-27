@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import Any, ClassVar
 
@@ -34,12 +34,21 @@ class PollAnswer(ZcordModel):
             The data of the answer.
     """
 
-    answer_id: int
     poll_media: PollMedia
+    answer_id: int | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "poll_media": PollMedia,
     }
+
+    @classmethod
+    def new(
+        cls, *, text: str | MISSING = MISSING, emoji: str | MISSING = MISSING
+    ) -> PollAnswer:
+        """*|classmethod|*
+        Create a new poll answer.
+        """
+        return cls(poll_media=PollMedia(text=text, emoji=emoji))
 
 
 @dataclass(frozen=True, slots=True)
@@ -109,9 +118,88 @@ class Poll(ZcordModel):
     expiry: datetime | None = None
     results: PollResults | MISSING = MISSING
 
+    # For creating request. thanks Discord for the inconsistency
+    _duration: int | MISSING = MISSING
+
     _transforms: ClassVar[dict] = {
         "question": PollMedia,
         "expiry": datetime.fromisoformat,
         "answers": PollAnswer,
         "results": PollResults,
     }
+
+    @classmethod
+    def new(
+        cls,
+        *,
+        question: str | MISSING = MISSING,
+        answers: list[str] | MISSING = MISSING,
+        duration: int = 24,
+        allow_multiselect: bool = False,
+    ) -> Poll:
+        """*|classmethod|*
+
+        Create a new poll.
+
+        Args:
+            question:
+                The question of the poll.
+            answers:
+                A list of answers for the poll.
+            duration:
+                The duration of the poll (in hours).
+            allow_multiselect:
+                Whether a user can select multiple answers.
+        """
+
+        return cls(
+            question=PollMedia(text=question),
+            answers=[PollAnswer.new(text=answer) for answer in answers]
+            if answers is not MISSING
+            else [],
+            allow_multiselect=allow_multiselect,
+            _duration=duration,
+            layout_type=1,
+        )
+
+    def set_question(self, question: str) -> Poll:
+        return replace(self, question=PollMedia(text=question))
+
+    def set_answers(self, answers: list[str | PollAnswer]) -> Poll:
+        if isinstance(answers, list):
+            answers = [
+                PollAnswer.new(text=answer)
+                if isinstance(answer, str)
+                else answer
+                for answer in answers
+            ]
+        return replace(self, answers=answers)
+
+    def add_answer(self, text: str) -> Poll:
+        """Add an answer to the poll."""
+        return replace(
+            self,
+            answers=[
+                *self.answers,
+                PollAnswer(
+                    poll_media=PollMedia(text=text),
+                ),
+            ],
+        )
+
+    def set_duration(self, hours: int) -> Poll:
+        """Set the duration of the poll."""
+        if hours < 1 or hours > 32 * 24:
+            raise ValueError("Duration must be between 1 and 768 hours")
+        return replace(self, _duration=hours)
+
+    def set_multiselect(self, allow_multiselect: bool = True) -> Poll:
+        """Allow multiple answers to be selected."""
+        return replace(self, allow_multiselect=allow_multiselect)
+
+    def _to_payload(self) -> dict:
+        payload = ZcordModel._to_payload(self)
+        payload["duration"] = self._duration
+        del payload["_duration"]
+        del payload["expiry"]
+        return payload

@@ -1,6 +1,5 @@
 import asyncio
 import datetime
-import time
 
 import config
 
@@ -33,6 +32,21 @@ async def main():
             )
         )
         m = await bot._state.send_message(config.CHANNEL_ID, embeds=[embed])
+        # print(m)
+
+        poll = (
+            zcord.Poll.new()
+            .set_question("Do you like Zcord?")
+            .set_answers(
+                [
+                    "Heck yeah",
+                    "Booo",
+                ]
+            )
+            .set_duration(1)
+            .set_multiselect(True)
+        )
+        m = await bot._state.send_message(config.CHANNEL_ID, poll=poll)
         print(m)
 
 

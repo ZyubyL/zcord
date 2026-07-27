@@ -9,8 +9,10 @@ from zcord.missing import MISSING
 if TYPE_CHECKING:
     from zcord.models import (
         Channel,
+        Embed,
         Guild,
         Message,
+        Poll,
         Snowflake,
         Sticker,
         StickerPack,
@@ -27,9 +29,21 @@ class ConnectionState:
         self._http = HTTPClient(token)
 
     async def send_message(
-        self, channel_id: int | Snowflake, **kwargs
+        self,
+        channel_id: int | Snowflake,
+        content: str | MISSING = MISSING,
+        embeds: list[Embed] | MISSING = MISSING,
+        poll: Poll | MISSING = MISSING,
+        **kwargs,
     ) -> Message:
-        return await REST.send_message(self._http, channel_id, **kwargs)
+        return await REST.send_message(
+            self._http,
+            channel_id,
+            content=content,
+            embeds=embeds,
+            poll=poll,
+            **kwargs,
+        )
 
     async def fetch_guild(
         self,

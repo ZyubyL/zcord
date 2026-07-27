@@ -13,6 +13,7 @@ from zcord.models import (
     StickerPack,
     User,
 )
+from zcord.models.base import ZcordModel
 
 if TYPE_CHECKING:
     from zcord.http import HTTPClient
@@ -52,8 +53,10 @@ class REST:
         for k, v in kwargs.items():
             if v is MISSING:
                 continue
-            if k == "embeds":
+            if isinstance(v, list) and isinstance(v[0], ZcordModel):
                 serialized[k] = [val._to_payload() for val in v]
+            elif isinstance(v, ZcordModel):
+                serialized[k] = v._to_payload()
             else:
                 serialized[k] = v
         resp = await http.request(
