@@ -166,6 +166,7 @@ class Poll(ZcordModel):
         return replace(self, question=PollMedia(text=question))
 
     def set_answers(self, answers: list[str | PollAnswer]) -> Poll:
+        """Set the answers of the poll."""
         if isinstance(answers, list):
             answers = [
                 PollAnswer.new(text=answer)
