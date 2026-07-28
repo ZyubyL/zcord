@@ -60,6 +60,7 @@ select = [
 ignore = [
     "PLR0913", # too many argumets
     "PLR2004", # magic value comparison
+    "RUF036",  # None is not at the end of the union
 ]
 
 [tool.ruff.format]
