@@ -1,3 +1,5 @@
+"""Discord API enums."""
+
 from .channel import ChannelType
 from .guild import (
     ExplicitContentFilterLevel,
@@ -7,9 +9,11 @@ from .guild import (
 )
 from .interaction import InteractionType
 from .message import MessageActivityType, MessageReferenceType, MessageType
+from .shared_client_theme import BaseThemeType
 from .sticker import StickerFormatType, StickerType
 
 __all__ = [
+    "BaseThemeType",
     "ChannelType",
     "ExplicitContentFilterLevel",
     "InteractionType",

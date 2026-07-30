@@ -128,6 +128,13 @@ class Poll(ZcordModel):
         "results": PollResults,
     }
 
+    def _to_payload(self) -> dict:
+        payload = ZcordModel._to_payload(self)
+        payload["duration"] = self._duration
+        del payload["_duration"]
+        del payload["expiry"]
+        return payload
+
     @classmethod
     def new(
         cls,
@@ -141,15 +148,8 @@ class Poll(ZcordModel):
 
         Create a new poll.
 
-        Args:
-            question:
-                The question of the poll.
-            answers:
-                A list of answers for the poll.
-            duration:
-                The duration of the poll (in hours).
-            allow_multiselect:
-                Whether a user can select multiple answers.
+        Notes:
+            `duration` is in hours.
         """
 
         return cls(
@@ -196,10 +196,3 @@ class Poll(ZcordModel):
     def set_multiselect(self, allow_multiselect: bool = True) -> Poll:
         """Allow multiple answers to be selected."""
         return replace(self, allow_multiselect=allow_multiselect)
-
-    def _to_payload(self) -> dict:
-        payload = ZcordModel._to_payload(self)
-        payload["duration"] = self._duration
-        del payload["_duration"]
-        del payload["expiry"]
-        return payload

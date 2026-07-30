@@ -1,3 +1,5 @@
+"""Discord API models."""
+
 from .application import Application
 from .attachment import Attachment
 from .channel import Channel
@@ -16,6 +18,7 @@ from .message import Message, MessageActivity, MessageReference, MessageSnapshot
 from .poll import Poll, PollAnswer, PollAnswerCount, PollMedia, PollResults
 from .reaction import Reaction, ReactionCountDetails
 from .role import Role, RoleColors, RoleSubscriptionData, RoleTags
+from .shared_client_theme import SharedClientTheme
 from .snowflake import Snowflake
 from .sticker import Sticker, StickerPack
 from .user import User
@@ -49,6 +52,7 @@ __all__ = [
     "RoleColors",
     "RoleSubscriptionData",
     "RoleTags",
+    "SharedClientTheme",
     "Snowflake",
     "Sticker",
     "StickerPack",

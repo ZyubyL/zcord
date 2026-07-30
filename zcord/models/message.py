@@ -19,6 +19,7 @@ from zcord.models.interaction import InteractionMetadata
 from zcord.models.poll import Poll
 from zcord.models.reaction import Reaction
 from zcord.models.role import Role, RoleSubscriptionData
+from zcord.models.shared_client_theme import SharedClientTheme
 from zcord.models.snowflake import Snowflake
 from zcord.models.sticker import Sticker
 from zcord.models.user import User
@@ -201,7 +202,7 @@ class Message(ZcordModel):
     resolved: Resolved | MISSING = MISSING
     poll: Poll | MISSING = MISSING
     call: Any | MISSING = MISSING
-    shared_client_theme: Any | MISSING = MISSING
+    shared_client_theme: SharedClientTheme | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -227,6 +228,7 @@ class Message(ZcordModel):
         "sticker_items": Sticker,
         "role_subscription_data": RoleSubscriptionData,
         "poll": Poll,
+        "shared_client_theme": SharedClientTheme,
     }
 
 

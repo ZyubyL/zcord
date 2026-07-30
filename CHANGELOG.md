@@ -2,7 +2,14 @@
 
 This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
-## 2026.0.2.dev - 2026/07/26
+## 2026.0.3 - [Unreleased]
+
+### Added:
+  - Models:
+    - `SharedClientTheme`, `BaseThemeType` enums and shared client theme builder.
+  - `Poll` builder.
+
+## 2026.0.2 - 2026/07/26
 
 ### Added:
   - Models:
