@@ -14,6 +14,7 @@ from zcord.models.application import Application
 from zcord.models.attachment import Attachment
 from zcord.models.base import ZcordModel
 from zcord.models.channel import Channel
+from zcord.models.component import Component
 from zcord.models.embed import Embed
 from zcord.models.interaction import InteractionMetadata
 from zcord.models.poll import Poll
@@ -195,7 +196,7 @@ class Message(ZcordModel):
     referenced_message: Message | None | MISSING = MISSING
     interaction_metadata: InteractionMetadata | MISSING = MISSING
     thread: Channel | MISSING = MISSING
-    components: list | MISSING = MISSING
+    components: list[Component] | MISSING = MISSING
     sticker_items: list[Sticker] | MISSING = MISSING
     position: int | MISSING = MISSING
     role_subscription_data: RoleSubscriptionData | MISSING = MISSING
@@ -225,6 +226,7 @@ class Message(ZcordModel):
         "message_snapshots": MessageSnapshot,
         "interaction_metadata": InteractionMetadata,
         "thread": Channel,
+        "components": Component,
         "sticker_items": Sticker,
         "role_subscription_data": RoleSubscriptionData,
         "poll": Poll,

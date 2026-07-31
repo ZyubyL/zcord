@@ -3,6 +3,7 @@
 from .application import Application
 from .attachment import Attachment
 from .channel import Channel
+from .component import ActionRow, Button, Component
 from .embed import (
     Embed,
     EmbedAuthor,
@@ -24,9 +25,12 @@ from .sticker import Sticker, StickerPack
 from .user import User
 
 __all__ = [
+    "ActionRow",
     "Application",
     "Attachment",
+    "Button",
     "Channel",
+    "Component",
     "Embed",
     "EmbedAuthor",
     "EmbedField",

@@ -64,11 +64,19 @@ async def send_shared_client_theme(bot):
     print(m)
 
 
+async def fetch_msg(bot, msg_id):
+    m = await bot._state.fetch_channel_message(
+        channel_id=config.CHANNEL_ID, message_id=msg_id
+    )
+    print(m)
+
+
 async def main():
     async with zcord.Bot(config.DISCORD_TOKEN) as bot:
         # await send_embed(bot)
         # await send_poll(bot)
-        await send_shared_client_theme(bot)
+        # await send_shared_client_theme(bot)
+        await fetch_msg(bot, config.COMPONENT_MESSAGE_ID)
 
 
 asyncio.run(main())
