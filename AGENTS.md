@@ -1,3 +1,5 @@
+<!-- LAST_UPDATED: 121a6a9 -->
+
 # AGENTS.md
 
 ## Project Overview
@@ -26,30 +28,43 @@ zcord/
 ├── state.py             # ConnectionState (delegates to REST)
 ├── errors.py            # Custom exceptions
 ├── missing.py           # MISSING sentinel
+├── cdn.py               # CDN URL builder (static methods)
+├── types.py             # Type-hint-only classes (SelectMenu)
 ├── http/
 │   ├── client.py        # aiohttp-based HTTPClient
 │   └── rest.py          # Static REST endpoint methods
 ├── enums/               # Discord API enums (IntEnum)
 │   ├── channel.py
+│   ├── component.py     # ComponentType, ButtonStyle
 │   ├── guild.py
-│   ├── interaction.py
-│   ├── message.py
-│   └── sticker.py
+│   ├── interaction.py   # InteractionType, InteractionContextType
+│   ├── message.py       # MessageType, MessageActivityType, MessageReferenceType
+│   ├── shared_client_theme.py  # BaseThemeType
+│   └── sticker.py       # StickerType, StickerFormatType
 └── models/              # Frozen dataclass models
     ├── base.py          # ZcordModel + from/to_payload, __len__
     ├── snowflake.py     # Snowflake(int) with to_datetime()
     ├── user.py
     ├── channel.py
     ├── guild.py
-    ├── message.py
+    ├── message.py       # Message, MessageActivity, MessageReference, MessageSnapshot, Resolved
     ├── embed.py         # Embed + builder pattern (set_* methods)
-    ├── role.py
-    ├── interaction.py
+    ├── role.py          # Role, RoleColors, RoleTags, RoleSubscriptionData
+    ├── interaction.py   # Interaction, InteractionMetadata
     ├── application.py
     ├── attachment.py
-    ├── reaction.py
-    ├── poll.py
-    └── sticker.py
+    ├── reaction.py      # Reaction, ReactionCountDetails
+    ├── poll.py          # Poll + builder pattern
+    ├── sticker.py       # Sticker, StickerPack
+    ├── shared_client_theme.py  # SharedClientTheme + builder pattern
+    └── component/       # Interactive message components
+        ├── __init__.py
+        ├── base.py      # Component base with _registry
+        ├── action_row.py
+        ├── button.py
+        └── select_menu/
+            ├── __init__.py
+            └── string_select.py  # StringSelect, SelectOption
 ```
 
 ## Conventions
@@ -65,9 +80,12 @@ zcord/
   error conversion.
 - **Type hints**: Use modern union syntax (`X | Y`), never `Optional[X]` or `Union[X, Y]`.
 - **Docstrings**: Google style. Models document every field in the class docstring.
-- **Embed builder**: `Embed.new()` staticmethod for construction, chainable `set_*()` methods
-  return new instances via `dataclasses.replace()`. `_to_payload()` overrides parent to enforce
-  `type: "rich"` for bot-sent embeds.
+- **Builder patterns**: `Embed.new()`, `Poll.new()`, `SharedClientTheme.new()` staticmethods for
+  construction. Chainable `set_*()` methods return new instances via `dataclasses.replace()`.
+  `Embed._to_payload()` enforces `type: "rich"` for bot-sent embeds.
+- **Component registry**: `Component._registry` maps `ComponentType` → component class.
+  `Component._from_payload()` dispatches to the correct subclass via this registry.
+- **CDN**: `CDN` class with static methods returning CDN URLs for avatars, banners, app icons.
 - **No websocket/gateway**: Currently REST-only by design. Gateway/websocket support planned once most REST API endpoints are covered.
 
 ## AI Usage Policy
@@ -87,5 +105,11 @@ uv run examples/send_message.py
 
 # Lint/format
 uvx ruff check zcord/
-uux ruff format zcord/
+uvx ruff format zcord/
 ```
+
+## Update Strategy
+
+The `LAST_UPDATED` comment at the top pins the commit hash from the last full codebase read.
+To update AGENTS.md, run `git diff <LAST_UPDATED_HASH>..HEAD` to see only changes since last
+update, then update this file and bump the hash. This avoids rereading the entire codebase.
