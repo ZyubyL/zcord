@@ -12,4 +12,8 @@
 
 ---
 
+::: zcord.types
+
+---
+
 ::: zcord.errors

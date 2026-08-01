@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
+from zcord.cdn import CDN
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.guild import Guild
@@ -127,3 +128,10 @@ class Application(ZcordModel):
         "guild": Guild,
         "primary_sku_id": Snowflake,
     }
+
+    @property
+    def icon_url(self) -> str | None:
+        """The application icon URL if available."""
+        if not self.icon:
+            return None
+        return CDN.application_icon(self.id, self.icon)

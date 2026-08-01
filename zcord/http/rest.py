@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from zcord.errors import HTTPError, MutuallyExclusiveParamsError
 from zcord.missing import MISSING
 from zcord.models import (
+    Application,
     Channel,
     Guild,
     Message,
@@ -386,3 +387,9 @@ class REST:
         endpoint = f"/channels/{int(channel_id)}/polls/{int(message_id)}/expire"
         resp = await http.request("POST", endpoint)
         return Message._from_payload(dict(resp))
+
+    @staticmethod
+    async def fetch_current_application(http: HTTPClient) -> Application:
+        endpoint = "/applications/@me"
+        resp = await http.request("GET", endpoint)
+        return Application._from_payload(dict(resp))

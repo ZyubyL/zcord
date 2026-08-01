@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
+from zcord.cdn import CDN
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.snowflake import Snowflake
@@ -79,3 +80,15 @@ class User(ZcordModel):
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
     }
+
+    @property
+    def avatar_url(self) -> str | None:
+        if self.avatar is None:
+            return None
+        return CDN.user_avatar(self.id, self.avatar)
+
+    @property
+    def banner_url(self) -> str | None:
+        if self.banner is None or self.banner is MISSING:
+            return None
+        return CDN.user_banner(self.id, self.banner)

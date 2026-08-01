@@ -8,6 +8,7 @@ from zcord.missing import MISSING
 
 if TYPE_CHECKING:
     from zcord.models import (
+        Application,
         Channel,
         Embed,
         Guild,
@@ -181,3 +182,6 @@ class ConnectionState:
             channel_id=channel_id,
             message_id=message_id,
         )
+
+    async def fetch_current_application(self) -> Application:
+        return await REST.fetch_current_application(self._http)

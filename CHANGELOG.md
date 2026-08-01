@@ -12,6 +12,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
       - `ActionRow`
       - `StringSelect`
   - `Poll` builder.
+  - `CDN` utility class.
+    - `ZcordModel.*_url` properties.
 
 ## 2026.0.2 - 2026/07/26
 
