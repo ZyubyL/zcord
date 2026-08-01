@@ -13,6 +13,26 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Button(Component):
+    """
+    Represents an interactive button.
+
+    Attributes:
+        style:
+            The style of the button.
+        label:
+            The label of the button.
+        emoji:
+            The emoji of the button.
+        custom_id:
+            The custom ID of the button.
+        sku_id:
+            The SKU ID of the button.
+        url:
+            The URL of the button.
+        disabled:
+            Whether the button is disabled.
+    """
+
     type: ComponentType = ComponentType.BUTTON
     style: ButtonStyle = ButtonStyle.SECONDARY
     label: str | MISSING = MISSING

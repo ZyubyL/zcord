@@ -3,7 +3,7 @@
 from .application import Application
 from .attachment import Attachment
 from .channel import Channel
-from .component import ActionRow, Button, Component
+from .component import ActionRow, Button, Component, StringSelect
 from .embed import (
     Embed,
     EmbedAuthor,
@@ -60,5 +60,6 @@ __all__ = [
     "Snowflake",
     "Sticker",
     "StickerPack",
+    "StringSelect",
     "User",
 ]
