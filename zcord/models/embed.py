@@ -22,9 +22,19 @@ class EmbedFooter(ZcordModel):
             A proxied URL of footer icon.
     """
 
-    text: str
+    text: str | MISSING = MISSING
     icon_url: str | MISSING = MISSING
     proxy_icon_url: str | MISSING = MISSING
+
+    @classmethod
+    def new(
+        cls, *, text: str | MISSING = MISSING, icon_url: str | MISSING = MISSING
+    ) -> EmbedFooter:
+        """*|classmethod|*
+
+        Create a new embed footer.
+        """
+        return cls(text=text, icon_url=icon_url)
 
 
 @dataclass(frozen=True, slots=True)
@@ -220,8 +230,9 @@ class Embed(ZcordModel):
         "fields": EmbedField,
     }
 
-    @staticmethod
+    @classmethod
     def new(
+        cls,
         *,
         title: str | MISSING = MISSING,
         description: str | MISSING = MISSING,
@@ -229,12 +240,12 @@ class Embed(ZcordModel):
         color: int | MISSING = MISSING,
         timestamp: datetime | MISSING = MISSING,
         footer: EmbedFooter | MISSING = MISSING,
-        image: EmbedImage | MISSING = MISSING,
-        thumbnail: EmbedImage | MISSING = MISSING,
+        image_url: str | MISSING = MISSING,
+        thumbnail_url: str | MISSING = MISSING,
         author: EmbedAuthor | MISSING = MISSING,
         fields: list[EmbedField] | MISSING = MISSING,
     ) -> Embed:
-        """*|staticmethod|*
+        """*|classmethod|*
 
         Create a new embed.
 
@@ -256,22 +267,23 @@ class Embed(ZcordModel):
             ```
 
         Notes:
-            Although you can technically use the constructor, it is \
+            Although you can technically use the class constructor, it is \
             recommended to use `.new()` instead.
         """
-        return Embed(
+        embed = cls(
             title=title,
             description=description,
             url=url,
             color=color,
             timestamp=timestamp,
             footer=footer,
-            image=image,
-            thumbnail=thumbnail,
             author=author,
             fields=fields,
             type="rich",
         )
+        cls.set_image(embed, image_url)
+        cls.set_thumbnail(embed, thumbnail_url)
+        return embed
 
     def set_title(self, title: str | MISSING = MISSING) -> Embed:
         """Set the title of the embed.

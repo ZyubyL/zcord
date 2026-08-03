@@ -16,6 +16,35 @@ pip install zcord
 uv add zcord
 ```
 
+## Example
+
+Detailed examples are available in the [examples directory](https://github.com/thqnhz/zcord/tree/master/examples) on GitHub.
+
+```py
+import zcord
+
+
+async def main():
+    """You should not commit your bot token to version control."""
+    async with zcord.Bot("your token here"):
+        await (
+            zcord.Message.new()
+            .set_content("Hello, from Zcord!")
+            .add_embed(
+                zcord.Embed.new()
+                .set_title("This is an embed")
+                .set_description("Sent using Zcord embed builder")
+            )
+            .send(1234567)  # replace with your channel ID
+        )
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    asyncio.run(main())
+```
+
 ## Usage
 
 See the [API documentation](api.md).

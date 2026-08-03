@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from zcord.enums.message import (
     MessageActivityType,
@@ -24,6 +24,9 @@ from zcord.models.shared_client_theme import SharedClientTheme
 from zcord.models.snowflake import Snowflake
 from zcord.models.sticker import Sticker
 from zcord.models.user import User
+
+if TYPE_CHECKING:
+    from zcord.state import ConnectionState
 
 
 @dataclass(frozen=True, slots=True)
@@ -170,19 +173,19 @@ class Message(ZcordModel):
             The custom client-side theme shared in this message.
     """
 
-    id: Snowflake
-    channel_id: Snowflake
-    author: User
-    content: str
-    timestamp: datetime
-    tts: bool
-    mention_everyone: bool
-    mentions: list[User]
-    mention_roles: list[Snowflake]
-    attachments: list[Attachment]
-    embeds: list[Embed]
-    pinned: bool
-    type: MessageType
+    id: Snowflake | MISSING = MISSING
+    channel_id: Snowflake | MISSING = MISSING
+    author: User | MISSING = MISSING
+    content: str | MISSING = MISSING
+    timestamp: datetime | MISSING = MISSING
+    tts: bool | MISSING = MISSING
+    mention_everyone: bool | MISSING = MISSING
+    mentions: list[User] | MISSING = MISSING
+    mention_roles: list[Snowflake] | MISSING = MISSING
+    attachments: list[Attachment] | MISSING = MISSING
+    embeds: list[Embed] | MISSING = MISSING
+    pinned: bool | MISSING = MISSING
+    type: MessageType | MISSING = MISSING
     edited_timestamp: datetime | None = None
     mention_channels: list[Channel] | MISSING = MISSING
     reactions: list[Reaction] | MISSING = MISSING
@@ -232,6 +235,69 @@ class Message(ZcordModel):
         "poll": Poll,
         "shared_client_theme": SharedClientTheme,
     }
+
+    _state: ClassVar[ConnectionState | MISSING] = MISSING
+
+    @classmethod
+    def new(
+        cls,
+        *,
+        content: str | MISSING = MISSING,
+        attachments: list[Attachment] | MISSING = MISSING,
+        embeds: list[Embed] | MISSING = MISSING,
+        # webhook_id: Snowflake | MISSING = MISSING,
+        message_reference: MessageReference | MISSING = MISSING,
+        message_snapshots: list[MessageSnapshot] | MISSING = MISSING,
+        referenced_message: Message | None | MISSING = MISSING,
+        # thread: Channel | MISSING = MISSING,
+        components: list[Component] | MISSING = MISSING,
+        # sticker_items: list[Sticker] | MISSING = MISSING,
+        poll: Poll | MISSING = MISSING,
+        # call: Any | MISSING = MISSING,
+        shared_client_theme: SharedClientTheme | MISSING = MISSING,
+    ) -> Message:
+        """*|classmethod|*
+
+        Create a new message.
+        """
+        return cls(
+            content=content,
+            attachments=attachments,
+            embeds=embeds,
+            message_reference=message_reference,
+            message_snapshots=message_snapshots,
+            referenced_message=referenced_message,
+            components=components,
+            poll=poll,
+            shared_client_theme=shared_client_theme,
+        )
+
+    def set_content(self, content: str | MISSING = MISSING) -> Message:
+        """Set the content of the message."""
+        return replace(self, content=content)
+
+    def set_embeds(self, embeds: list[Embed] | MISSING = MISSING) -> Message:
+        """Set the embeds of the message."""
+        return replace(self, embeds=embeds)
+
+    def add_embed(self, embed: Embed) -> Message:
+        """Add an embed to the message."""
+        return replace(
+            self,
+            embeds=[*self.embeds, embed]
+            if self.embeds is not MISSING
+            else [embed],
+        )
+
+    async def send(self, channel: Channel | int | Snowflake) -> Message:
+        """*|coro|*
+
+        Send the message to the specified channel.
+        """
+        assert self._state is not MISSING
+        return await self._state.send_message(
+            channel_id=int(channel), content=self.content, embeds=self.embeds
+        )
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Literal, Self
+from typing import ClassVar, Literal
 
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
@@ -45,7 +45,7 @@ class RoleColors(ZcordModel):
     tertiary_color: int | None = None
 
     @classmethod
-    def default(cls) -> Self:
+    def default(cls) -> RoleColors:
         """
         Non color role has the default `primary_color` of `0` and `None`
         for other fields.
@@ -53,7 +53,7 @@ class RoleColors(ZcordModel):
         return cls()
 
     @classmethod
-    def _from_payload(cls, payload: dict | None) -> Self:
+    def _from_payload(cls, payload: dict | None) -> RoleColors:
         if payload is None:
             return cls.default()
         return cls(

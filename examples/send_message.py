@@ -1,82 +1,31 @@
-import asyncio
-import datetime
-
 import config
 
 import zcord
-from zcord.enums import BaseThemeType
-
-
-async def send_embed(bot):
-    name = "ZyubyL"
-    url = "https://github.com/thqnhz"
-    img_url = "https://github.com/thqnhz.png"
-
-    embed = (
-        zcord.Embed.new()
-        .set_url(url)
-        .set_title("title")
-        .set_description("description")
-        .set_timestamp(datetime.datetime(2067, 6, 7))
-        .set_footer(text=name, icon_url=img_url)
-        .set_image(url=img_url)
-        .set_thumbnail(url=img_url)
-        .set_author(
-            name=name,
-            url=url,
-            icon_url=img_url,
-        )
-        .add_field(name="field name", value="field value")
-        .add_field(name="no inline", value="set inline to False", inline=False)
-    )
-    m = await bot._state.send_message(config.CHANNEL_ID, embeds=[embed])
-    print(m)
-
-
-async def send_poll(bot):
-    poll = (
-        zcord.Poll.new()
-        .set_question("Do you like Zcord?")
-        .set_answers(
-            [
-                "Heck yeah",
-                "Booo",
-            ]
-        )
-        .set_duration(1)
-        .set_multiselect(True)
-    )
-    m = await bot._state.send_message(config.CHANNEL_ID, poll=poll)
-    print(m)
-
-
-async def send_shared_client_theme(bot):
-    shared_client_theme = (
-        zcord.SharedClientTheme.new()
-        .set_colors(["1E1E2E"])
-        .set_gradient_angle(67)
-        .set_base_mix(69)
-        .set_base_theme(BaseThemeType.MIDNIGHT)
-    )
-    m = await bot._state.send_message(
-        config.CHANNEL_ID, shared_client_theme=shared_client_theme
-    )
-    print(m)
-
-
-async def fetch_msg(bot, msg_id):
-    m = await bot._state.fetch_channel_message(
-        channel_id=config.CHANNEL_ID, message_id=msg_id
-    )
-    print(m)
 
 
 async def main():
-    async with zcord.Bot(config.DISCORD_TOKEN) as bot:
-        # await send_embed(bot)
-        # await send_poll(bot)
-        # await send_shared_client_theme(bot)
-        await fetch_msg(bot, config.COMPONENT_MESSAGE_ID)
+    """
+    [[**READ THIS**]]
+
+    You can rename `config.py.example` to `config.py` and fill in your bot \
+    token and channel ID.
+
+    You should not commit your bot token to version control.
+    """
+    async with zcord.Bot(config.DISCORD_TOKEN):
+        await (
+            zcord.Message.new()
+            .set_content("Hello, from Zcord!")
+            .add_embed(
+                zcord.Embed.new()
+                .set_title("This is an embed")
+                .set_description("Sent using Zcord embed builder")
+            )
+            .send(config.CHANNEL_ID)
+        )
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    import asyncio
+
+    asyncio.run(main())

@@ -18,6 +18,9 @@ def from_payload(cls, payload: dict | MISSING, **transforms) -> Any:
         return MISSING
     kwargs = {}
     for f in dataclasses.fields(cls):
+        # Skipping private fields
+        if f.name.startswith("_"):
+            continue
         value = payload.get(f.name, f.default)
         if (
             f.name in transforms

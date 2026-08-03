@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from typing import Self
-
+from zcord.models.message import Message
 from zcord.state import ConnectionState
 
 
@@ -16,8 +15,9 @@ class Bot:
             token: The bot token.
         """
         self._state = ConnectionState(token)
+        Message._state = self._state
 
-    async def __aenter__(self) -> Self:
+    async def __aenter__(self) -> Bot:
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:

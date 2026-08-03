@@ -6,6 +6,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
 ### Added:
   - Models:
+    - Persistent `ConnectionState` for `Message`.
+      - You can now do `Message.send()` instead of accessing private bot property `bot._state.send_message()`.
     - `SharedClientTheme`, `BaseThemeType` enums and shared client theme builder.
     - `Component`s
       - `Button`
