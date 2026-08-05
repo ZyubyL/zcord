@@ -243,7 +243,7 @@ class REST:
         Fetch a specific guild sticker.
 
         Returns:
-            A [`Sticker`].
+            A [`Sticker`][].
 
         Raises:
             HTTPError:
