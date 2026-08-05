@@ -9,6 +9,7 @@ from zcord.enums.message import (
     MessageReferenceType,
     MessageType,
 )
+from zcord.errors import ZcordError
 from zcord.missing import MISSING
 from zcord.models.application import Application
 from zcord.models.attachment import Attachment
@@ -289,6 +290,10 @@ class Message(ZcordModel):
             else [embed],
         )
 
+    def set_poll(self, poll: Poll) -> Message:
+        """Add a poll to the message."""
+        return replace(self, poll=poll)
+
     async def send(self, channel: Channel | int | Snowflake) -> Message:
         """*|coro|*
 
@@ -296,8 +301,27 @@ class Message(ZcordModel):
         """
         assert self._state is not MISSING
         return await self._state.send_message(
-            channel_id=int(channel), content=self.content, embeds=self.embeds
+            channel_id=int(channel),
+            content=self.content,
+            embeds=self.embeds,
+            poll=self.poll,
+            message_reference=self.message_reference,
         )
+
+    async def reply(self, message: Message) -> Message:
+        """*|coro|*
+
+        Reply to the message.
+        """
+        if self.id is MISSING:
+            raise ZcordError("Cannot reply to a message with no ID.")
+        if self.channel_id is MISSING:
+            raise ZcordError("Cannot reply to a message with no channel ID.")
+        message = replace(
+            message,
+            message_reference=MessageReference(message_id=self.id),
+        )
+        return await message.send(self.channel_id)
 
 
 @dataclass(frozen=True, slots=True)
