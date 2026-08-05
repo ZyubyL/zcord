@@ -28,10 +28,23 @@ class HTTPClient:
 
     async def request(
         self, method: str, endpoint: str, *, json: dict | list | None = None
-    ) -> dict | list:
+    ) -> tuple[int, dict | list[dict] | None]:
+        """*|coro|*
+
+        Perform a HTTP request.
+
+        Returns:
+            A tuple of the HTTP status code and the response JSON.
+
+        Raises:
+            HTTPError:
+                The request returned a non-OK status code.
+        """
         async with self.session.request(
             method, self.BASE_URL + endpoint, json=json
         ) as resp:
             if resp.ok:
-                return orjson.loads(await resp.read())
+                if resp.status == 204:
+                    return resp.status, None
+                return resp.status, orjson.loads(await resp.read())
             raise HTTPError(f"{resp.status} {resp.reason}")

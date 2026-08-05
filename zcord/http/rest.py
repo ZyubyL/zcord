@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from zcord.errors import HTTPError, MutuallyExclusiveParamsError
+from zcord.errors import MutuallyExclusiveParamsError
 from zcord.missing import MISSING
 from zcord.models import (
     Application,
@@ -60,12 +60,12 @@ class REST:
                 serialized[k] = v._to_payload()
             else:
                 serialized[k] = v
-        resp = await http.request(
+        _, resp = await http.request(
             "POST",
             f"/channels/{int(channel_id)}/messages",
             json=serialized,
         )
-        return Message._from_payload(dict(resp))
+        return Message._from_payload(resp)
 
     @staticmethod
     async def fetch_channel_messages(
@@ -112,8 +112,8 @@ class REST:
         endpoint += _build_query(
             around=around, before=before, after=after, limit=limit
         )
-        resp = await http.request("GET", endpoint)
-        return [Message._from_payload(m) for m in resp]
+        _, resp = await http.request("GET", endpoint)
+        return [Message._from_payload(m) for m in (resp or [])]
 
     @staticmethod
     async def fetch_channel_message(
@@ -139,8 +139,8 @@ class REST:
                 The request failed.
         """
         endpoint = f"/channels/{channel_id}/messages/{message_id}"
-        resp = await http.request("GET", endpoint)
-        return Message._from_payload(dict(resp))
+        _, resp = await http.request("GET", endpoint)
+        return Message._from_payload(resp)
 
     @staticmethod
     async def fetch_guild(
@@ -160,8 +160,8 @@ class REST:
                 The request failed.
         """
         endpoint = f"/guilds/{guild_id}{_build_query(with_counts=with_counts)}"
-        resp = await http.request("GET", endpoint)
-        return Guild._from_payload(dict(resp))
+        _, resp = await http.request("GET", endpoint)
+        return Guild._from_payload(resp)
 
     @staticmethod
     async def fetch_sticker(
@@ -177,8 +177,8 @@ class REST:
             HTTPError:
                 The request failed.
         """
-        resp = await http.request("GET", f"/stickers/{sticker_id}")
-        return Sticker._from_payload(dict(resp))
+        _, resp = await http.request("GET", f"/stickers/{sticker_id}")
+        return Sticker._from_payload(resp)
 
     @staticmethod
     async def fetch_sticker_packs(http: HTTPClient) -> list[StickerPack]:
@@ -192,10 +192,11 @@ class REST:
             HTTPError:
                 The request failed.
         """
-        resp = await http.request("GET", "/sticker-packs")
-        return [
-            StickerPack._from_payload(r) for r in dict(resp)["sticker_packs"]
-        ]
+        _, resp = await http.request("GET", "/sticker-packs")
+        sticker_packs = (
+            resp.get("sticker_packs", []) if isinstance(resp, dict) else []
+        )
+        return [StickerPack._from_payload(r) for r in sticker_packs]
 
     @staticmethod
     async def fetch_sticker_pack(
@@ -211,8 +212,8 @@ class REST:
             HTTPError:
                 The request failed.
         """
-        resp = await http.request("GET", f"/sticker-packs/{pack_id}")
-        return StickerPack._from_payload(dict(resp))
+        _, resp = await http.request("GET", f"/sticker-packs/{pack_id}")
+        return StickerPack._from_payload(resp)
 
     @staticmethod
     async def fetch_guild_stickers(
@@ -228,8 +229,8 @@ class REST:
             HTTPError:
                 The request failed.
         """
-        resp = await http.request("GET", f"/guilds/{int(guild_id)}/stickers")
-        return [Sticker._from_payload(r) for r in resp]
+        _, resp = await http.request("GET", f"/guilds/{int(guild_id)}/stickers")
+        return [Sticker._from_payload(r) for r in (resp or [])]
 
     @staticmethod
     async def fetch_guild_sticker(
@@ -248,10 +249,10 @@ class REST:
             HTTPError:
                 The request failed.
         """
-        resp = await http.request(
+        _, resp = await http.request(
             "GET", f"/guilds/{int(guild_id)}/stickers/{sticker_id}"
         )
-        return Sticker._from_payload(dict(resp))
+        return Sticker._from_payload(resp)
 
     @staticmethod
     async def create_guild_sticker(
@@ -264,6 +265,7 @@ class REST:
         file,
     ) -> Sticker:
         """|Not implemented|
+
         Create a new sticker for the guild.
 
         Params:
@@ -297,6 +299,7 @@ class REST:
         tags: str,
     ) -> Sticker:
         """|Not implemented|
+
         Modify the given sticker.
 
         Params:
@@ -327,14 +330,11 @@ class REST:
             HTTPError:
                 The request failed.
         """
-        # TODO: Maybe create a method in client.py to only get the return code
-        async with http.session as cs:
-            resp = await cs.request(
-                "DELETE", f"/guilds/{guild_id}/stickers/{sticker_id}"
-            )
-            if resp.status == 204:
-                return True
-            raise HTTPError(f"{resp.status} {resp.reason}")
+        code, _ = await http.request(
+            "DELETE", f"/guilds/{guild_id}/stickers/{sticker_id}"
+        )
+        # Discord returns 204 on successful deletion
+        return code == 204
 
     @staticmethod
     async def fetch_answer_voters(
@@ -364,8 +364,9 @@ class REST:
             f"/channels/{int(channel_id)}/polls/{int(message_id)}/answers/{answer_id}"
             + _build_query(after=after, limit=limit)
         )
-        resp = await http.request("GET", endpoint)
-        return [User._from_payload(user) for user in dict(resp)["users"]]
+        _, resp = await http.request("GET", endpoint)
+        users = resp.get("users", []) if isinstance(resp, dict) else []
+        return [User._from_payload(user) for user in users]
 
     @staticmethod
     async def end_poll(
@@ -385,11 +386,11 @@ class REST:
                 The request failed.
         """
         endpoint = f"/channels/{int(channel_id)}/polls/{int(message_id)}/expire"
-        resp = await http.request("POST", endpoint)
-        return Message._from_payload(dict(resp))
+        _, resp = await http.request("POST", endpoint)
+        return Message._from_payload(resp)
 
     @staticmethod
     async def fetch_current_application(http: HTTPClient) -> Application:
         endpoint = "/applications/@me"
-        resp = await http.request("GET", endpoint)
-        return Application._from_payload(dict(resp))
+        _, resp = await http.request("GET", endpoint)
+        return Application._from_payload(resp)
