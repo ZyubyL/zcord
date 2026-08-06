@@ -2,13 +2,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from zcord.enums import ChannelType
+from zcord.errors import ZcordError
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
+
+if TYPE_CHECKING:
+    from zcord.models.message import Message
+    from zcord.state import ConnectionState
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,8 +119,8 @@ class Channel(ZcordModel):
             channel.
     """
 
-    id: Snowflake
-    type: ChannelType
+    id: Snowflake | MISSING = MISSING
+    type: ChannelType | MISSING = MISSING
     guild_id: Snowflake | MISSING = MISSING
     position: int | MISSING = MISSING
     permission_overwrites: list | MISSING = MISSING
@@ -150,6 +155,8 @@ class Channel(ZcordModel):
     default_sort_order: int | None | MISSING = MISSING
     default_forum_layout: int | MISSING = MISSING
 
+    _state: ClassVar[ConnectionState | MISSING] = MISSING
+
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
         "type": ChannelType,
@@ -162,3 +169,15 @@ class Channel(ZcordModel):
         "last_pin_timestamp": datetime.fromisoformat,
         "applied_tags": Snowflake,
     }
+
+    async def send(self, message: Message) -> Message:
+        """*|coro|*
+
+        Send a message to this channel.
+        """
+        if self.id is MISSING:
+            raise ZcordError("Cannot send a message to a channel without an ID")
+        if message.id is not MISSING:
+            raise ZcordError("Cannot send a message that already has an ID")
+        assert self._state is not MISSING
+        return await self._state.send_message(channel_id=self, message=message)

@@ -1,6 +1,7 @@
 import config
 
 import zcord
+from zcord import MISSING
 
 
 async def main():
@@ -12,8 +13,11 @@ async def main():
 
     You should not commit your bot token to version control.
     """
-    async with zcord.Bot(config.DISCORD_TOKEN):
-        await (
+    async with zcord.Bot(config.DISCORD_TOKEN) as bot:
+        application = await bot.fetch_current_application()
+        assert application.bot is not MISSING
+        channel = await bot.fetch_channel(config.CHANNEL_ID)
+        await channel.send(
             zcord.Message.new()
             .set_content("Hello, from Zcord!")
             .set_poll(
@@ -25,10 +29,14 @@ async def main():
             )
             .add_embed(
                 zcord.Embed.new()
-                .set_title("This is an embed")
-                .set_description("Sent using Zcord embed builder")
+                .set_title(application.name)
+                .set_description(application.description)
+                .set_author(
+                    name=f"{application.bot.username}#{application.bot.discriminator}",
+                    url="https://github.com/thqnhz/zcord",
+                    icon_url=application.icon_url or MISSING,
+                )
             )
-            .send(config.CHANNEL_ID)
         )
 
 

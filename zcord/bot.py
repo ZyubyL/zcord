@@ -1,7 +1,15 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+from zcord.models.channel import Channel
 from zcord.models.message import Message
 from zcord.state import ConnectionState
+
+if TYPE_CHECKING:
+    from zcord.models.application import Application
+    from zcord.models.guild import Guild
+    from zcord.models.snowflake import Snowflake
 
 
 class Bot:
@@ -16,6 +24,7 @@ class Bot:
         """
         self._state = ConnectionState(token)
         Message._state = self._state
+        Channel._state = self._state
 
     async def __aenter__(self) -> Bot:
         return self
@@ -25,3 +34,24 @@ class Bot:
 
     async def close(self) -> None:
         await self._state._http.close()
+
+    async def fetch_current_application(self) -> Application:
+        """*|coro|*
+
+        Fetch info about the current application.
+        """
+        return await self._state.fetch_current_application()
+
+    async def fetch_channel(self, channel_id: int | Snowflake) -> Channel:
+        """*|coro|*
+
+        Fetch a channel by its ID.
+        """
+        return await self._state.fetch_channel(channel_id)
+
+    async def fetch_guild(self, guild_id: int | Snowflake) -> Guild:
+        """*|coro|*
+
+        Fetch a guild by its ID.
+        """
+        return await self._state.fetch_guild(guild_id)

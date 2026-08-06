@@ -294,19 +294,15 @@ class Message(ZcordModel):
         """Add a poll to the message."""
         return replace(self, poll=poll)
 
-    async def send(self, channel: Channel | int | Snowflake) -> Message:
+    async def send(self, channel: int | Snowflake | Channel) -> Message:
         """*|coro|*
 
         Send the message to the specified channel.
         """
+        if self.id is not MISSING:
+            raise ZcordError("Cannot send a message that already has an ID")
         assert self._state is not MISSING
-        return await self._state.send_message(
-            channel_id=int(channel),
-            content=self.content,
-            embeds=self.embeds,
-            poll=self.poll,
-            message_reference=self.message_reference,
-        )
+        return await self._state.send_message(channel_id=channel, message=self)
 
     async def reply(self, message: Message) -> Message:
         """*|coro|*

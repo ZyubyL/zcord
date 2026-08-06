@@ -10,10 +10,8 @@ if TYPE_CHECKING:
     from zcord.models import (
         Application,
         Channel,
-        Embed,
         Guild,
         Message,
-        Poll,
         Snowflake,
         Sticker,
         StickerPack,
@@ -30,20 +28,10 @@ class ConnectionState:
         self._http = HTTPClient(token)
 
     async def send_message(
-        self,
-        channel_id: int | Snowflake,
-        content: str | MISSING = MISSING,
-        embeds: list[Embed] | MISSING = MISSING,
-        poll: Poll | MISSING = MISSING,
-        **kwargs,
+        self, *, channel_id: int | Snowflake | Channel, message: Message
     ) -> Message:
         return await REST.send_message(
-            self._http,
-            channel_id,
-            content=content,
-            embeds=embeds,
-            poll=poll,
-            **kwargs,
+            self._http, channel_id=channel_id, message=message
         )
 
     async def fetch_guild(
@@ -185,3 +173,6 @@ class ConnectionState:
 
     async def fetch_current_application(self) -> Application:
         return await REST.fetch_current_application(self._http)
+
+    async def fetch_channel(self, channel_id: int | Snowflake) -> Channel:
+        return await REST.fetch_channel(self._http, channel_id=channel_id)

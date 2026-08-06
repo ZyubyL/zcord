@@ -14,7 +14,6 @@ from zcord.models import (
     StickerPack,
     User,
 )
-from zcord.models.base import ZcordModel
 
 if TYPE_CHECKING:
     from zcord.http import HTTPClient
@@ -45,25 +44,18 @@ def _mutually_exclusive(**params) -> None:
 class REST:
     @staticmethod
     async def send_message(
-        http: HTTPClient, channel_id: int | Snowflake | Channel, **kwargs
+        http: HTTPClient,
+        *,
+        channel_id: int | Snowflake | Channel,
+        message: Message,
     ) -> Message:
         """
         Send a message to a channel.
         """
-        serialized = {}
-        for k, v in kwargs.items():
-            if v is MISSING:
-                continue
-            if isinstance(v, list) and isinstance(v[0], ZcordModel):
-                serialized[k] = [val._to_payload() for val in v]
-            elif isinstance(v, ZcordModel):
-                serialized[k] = v._to_payload()
-            else:
-                serialized[k] = v
         _, resp = await http.request(
             "POST",
             f"/channels/{int(channel_id)}/messages",
-            json=serialized,
+            json=message._to_payload(),
         )
         return Message._from_payload(resp)
 
@@ -391,6 +383,34 @@ class REST:
 
     @staticmethod
     async def fetch_current_application(http: HTTPClient) -> Application:
+        """
+        Fetch info about the current application.
+
+        Returns:
+            The current application.
+
+        Raises:
+            HTTPError:
+                The request failed.
+        """
         endpoint = "/applications/@me"
         _, resp = await http.request("GET", endpoint)
         return Application._from_payload(resp)
+
+    @staticmethod
+    async def fetch_channel(
+        http: HTTPClient, channel_id: int | Snowflake
+    ) -> Channel:
+        """
+        Fetch a channel by its ID.
+
+        Returns:
+            The channel with the given ID.
+
+        Raises:
+            HTTPError:
+                The request failed.
+        """
+        endpoint = f"/channels/{int(channel_id)}"
+        _, resp = await http.request("GET", endpoint)
+        return Channel._from_payload(resp)
