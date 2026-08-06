@@ -128,6 +128,11 @@ class Poll(ZcordModel):
         "results": PollResults,
     }
 
+    def _to_payload(self) -> dict:
+        payload = ZcordModel._to_payload(self)
+        payload["duration"] = self._duration
+        return payload
+
     @classmethod
     def new(
         cls,
