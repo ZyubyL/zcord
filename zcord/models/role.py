@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar, Literal
 
+from zcord.flags import RoleFlags
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.snowflake import Snowflake
@@ -104,7 +105,7 @@ class Role(ZcordModel):
     permissions: str
     managed: bool
     mentionable: bool
-    flags: int
+    flags: RoleFlags
     tags: RoleTags | MISSING = MISSING
     icon: str | None | MISSING = MISSING
     unicode_emoji: str | None | MISSING = MISSING
@@ -112,6 +113,7 @@ class Role(ZcordModel):
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
         "colors": RoleColors,
+        "flags": RoleFlags,
         "tags": RoleTags,
     }
 

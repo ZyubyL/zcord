@@ -4,6 +4,7 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import ClassVar
 
+from zcord.flags.embed import EmbedFlags, EmbedMediaFlags
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 
@@ -71,7 +72,11 @@ class EmbedImage(ZcordModel):
     placeholder: str | MISSING = MISSING
     placeholder_version: int | MISSING = MISSING
     description: str | MISSING = MISSING
-    flags: int | MISSING = MISSING
+    flags: EmbedMediaFlags | MISSING = MISSING
+
+    _transforms: ClassVar[dict] = {
+        "flags": EmbedMediaFlags,
+    }
 
 
 @dataclass(frozen=True, slots=True)
@@ -108,7 +113,11 @@ class EmbedVideo(ZcordModel):
     placeholder: str | MISSING = MISSING
     placeholder_version: int | MISSING = MISSING
     description: str | MISSING = MISSING
-    flags: int | MISSING = MISSING
+    flags: EmbedMediaFlags | MISSING = MISSING
+
+    _transforms: ClassVar[dict] = {
+        "flags": EmbedMediaFlags,
+    }
 
 
 @dataclass(frozen=True, slots=True)
@@ -217,7 +226,7 @@ class Embed(ZcordModel):
     provider: EmbedProvider | MISSING = MISSING
     author: EmbedAuthor | MISSING = MISSING
     fields: list[EmbedField] | MISSING = MISSING
-    flags: int | MISSING = MISSING
+    flags: EmbedFlags | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "timestamp": datetime.fromisoformat,
@@ -228,6 +237,7 @@ class Embed(ZcordModel):
         "provider": EmbedProvider,
         "author": EmbedAuthor,
         "fields": EmbedField,
+        "flags": EmbedFlags,
     }
 
     @classmethod

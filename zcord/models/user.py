@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any, ClassVar
 
 from zcord.cdn import CDN
+from zcord.flags.user import UserFlags
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.snowflake import Snowflake
@@ -70,7 +71,7 @@ class User(ZcordModel):
     locale: str | MISSING = MISSING
     verified: bool | MISSING = MISSING
     email: str | None | MISSING = MISSING
-    flags: int | MISSING = MISSING
+    flags: UserFlags | MISSING = MISSING
     premium_type: int | MISSING = MISSING
     public_flags: int | MISSING = MISSING
     avatar_decoration_data: Any | None | MISSING = MISSING
@@ -79,6 +80,7 @@ class User(ZcordModel):
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
+        "flags": UserFlags,
     }
 
     @property

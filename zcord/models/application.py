@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any, ClassVar
 
 from zcord.cdn import CDN
+from zcord.flags import ApplicationFlags
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.guild import Guild
@@ -105,7 +106,7 @@ class Application(ZcordModel):
     primary_sku_id: Snowflake | MISSING = MISSING
     slug: str | MISSING = MISSING
     cover_image: str | MISSING = MISSING
-    flags: int | MISSING = MISSING
+    flags: ApplicationFlags | MISSING = MISSING
     approximate_guild_count: int | MISSING = MISSING
     approximate_user_install_count: int | MISSING = MISSING
     approximate_user_authorization_count: int | MISSING = MISSING
@@ -123,6 +124,7 @@ class Application(ZcordModel):
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
         "bot": User,
+        "flags": ApplicationFlags,
         "owner": User,
         "guild_id": Snowflake,
         "guild": Guild,

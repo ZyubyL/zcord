@@ -9,6 +9,7 @@ from zcord.enums import (
     MFALevel,
     VerificationLevel,
 )
+from zcord.flags import SystemChannelFlags
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.role import Role
@@ -131,7 +132,7 @@ class Guild(ZcordModel):
     mfa_level: MFALevel
     application_id: Snowflake | None
     system_channel_id: Snowflake | None
-    system_channel_flags: int
+    system_channel_flags: SystemChannelFlags
     rules_channel_id: Snowflake | None
     vanity_url_code: str | None
     description: str | None
@@ -169,6 +170,7 @@ class Guild(ZcordModel):
         "roles": Role,
         "application_id": Snowflake,
         "system_channel_id": Snowflake,
+        "system_channel_flags": SystemChannelFlags,
         "rules_channel_id": Snowflake,
         "public_updates_channel_id": Snowflake,
         "safety_alerts_channel_id": Snowflake,

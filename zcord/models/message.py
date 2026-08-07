@@ -10,6 +10,7 @@ from zcord.enums.message import (
     MessageType,
 )
 from zcord.errors import ZcordError
+from zcord.flags import MessageFlags
 from zcord.missing import MISSING
 from zcord.models.application import Application
 from zcord.models.attachment import Attachment
@@ -194,7 +195,7 @@ class Message(ZcordModel):
     activity: MessageActivity | MISSING = MISSING
     application: Application | MISSING = MISSING
     application_id: Snowflake | MISSING = MISSING
-    flags: int | MISSING = MISSING
+    flags: MessageFlags | MISSING = MISSING
     message_reference: MessageReference | MISSING = MISSING
     message_snapshots: list[MessageSnapshot] | MISSING = MISSING
     referenced_message: Message | None | MISSING = MISSING
@@ -226,6 +227,7 @@ class Message(ZcordModel):
         "application": Application,
         "type": MessageType,
         "application_id": Snowflake,
+        "flags": MessageFlags,
         "message_reference": MessageReference,
         "message_snapshots": MessageSnapshot,
         "interaction_metadata": InteractionMetadata,

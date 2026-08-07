@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, ClassVar
 
 from zcord.enums import ChannelType
 from zcord.errors import ZcordError
+from zcord.flags import ChannelFlags
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.snowflake import Snowflake
@@ -146,7 +147,7 @@ class Channel(ZcordModel):
     member: Any | MISSING = MISSING
     default_auto_archive_duration: int | MISSING = MISSING
     permissions: str | MISSING = MISSING
-    flags: int | MISSING = MISSING
+    flags: ChannelFlags | MISSING = MISSING
     total_message_sent: int | MISSING = MISSING
     available_tags: list | MISSING = MISSING
     applied_tags: list[Snowflake] | MISSING = MISSING
@@ -167,6 +168,7 @@ class Channel(ZcordModel):
         "application_id": Snowflake,
         "parent_id": Snowflake,
         "last_pin_timestamp": datetime.fromisoformat,
+        "flags": ChannelFlags,
         "applied_tags": Snowflake,
     }
 

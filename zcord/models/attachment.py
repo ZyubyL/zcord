@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, ClassVar
 
+from zcord.flags import AttachmentFlags
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.snowflake import Snowflake
@@ -72,13 +73,14 @@ class Attachment(ZcordModel):
     ephemeral: bool | MISSING = MISSING
     duration_secs: float | MISSING = MISSING
     waveform: str | MISSING = MISSING
-    flags: int | MISSING = MISSING
+    flags: AttachmentFlags | MISSING = MISSING
     clip_participants: list[User] | MISSING = MISSING
     clip_created_at: datetime | MISSING = MISSING
     application: Any | None | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
+        "flags": AttachmentFlags,
         "clip_participants": User,
         "clip_created_at": datetime.fromisoformat,
     }
