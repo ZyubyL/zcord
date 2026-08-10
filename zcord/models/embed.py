@@ -4,6 +4,7 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import ClassVar
 
+from zcord.errors import ZcordError
 from zcord.flags.embed import EmbedFlags, EmbedMediaFlags
 from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
@@ -152,10 +153,23 @@ class EmbedAuthor(ZcordModel):
             A proxied url of the author icon.
     """
 
-    name: str
+    name: str | MISSING = MISSING
     url: str | MISSING = MISSING
     icon_url: str | MISSING = MISSING
     proxy_icon_url: str | MISSING = MISSING
+
+    @classmethod
+    def new(
+        cls,
+        name: str | MISSING = MISSING,
+        url: str | MISSING = MISSING,
+        icon_url: str | MISSING = MISSING,
+    ) -> EmbedAuthor:
+        """*|classmethod|*
+
+        Create a new embed author.
+        """
+        return cls(name=name, url=url, icon_url=icon_url)
 
 
 @dataclass(frozen=True, slots=True)
@@ -240,6 +254,34 @@ class Embed(ZcordModel):
         "flags": EmbedFlags,
     }
 
+    def _to_payload(self) -> dict:
+        if len(self) > 6000:
+            raise ZcordError("Embed must be 6000 characters or less.")
+        return ZcordModel._to_payload(self)
+
+    def __len__(self) -> int:
+        """
+        Returns:
+            The total character count of the embed.
+        """
+        count = 0
+        if self.title is not MISSING:
+            count += len(self.title)
+        if self.description is not MISSING:
+            count += len(self.description)
+        if self.fields is not MISSING:
+            for field in self.fields:
+                count += len(field.name) + len(field.value)
+        if self.footer is not MISSING and self.footer.text is not MISSING:
+            count += len(self.footer.text)
+        if self.image is not MISSING:
+            count += len(self.image.url)
+        if self.thumbnail is not MISSING:
+            count += len(self.thumbnail.url)
+        if self.author is not MISSING and self.author.name is not MISSING:
+            count += len(self.author.name)
+        return count
+
     @classmethod
     def new(
         cls,
@@ -281,18 +323,25 @@ class Embed(ZcordModel):
             recommended to use `.new()` instead.
         """
         embed = cls(
-            title=title,
-            description=description,
             url=url,
-            color=color,
             timestamp=timestamp,
-            footer=footer,
-            author=author,
             fields=fields,
             type="rich",
         )
+        cls.set_title(embed, title)
+        cls.set_description(embed, description)
+        cls.set_color(embed, color)
         cls.set_image(embed, image_url)
         cls.set_thumbnail(embed, thumbnail_url)
+        if footer is not MISSING:
+            cls.set_footer(embed, text=footer.text, icon_url=footer.icon_url)
+        if author is not MISSING:
+            cls.set_author(
+                embed,
+                name=author.name,
+                url=author.url,
+                icon_url=author.icon_url,
+            )
         return embed
 
     def set_title(self, title: str | MISSING = MISSING) -> Embed:
@@ -301,7 +350,12 @@ class Embed(ZcordModel):
         Params:
             title:
                 The updated title.
+
+        Returns:
+            The updated embed.
         """
+        if title is not MISSING and len(title) > 256:
+            raise ZcordError("Title must be 256 characters or less.")
         return replace(self, title=title)
 
     def set_description(self, description: str | MISSING = MISSING) -> Embed:
@@ -310,7 +364,12 @@ class Embed(ZcordModel):
         Params:
             description:
                 The updated description.
+
+        Returns:
+            The updated embed.
         """
+        if description is not MISSING and len(description) > 4096:
+            raise ZcordError("Description must be 4096 characters or less.")
         return replace(self, description=description)
 
     def set_url(self, url: str | MISSING = MISSING) -> Embed:
@@ -319,6 +378,9 @@ class Embed(ZcordModel):
         Params:
             url:
                 The updated URL.
+
+        Returns:
+            The updated embed.
         """
         return replace(self, url=url)
 
@@ -328,7 +390,14 @@ class Embed(ZcordModel):
         Params:
             color:
                 The updated color.
+
+        Returns:
+            The updated embed.
         """
+        if color is not MISSING and (color < 0 or color > 0xFFFFFF):
+            raise ZcordError(
+                "Color must be an integer between 0x000000 and 0xFFFFFF."
+            )
         return replace(self, color=color)
 
     def set_timestamp(self, timestamp: datetime | MISSING = MISSING) -> Embed:
@@ -337,6 +406,9 @@ class Embed(ZcordModel):
         Params:
             timestamp:
                 The updated timestamp.
+
+        Returns:
+            The updated embed.
         """
         return replace(self, timestamp=timestamp)
 
@@ -353,9 +425,14 @@ class Embed(ZcordModel):
                 The footer text.
             icon_url:
                 The footer icon URL.
+
+        Returns:
+            The updated embed.
         """
         if text is MISSING:
             return replace(self, footer=MISSING)
+        if len(text) > 2048:
+            raise ZcordError("Footer text cannot exceed 2048 characters.")
         return replace(self, footer=EmbedFooter(text=text, icon_url=icon_url))
 
     def set_image(self, url: str | MISSING = MISSING) -> Embed:
@@ -364,6 +441,9 @@ class Embed(ZcordModel):
         Params:
             url:
                 The image URL.
+
+        Returns:
+            The updated embed.
         """
         if url is MISSING:
             return replace(self, image=MISSING)
@@ -375,6 +455,9 @@ class Embed(ZcordModel):
         Params:
             url:
                 The thumbnail URL.
+
+        Returns:
+            The updated embed.
         """
         if url is MISSING:
             return replace(self, thumbnail=MISSING)
@@ -396,9 +479,17 @@ class Embed(ZcordModel):
                 The author URL.
             icon_url:
                 The author icon URL.
+
+        Returns:
+            The updated embed.
+
+        Notes:
+            Setting `name` to `MISSING` will remove the author.
         """
-        if name is MISSING:
+        if name is MISSING or not name:
             return replace(self, author=MISSING)
+        if len(name) > 256:
+            raise ZcordError("Author name cannot exceed 256 characters.")
         return replace(
             self, author=EmbedAuthor(name=name, url=url, icon_url=icon_url)
         )
@@ -413,16 +504,25 @@ class Embed(ZcordModel):
                 The field value.
             inline:
                 Whether the field should be inline.
+
+        Returns:
+            The updated embed.
         """
+        if self.fields is not MISSING and len(self.fields) >= 25:
+            raise ZcordError("Cannot add more than 25 fields to an embed.")
+        if len(name) > 256:
+            raise ZcordError("Field name cannot exceed 256 characters.")
+        if len(value) > 1024:
+            raise ZcordError("Field value cannot exceed 1024 characters.")
         field = EmbedField(name=name, value=value, inline=inline)
-        if self.fields is MISSING:
-            return replace(self, fields=[field])
         return replace(
             self,
             fields=[
                 *self.fields,
                 field,
-            ],
+            ]
+            if self.fields is not MISSING
+            else [field],
         )
 
     def remove_fields(self) -> Embed:

@@ -54,20 +54,6 @@ class ZcordModel:
         if hasattr(self, "id"):
             return self.id
 
-    def __len__(self) -> int:
-        count = 0
-        for f in dataclasses.fields(self):  # ty:ignore[invalid-argument-type]
-            value = getattr(self, f.name)
-            if value is MISSING:
-                continue
-            if isinstance(value, (str, ZcordModel)):
-                count += len(value)
-            elif isinstance(value, list):
-                for item in value:
-                    if isinstance(item, ZcordModel):
-                        count += len(item)
-        return count
-
     @classmethod
     def _from_payload(cls, payload):
         return from_payload(cls, payload, **getattr(cls, "_transforms", {}))
