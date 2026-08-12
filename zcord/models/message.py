@@ -276,15 +276,21 @@ class Message(ZcordModel):
         )
 
     def set_content(self, content: str | MISSING = MISSING) -> Message:
-        """Set the content of the message."""
+        """
+        Set the content of the message.
+        """
         return replace(self, content=content)
 
     def set_embeds(self, embeds: list[Embed] | MISSING = MISSING) -> Message:
-        """Set the embeds of the message."""
+        """
+        Set the embeds of the message.
+        """
         return replace(self, embeds=embeds)
 
     def add_embed(self, embed: Embed) -> Message:
-        """Add an embed to the message."""
+        """
+        Add an embed to the message.
+        """
         return replace(
             self,
             embeds=[*self.embeds, embed]
@@ -293,11 +299,15 @@ class Message(ZcordModel):
         )
 
     def add_shared_client_theme(self, theme: SharedClientTheme) -> Message:
-        """Add a shared client theme to the message."""
+        """
+        Add a shared client theme to the message.
+        """
         return replace(self, shared_client_theme=theme)
 
     def set_poll(self, poll: Poll) -> Message:
-        """Add a poll to the message."""
+        """
+        Add a poll to the message.
+        """
         return replace(self, poll=poll)
 
     async def send(self, channel: int | Snowflake | Channel) -> Message:

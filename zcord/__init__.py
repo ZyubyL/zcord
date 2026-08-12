@@ -1,4 +1,4 @@
-"""Zcord - Functional programming discord API wrapper"""
+"""Zcord - Minimalistic discord API wrapper."""
 
 from importlib.metadata import version
 

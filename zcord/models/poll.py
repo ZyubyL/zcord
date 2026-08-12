@@ -161,10 +161,15 @@ class Poll(ZcordModel):
         )
 
     def set_question(self, question: str) -> Poll:
+        """
+        Set the question of the poll.
+        """
         return replace(self, question=PollMedia(text=question))
 
     def set_answers(self, answers: list[str]) -> Poll:
-        """Set the answers of the poll."""
+        """
+        Set the answers of the poll.
+        """
         if len(answers) == 0:
             # I'm not too sure to keep the poll object or raise an error.
             return self
@@ -174,7 +179,9 @@ class Poll(ZcordModel):
         )
 
     def add_answer(self, text: str) -> Poll:
-        """Add an answer to the poll."""
+        """
+        Add an answer to the poll.
+        """
         return replace(
             self,
             answers=[
@@ -186,11 +193,15 @@ class Poll(ZcordModel):
         )
 
     def set_duration(self, hours: int) -> Poll:
-        """Set the duration of the poll."""
+        """
+        Set the duration of the poll.
+        """
         if hours < 1 or hours > 32 * 24:
             raise ValueError("Duration must be between 1 and 768 hours")
         return replace(self, _duration=hours)
 
     def set_multiselect(self, allow_multiselect: bool = True) -> Poll:
-        """Allow multiple answers to be selected."""
+        """
+        Allow multiple answers to be selected.
+        """
         return replace(self, allow_multiselect=allow_multiselect)
