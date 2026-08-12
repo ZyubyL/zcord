@@ -323,7 +323,7 @@ class REST:
                 The request failed.
         """
         code, _ = await http.request(
-            "DELETE", f"/guilds/{guild_id}/stickers/{sticker_id}"
+            "DELETE", f"/guilds/{int(guild_id)}/stickers/{int(sticker_id)})"
         )
         # Discord returns 204 on successful deletion
         return code == 204

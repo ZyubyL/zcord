@@ -322,22 +322,23 @@ class Embed(ZcordModel):
             Although you can technically use the class constructor, it is \
             recommended to use `.new()` instead.
         """
-        embed = cls(
-            url=url,
-            timestamp=timestamp,
-            fields=fields,
-            type="rich",
+        embed = (
+            cls(
+                url=url,
+                timestamp=timestamp,
+                fields=fields,
+                type="rich",
+            )
+            .set_title(title)
+            .set_description(description)
+            .set_color(color)
+            .set_image(image_url)
+            .set_thumbnail(thumbnail_url)
         )
-        cls.set_title(embed, title)
-        cls.set_description(embed, description)
-        cls.set_color(embed, color)
-        cls.set_image(embed, image_url)
-        cls.set_thumbnail(embed, thumbnail_url)
         if footer is not MISSING:
-            cls.set_footer(embed, text=footer.text, icon_url=footer.icon_url)
+            embed = embed.set_footer(text=footer.text, icon_url=footer.icon_url)
         if author is not MISSING:
-            cls.set_author(
-                embed,
+            embed = embed.set_author(
                 name=author.name,
                 url=author.url,
                 icon_url=author.icon_url,

@@ -71,8 +71,8 @@ class StringSelect(Component, SelectMenu):
     placeholder: str | MISSING = MISSING
     min_values: int | MISSING = MISSING
     max_values: int | MISSING = MISSING
-    required: bool = True
-    disabled: bool = False
+    required: bool | MISSING = MISSING
+    disabled: bool | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "type": ComponentType,

@@ -61,6 +61,9 @@ class ZcordModel:
     def _to_payload(self) -> dict:
         payload = {}
         for f in dataclasses.fields(self):  # type: ignore
+            # Same as from_payload, we will skip private fields
+            if f.name.startswith("_"):
+                continue
             value = getattr(self, f.name)
             if value is MISSING:
                 continue

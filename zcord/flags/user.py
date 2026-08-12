@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from enum import IntEnum
+from enum import IntFlag
 
 
-class UserFlags(IntEnum):
+class UserFlags(IntFlag):
     """
     | Flag | Value |
     |------|-------|

@@ -84,10 +84,11 @@ class SharedClientTheme(ZcordModel):
         """
         Add multiple colors to the theme.
         """
+        theme = self
         for color in colors:
-            self.add_color(color)
+            theme = theme.add_color(color)
 
-        return self
+        return theme
 
     def set_colors(self, colors: list[str]) -> SharedClientTheme:
         """

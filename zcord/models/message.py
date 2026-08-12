@@ -292,6 +292,10 @@ class Message(ZcordModel):
             else [embed],
         )
 
+    def add_shared_client_theme(self, theme: SharedClientTheme) -> Message:
+        """Add a shared client theme to the message."""
+        return replace(self, shared_client_theme=theme)
+
     def set_poll(self, poll: Poll) -> Message:
         """Add a poll to the message."""
         return replace(self, poll=poll)
