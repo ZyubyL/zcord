@@ -6,6 +6,7 @@ from typing import Any, ClassVar
 from zcord.cdn import CDN
 from zcord.flags.user import UserFlags
 from zcord.missing import MISSING
+from zcord.models.avatar_decoration_data import AvatarDecorationData
 from zcord.models.base import ZcordModel
 from zcord.models.snowflake import Snowflake
 
@@ -73,24 +74,44 @@ class User(ZcordModel):
     email: str | None | MISSING = MISSING
     flags: UserFlags | MISSING = MISSING
     premium_type: int | MISSING = MISSING
-    public_flags: int | MISSING = MISSING
-    avatar_decoration_data: Any | None | MISSING = MISSING
+    public_flags: UserFlags | MISSING = MISSING
+    avatar_decoration_data: AvatarDecorationData | None | MISSING = MISSING
     collectibles: Any | None | MISSING = MISSING
     primary_guild: Any | None | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
         "flags": UserFlags,
+        "public_flags": UserFlags,
+        "avatar_decoration_data": AvatarDecorationData,
     }
 
     @property
     def avatar_url(self) -> str | None:
+        """
+        The URL of the user's avatar.
+        """
         if self.avatar is None:
             return None
         return CDN.user_avatar(self.id, self.avatar)
 
     @property
     def banner_url(self) -> str | None:
+        """
+        The URL of the user's banner.
+        """
         if self.banner is None or self.banner is MISSING:
             return None
         return CDN.user_banner(self.id, self.banner)
+
+    @property
+    def avatar_decoration_url(self) -> str | None:
+        """
+        The URL of the user's avatar decoration.
+        """
+        if (
+            self.avatar_decoration_data is None
+            or self.avatar_decoration_data is MISSING
+        ):
+            return None
+        return self.avatar_decoration_data.asset_url

@@ -414,3 +414,19 @@ class REST:
         endpoint = f"/channels/{int(channel_id)}"
         _, resp = await http.request("GET", endpoint)
         return Channel._from_payload(resp)
+
+    @staticmethod
+    async def fetch_user(http: HTTPClient, user_id: int | Snowflake) -> User:
+        """
+        Fetch a user by their ID.
+
+        Returns:
+            The user with the given ID.
+
+        Raises:
+            HTTPError:
+                The request failed.
+        """
+        endpoint = f"/users/{int(user_id)}"
+        _, resp = await http.request("GET", endpoint)
+        return User._from_payload(resp)

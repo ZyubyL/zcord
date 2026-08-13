@@ -176,3 +176,6 @@ class ConnectionState:
 
     async def fetch_channel(self, channel_id: int | Snowflake) -> Channel:
         return await REST.fetch_channel(self._http, channel_id=channel_id)
+
+    async def fetch_user(self, user_id: int | Snowflake) -> User:
+        return await REST.fetch_user(self._http, user_id=user_id)

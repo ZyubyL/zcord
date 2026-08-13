@@ -2,6 +2,7 @@
 
 from .application import Application
 from .attachment import Attachment
+from .avatar_decoration_data import AvatarDecorationData
 from .channel import Channel
 from .component import ActionRow, Button, Component, StringSelect
 from .embed import (
@@ -28,6 +29,7 @@ __all__ = [
     "ActionRow",
     "Application",
     "Attachment",
+    "AvatarDecorationData",
     "Button",
     "Channel",
     "Component",

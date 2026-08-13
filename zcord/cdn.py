@@ -13,3 +13,7 @@ class CDN:
     @staticmethod
     def user_banner(user_id: int, hash: str) -> str:
         return f"{_BASE_URL}/banners/{user_id}/{hash}.png"
+
+    @staticmethod
+    def avatar_decoration(hash: str) -> str:
+        return f"{_BASE_URL}/avatar-decoration-presets/{hash}.png"

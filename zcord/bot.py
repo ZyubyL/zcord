@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from zcord.models.application import Application
     from zcord.models.guild import Guild
     from zcord.models.snowflake import Snowflake
+    from zcord.models.user import User
 
 
 class Bot:
@@ -55,3 +56,10 @@ class Bot:
         Fetch a guild by its ID.
         """
         return await self._state.fetch_guild(guild_id)
+
+    async def fetch_user(self, user_id: int | Snowflake) -> User:
+        """*|coro|*
+
+        Fetch a user by their ID.
+        """
+        return await self._state.fetch_user(user_id)
