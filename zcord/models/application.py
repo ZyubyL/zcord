@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal
 
 from zcord.cdn import CDN
 from zcord.flags import ApplicationFlags
@@ -131,9 +131,22 @@ class Application(ZcordModel):
         "primary_sku_id": Snowflake,
     }
 
-    @property
-    def icon_url(self) -> str | None:
-        """The application icon URL if available."""
+    def icon_url(
+        self,
+        *,
+        size: int = CDN.MAX_SIZE,
+        format: Literal["png", "jpg", "jpeg", "webp"] | None = None,
+    ) -> str | None:
+        """The application icon URL if available.
+
+        Notes:
+            `size` needs to be a power of 2 between `16` and `4096`.
+        """
         if not self.icon:
             return None
-        return CDN.application_icon(self.id, self.icon)
+        return CDN.application_icon(
+            app_id=self.id,
+            hash=self.icon,
+            size=size,
+            format=format,
+        )

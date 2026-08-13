@@ -15,7 +15,7 @@ async def main():
     """
     async with zcord.Bot(config.DISCORD_TOKEN) as bot:
         application = await bot.fetch_current_application()
-        assert application.bot is not MISSING
+        bot_user = await bot.fetch_current_user()
         channel = await bot.fetch_channel(config.CHANNEL_ID)
         await channel.send(
             zcord.Message.new()
@@ -32,10 +32,15 @@ async def main():
                 .set_title(application.name)
                 .set_description(application.description)
                 .set_author(
-                    name=f"{application.bot.username}#{application.bot.discriminator}",
+                    name=f"{bot_user.username}#{bot_user.discriminator}",
                     url="https://github.com/thqnhz/zcord",
-                    icon_url=application.icon_url or MISSING,
+                    icon_url=application.icon_url() or MISSING,
                 )
+                .set_footer(
+                    text=f"Zcord version {zcord.__version__}",
+                    icon_url=bot_user.avatar_url() or MISSING,
+                )
+                .set_image(bot_user.banner_url() or MISSING)
             )
             .add_shared_client_theme(
                 zcord.SharedClientTheme.new()

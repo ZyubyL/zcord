@@ -63,3 +63,10 @@ class Bot:
         Fetch a user by their ID.
         """
         return await self._state.fetch_user(user_id)
+
+    async def fetch_current_user(self) -> User:
+        """*|coro|*
+
+        Fetch the current bot user.
+        """
+        return await self._state.fetch_current_user()

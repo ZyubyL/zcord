@@ -430,3 +430,19 @@ class REST:
         endpoint = f"/users/{int(user_id)}"
         _, resp = await http.request("GET", endpoint)
         return User._from_payload(resp)
+
+    @staticmethod
+    async def fetch_current_user(http: HTTPClient) -> User:
+        """
+        Fetch the current user.
+
+        Returns:
+            The current user.
+
+        Raises:
+            HTTPError:
+                The request failed.
+        """
+        endpoint = "/users/@me"
+        _, resp = await http.request("GET", endpoint)
+        return User._from_payload(resp)

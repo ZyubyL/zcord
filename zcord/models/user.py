@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal
 
 from zcord.cdn import CDN
 from zcord.flags.user import UserFlags
@@ -86,32 +86,56 @@ class User(ZcordModel):
         "avatar_decoration_data": AvatarDecorationData,
     }
 
-    @property
-    def avatar_url(self) -> str | None:
+    def avatar_url(
+        self,
+        size: int = CDN.MAX_SIZE,
+        format: Literal["png", "jpg", "jpeg", "webp", "gif"] | None = None,
+    ) -> str | None:
         """
         The URL of the user's avatar.
+
+        Notes:
+            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if self.avatar is None:
             return None
-        return CDN.user_avatar(self.id, self.avatar)
+        return CDN.user_avatar(
+            user_id=self.id,
+            hash=self.avatar,
+            size=size,
+            format=format,
+        )
 
-    @property
-    def banner_url(self) -> str | None:
+    def banner_url(
+        self,
+        size: int = CDN.MAX_SIZE,
+        format: Literal["png", "jpg", "jpeg", "webp", "gif"] | None = None,
+    ) -> str | None:
         """
         The URL of the user's banner.
+
+        Notes:
+            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if self.banner is None or self.banner is MISSING:
             return None
-        return CDN.user_banner(self.id, self.banner)
+        return CDN.user_banner(
+            user_id=self.id,
+            hash=self.banner,
+            size=size,
+            format=format,
+        )
 
-    @property
-    def avatar_decoration_url(self) -> str | None:
+    def avatar_decoration_url(self, size: int = CDN.MAX_SIZE) -> str | None:
         """
         The URL of the user's avatar decoration.
+
+        Notes:
+            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if (
             self.avatar_decoration_data is None
             or self.avatar_decoration_data is MISSING
         ):
             return None
-        return self.avatar_decoration_data.asset_url
+        return self.avatar_decoration_data.asset_url(size=size)

@@ -25,9 +25,11 @@ class AvatarDecorationData(ZcordModel):
     asset: str
     sku_id: Snowflake
 
-    @property
-    def asset_url(self) -> str:
+    def asset_url(self, size: int = CDN.MAX_SIZE) -> str:
         """
         The URL of the avatar decoration asset.
+
+        Notes:
+            `size` needs to be a power of 2 between `16` and `4096`.
         """
-        return CDN.avatar_decoration(self.asset)
+        return CDN.avatar_decoration(hash=self.asset, size=size)
