@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar
+from dataclasses import dataclass, replace
+from typing import ClassVar
 
 from zcord.enums.component import ComponentType
+from zcord.errors import ZcordError
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
-
-if TYPE_CHECKING:
-    from zcord.models.component.button import Button
-    from zcord.types import SelectMenu
+from zcord.models.component.button import Button
+from zcord.types import SelectMenu
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,12 +22,57 @@ class ActionRow(Component):
     """
 
     type: ComponentType = ComponentType.ACTION_ROW
-    components: list[Button] | SelectMenu | MISSING = MISSING
+    components: list[Button | SelectMenu] | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "type": ComponentType,
         "components": Component,
     }
+
+    @classmethod
+    def new(
+        cls, components: list[Button] | SelectMenu | MISSING = MISSING
+    ) -> ActionRow:
+        """*|classmethod|*
+
+        Create a new action row component.
+        """
+        if components is MISSING:
+            return cls()
+
+        row = cls()
+        if isinstance(components, SelectMenu):
+            row = row.set_select(components)
+        else:
+            row = row.set_buttons(components)
+        return row
+
+    def set_buttons(self, buttons: list[Button]) -> ActionRow:
+        """
+        Set the buttons of the action row.
+        """
+        row = self
+        for button in buttons:
+            row = row.add_button(button)
+        return row
+
+    def add_button(self, button: Button) -> ActionRow:
+        """
+        Add a button to the action row.
+        """
+        if self.components is MISSING or not self.components:
+            return replace(self, components=[button])
+        if isinstance(self.components[0], SelectMenu) or (
+            isinstance(self.components[0], Button) and len(self.components) >= 5
+        ):
+            raise ZcordError("Cannot add more components to this action row")
+        return replace(self, components=[*self.components, button])
+
+    def set_select(self, select: SelectMenu) -> ActionRow:
+        """
+        Set the select menu of the action row.
+        """
+        return replace(self, components=[select])
 
 
 Component._registry[ComponentType.ACTION_ROW] = ActionRow

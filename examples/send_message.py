@@ -1,6 +1,7 @@
 import config
 
 import zcord
+import zcord.enums as zenums
 from zcord import MISSING
 
 
@@ -48,6 +49,14 @@ async def main():
                 .add_colors(["181825", "1e1e2e"])
                 .set_gradient_angle(67)
                 .set_base_mix(69)
+            )
+            .add_component(
+                zcord.ActionRow.new().add_button(
+                    zcord.Button.new()
+                    .set_label("View source")
+                    .set_style(zenums.ButtonStyle.LINK)
+                    .set_url("https://github.com/thqnhz/zcord")
+                )
             )
         )
 

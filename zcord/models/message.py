@@ -17,6 +17,7 @@ from zcord.models.attachment import Attachment
 from zcord.models.base import ZcordModel
 from zcord.models.channel import Channel
 from zcord.models.component import Component
+from zcord.models.component.action_row import ActionRow
 from zcord.models.embed import Embed
 from zcord.models.interaction import InteractionMetadata
 from zcord.models.poll import Poll
@@ -263,17 +264,23 @@ class Message(ZcordModel):
 
         Create a new message.
         """
-        return cls(
-            content=content,
-            attachments=attachments,
-            embeds=embeds,
-            message_reference=message_reference,
-            message_snapshots=message_snapshots,
-            referenced_message=referenced_message,
-            components=components,
-            poll=poll,
-            shared_client_theme=shared_client_theme,
+        message = (
+            cls(
+                attachments=attachments,
+                embeds=embeds,
+                message_reference=message_reference,
+                message_snapshots=message_snapshots,
+                referenced_message=referenced_message,
+            )
+            .set_content(content)
+            .set_embeds(embeds)
+            .set_components(components)
         )
+        if poll is not MISSING:
+            message = message.set_poll(poll)
+        if shared_client_theme is not MISSING:
+            message = message.add_shared_client_theme(shared_client_theme)
+        return message
 
     def set_content(self, content: str | MISSING = MISSING) -> Message:
         """
@@ -309,6 +316,30 @@ class Message(ZcordModel):
         Add a poll to the message.
         """
         return replace(self, poll=poll)
+
+    def set_components(self, components: list[Component] | MISSING) -> Message:
+        """
+        Set the components of the message.
+        """
+        if components is MISSING:
+            return replace(self, components=MISSING)
+        m = self
+        for component in components:
+            m = m.add_component(component)
+        return m
+
+    def add_component(self, component: Component) -> Message:
+        """
+        Add a component to the message.
+        """
+        if not isinstance(component, ActionRow):
+            raise ZcordError("You can only add an ActionRow for now.")
+        return replace(
+            self,
+            components=[*self.components, component]
+            if self.components is not MISSING
+            else [component],
+        )
 
     async def send(self, channel: int | Snowflake | Channel) -> Message:
         """*|coro|*

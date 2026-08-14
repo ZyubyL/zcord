@@ -4,7 +4,15 @@ from .application import Application
 from .attachment import Attachment
 from .avatar_decoration_data import AvatarDecorationData
 from .channel import Channel
-from .component import ActionRow, Button, Component, StringSelect
+from .component import (
+    ActionRow,
+    Button,
+    Component,
+    DefaultValue,
+    SelectOption,
+    StringSelect,
+    UserSelect,
+)
 from .embed import (
     Embed,
     EmbedAuthor,
@@ -33,6 +41,7 @@ __all__ = [
     "Button",
     "Channel",
     "Component",
+    "DefaultValue",
     "Embed",
     "EmbedAuthor",
     "EmbedField",
@@ -58,10 +67,12 @@ __all__ = [
     "RoleColors",
     "RoleSubscriptionData",
     "RoleTags",
+    "SelectOption",
     "SharedClientTheme",
     "Snowflake",
     "Sticker",
     "StickerPack",
     "StringSelect",
     "User",
+    "UserSelect",
 ]
