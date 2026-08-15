@@ -54,3 +54,13 @@ class CDN:
         size: int,
     ) -> str:
         return f"{_BASE_URL}/avatar-decoration-presets/{hash}.png?size={size}"
+
+    @staticmethod
+    def emoji(
+        *,
+        hash: str,
+        size: int,
+        format: str | None,
+    ) -> str:
+        format = _pick_best_format(format, hash)
+        return f"{_BASE_URL}/emojis/{hash}.{format}?size={size}"

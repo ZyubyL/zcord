@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import ClassVar
 
 from zcord.models.base import ZcordModel
+from zcord.models.emoji import Emoji
 
 
 @dataclass(frozen=True, slots=True)
@@ -47,7 +48,10 @@ class Reaction(ZcordModel):
     count_details: ReactionCountDetails
     me: bool
     me_burst: bool
-    emoji: Any
+    emoji: Emoji
     burst_colors: list[int]
 
-    _transforms: ClassVar[dict] = {"count_details": ReactionCountDetails}
+    _transforms: ClassVar[dict] = {
+        "count_details": ReactionCountDetails,
+        "emoji": Emoji,
+    }

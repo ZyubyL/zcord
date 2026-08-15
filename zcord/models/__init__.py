@@ -23,6 +23,7 @@ from .embed import (
     EmbedProvider,
     EmbedVideo,
 )
+from .emoji import Emoji
 from .guild import Guild
 from .interaction import Interaction, InteractionMetadata
 from .message import Message, MessageActivity, MessageReference, MessageSnapshot
@@ -50,6 +51,7 @@ __all__ = [
     "EmbedImage",
     "EmbedProvider",
     "EmbedVideo",
+    "Emoji",
     "Guild",
     "Interaction",
     "InteractionMetadata",

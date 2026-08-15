@@ -70,3 +70,14 @@ class Bot:
         Fetch the current bot user.
         """
         return await self._state.fetch_current_user()
+
+    async def fetch_message(
+        self, *, channel_id: int | Snowflake, message_id: int | Snowflake
+    ) -> Message:
+        """*|coro|*
+
+        Fetch a message by its ID and channel ID.
+        """
+        return await self._state.fetch_channel_message(
+            channel_id=channel_id, message_id=message_id
+        )
