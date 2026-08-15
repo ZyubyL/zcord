@@ -7,12 +7,12 @@ from zcord.enums.component import ComponentType
 from zcord.errors import ZcordError
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
+from zcord.models.component.select_menu.base import SelectMenu
 from zcord.models.component.select_menu.default_value import DefaultValue
-from zcord.types import SelectMenu
 
 
 @dataclass(frozen=True, slots=True)
-class UserSelect(Component, SelectMenu):
+class UserSelect(SelectMenu):
     """
     A user select menu component.
 
@@ -42,13 +42,8 @@ class UserSelect(Component, SelectMenu):
     """
 
     type: ComponentType = ComponentType.USER_SELECT
-    custom_id: str | MISSING = MISSING
     placeholder: str | MISSING = MISSING
     default_values: list[DefaultValue] | MISSING = MISSING
-    min_values: int | MISSING = MISSING
-    max_values: int | MISSING = MISSING
-    required: bool | MISSING = MISSING
-    disabled: bool | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "type": ComponentType,
@@ -59,7 +54,7 @@ class UserSelect(Component, SelectMenu):
     def new(
         cls,
         *,
-        custom_id: str,
+        custom_id: str | MISSING = MISSING,
         placeholder: str | MISSING = MISSING,
         default_values: list[DefaultValue] | MISSING = MISSING,
         min_values: int = 1,
@@ -78,14 +73,6 @@ class UserSelect(Component, SelectMenu):
             .set_required(required)
             .set_disabled(disabled)
         )
-
-    def set_custom_id(self, custom_id: str) -> UserSelect:
-        """
-        Set the custom ID of the string select component.
-        """
-        if len(custom_id) > 100 or len(custom_id) < 1:
-            raise ZcordError("Custom ID cannot be longer than 100 characters.")
-        return replace(self, custom_id=custom_id)
 
     def set_placeholder(self, placeholder: str | MISSING) -> UserSelect:
         """
@@ -133,34 +120,6 @@ class UserSelect(Component, SelectMenu):
         Clear all default values from the user select component.
         """
         return replace(self, default_values=MISSING)
-
-    def set_min_values(self, min_values: int) -> UserSelect:
-        """
-        Set the minimum number of values that can be selected.
-        """
-        if min_values < 1 or min_values > 25:
-            raise ZcordError("min_values must be between 1 and 25.")
-        return replace(self, min_values=min_values)
-
-    def set_max_values(self, max_values: int) -> UserSelect:
-        """
-        Set the maximum number of values that can be selected.
-        """
-        if max_values < 1 or max_values > 25:
-            raise ZcordError("max_values must be between 1 and 25.")
-        return replace(self, max_values=max_values)
-
-    def set_required(self, required: bool) -> UserSelect:
-        """
-        Set whether the user select component is required.
-        """
-        return replace(self, required=required)
-
-    def set_disabled(self, disabled: bool) -> UserSelect:
-        """
-        Set whether the user select component is disabled.
-        """
-        return replace(self, disabled=disabled)
 
 
 Component._registry[ComponentType.USER_SELECT] = UserSelect

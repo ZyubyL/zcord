@@ -334,6 +334,8 @@ class Message(ZcordModel):
         """
         if not isinstance(component, ActionRow):
             raise ZcordError("You can only add an ActionRow for now.")
+        if self.components is not MISSING and len(self.components) >= 5:
+            raise ZcordError("You can only have 5 components for now.")
         return replace(
             self,
             components=[*self.components, component]

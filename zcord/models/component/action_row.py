@@ -8,7 +8,7 @@ from zcord.errors import ZcordError
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
 from zcord.models.component.button import Button
-from zcord.types import SelectMenu
+from zcord.models.component.select_menu.base import SelectMenu
 
 
 @dataclass(frozen=True, slots=True)

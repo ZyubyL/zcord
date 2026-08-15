@@ -12,10 +12,6 @@
 
 ---
 
-::: zcord.types
-
----
-
 ::: zcord.flags
 
 ---
