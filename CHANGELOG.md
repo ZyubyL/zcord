@@ -9,10 +9,12 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
     - Persistent `ConnectionState` for `Message` and `Channel`.
       - You can now do `Message.send()` or `Channel.send()` instead of accessing private bot property `bot._state.send_message()`.
     - `SharedClientTheme`, `BaseThemeType` enums and shared client theme builder.
+    - `Emoji` object
     - `Component`s
       - `Button`
       - `ActionRow`
       - `StringSelect`
+      - `UserSelect`
   - `Poll` builder.
   - `CDN` utility class.
     - `ZcordModel.*_url` properties.
@@ -20,6 +22,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
     - `Bot.fetch_current_application()` -> `Application`
     - `Bot.fetch_channel()` -> `Channel`
     - `Bot.fetch_guild()` -> `Guild`
+    - `Bot.fetch_message()` -> `Message`
+    - `Bot.fetch_user()` -> `User`
 
 ### Changed:
   - `ConnectionState.send_message()` now accept the whole `Message` object instead of individual fields.
