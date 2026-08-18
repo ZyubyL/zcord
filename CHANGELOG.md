@@ -2,6 +2,12 @@
 
 This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
+## 2026.0.4 - [Unreleased]
+
+### Changed:
+  - ZcordModel's list attributes are now tuple, making it truly frozen.
+    - Note: All the `set_*()s` methods still work with list.
+
 ## 2026.0.3 - 2026/08/15
 
 ### Added:

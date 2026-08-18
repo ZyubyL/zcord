@@ -1,6 +1,6 @@
 [project]
 name = "zcord"
-version = "2026.0.3"
+version = "2026.0.4"
 authors = [
     { name = "ZyubyL" }
 ]
