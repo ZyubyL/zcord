@@ -49,7 +49,7 @@ class Reaction(ZcordModel):
     me: bool
     me_burst: bool
     emoji: Emoji
-    burst_colors: list[int]
+    burst_colors: tuple[int, ...]
 
     _transforms: ClassVar[dict] = {
         "count_details": ReactionCountDetails,

@@ -24,7 +24,7 @@ class SharedClientTheme(ZcordModel):
             The mode of the theme.
     """
 
-    colors: list[str] | MISSING = MISSING
+    colors: tuple[str, ...] | MISSING = MISSING
     gradient_angle: int | MISSING = MISSING
     base_mix: int | MISSING = MISSING
     base_theme: BaseThemeType = BaseThemeType.UNSET
@@ -51,7 +51,7 @@ class SharedClientTheme(ZcordModel):
     def new(
         cls,
         *,
-        colors: list[str] | MISSING = MISSING,
+        colors: tuple[str, ...] | list[str] | MISSING = MISSING,
         gradient_angle: int | MISSING = MISSING,
         base_mix: int | MISSING = MISSING,
         base_theme: BaseThemeType = BaseThemeType.UNSET,
@@ -60,11 +60,12 @@ class SharedClientTheme(ZcordModel):
 
         Create a new shared client theme.
         """
-        return cls(
-            colors=colors,
-            gradient_angle=gradient_angle,
-            base_mix=base_mix,
-            base_theme=base_theme,
+        return (
+            cls()
+            .set_colors(colors if colors is not MISSING else ())
+            .set_base_mix(base_mix if base_mix is not MISSING else 0)
+            .set_base_theme(base_theme)
+            .set_gradient_angle(gradient_angle)
         )
 
     def add_color(self, color: str) -> SharedClientTheme:
@@ -75,22 +76,25 @@ class SharedClientTheme(ZcordModel):
             raise ValueError("Cannot add more than 5 colors to the theme.")
         return replace(
             self,
-            colors=[*self.colors, color]
+            colors=(*self.colors, color)
             if self.colors is not MISSING
-            else [color],
+            else (color,),
         )
 
-    def add_colors(self, colors: list[str]) -> SharedClientTheme:
+    def add_colors(
+        self, colors: tuple[str, ...] | list[str]
+    ) -> SharedClientTheme:
         """
         Add multiple colors to the theme.
         """
         theme = self
         for color in colors:
             theme = theme.add_color(color)
-
         return theme
 
-    def set_colors(self, colors: list[str]) -> SharedClientTheme:
+    def set_colors(
+        self, colors: tuple[str, ...] | list[str]
+    ) -> SharedClientTheme:
         """
         Set the colors of the theme.
 
@@ -98,7 +102,16 @@ class SharedClientTheme(ZcordModel):
             This will **remove** all the old colors.
             If you want to add color to the theme, use `add_color(s)` instead.
         """
-        return replace(self, colors=colors)
+        theme = self.clear_colors()
+        for color in colors:
+            theme = theme.add_color(color)
+        return theme
+
+    def clear_colors(self) -> SharedClientTheme:
+        """
+        Clear all the colors of the theme.
+        """
+        return replace(self, colors=MISSING)
 
     def set_gradient_angle(
         self, angle: int | MISSING = MISSING

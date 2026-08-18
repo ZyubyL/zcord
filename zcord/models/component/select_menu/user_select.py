@@ -43,7 +43,7 @@ class UserSelect(SelectMenu):
 
     type: ComponentType = ComponentType.USER_SELECT
     placeholder: str | MISSING = MISSING
-    default_values: list[DefaultValue] | MISSING = MISSING
+    default_values: tuple[DefaultValue] | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "type": ComponentType,
@@ -56,7 +56,9 @@ class UserSelect(SelectMenu):
         *,
         custom_id: str | MISSING = MISSING,
         placeholder: str | MISSING = MISSING,
-        default_values: list[DefaultValue] | MISSING = MISSING,
+        default_values: tuple[DefaultValue, ...]
+        | list[DefaultValue]
+        | MISSING = MISSING,
         min_values: int = 1,
         max_values: int = 1,
         required: bool = True,
@@ -65,8 +67,10 @@ class UserSelect(SelectMenu):
         return (
             cls(
                 custom_id=custom_id,
-                placeholder=placeholder,
-                default_values=default_values,
+            )
+            .set_placeholder(placeholder)
+            .set_default_values(
+                default_values if default_values is not MISSING else ()
             )
             .set_min_values(min_values)
             .set_max_values(max_values)
@@ -85,7 +89,7 @@ class UserSelect(SelectMenu):
         return replace(self, placeholder=placeholder)
 
     def set_default_values(
-        self, default_values: list[DefaultValue]
+        self, default_values: tuple[DefaultValue, ...] | list[DefaultValue]
     ) -> UserSelect:
         """
         Set the default values of the user select component.
@@ -94,7 +98,7 @@ class UserSelect(SelectMenu):
         return select.add_default_values(default_values)
 
     def add_default_values(
-        self, default_values: list[DefaultValue]
+        self, default_values: tuple[DefaultValue, ...] | list[DefaultValue]
     ) -> UserSelect:
         """
         Add default values to the user select component.
@@ -110,9 +114,9 @@ class UserSelect(SelectMenu):
         """
         return replace(
             self,
-            default_values=[*self.default_values, default_value]
+            default_values=(*self.default_values, default_value)
             if self.default_values is not MISSING
-            else [default_value],
+            else (default_value,),
         )
 
     def clear_default_values(self) -> UserSelect:

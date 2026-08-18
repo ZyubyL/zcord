@@ -14,6 +14,7 @@ from zcord.missing import MISSING
 from zcord.models.base import ZcordModel
 from zcord.models.role import Role
 from zcord.models.snowflake import Snowflake
+from zcord.models.sticker import Sticker
 
 
 @dataclass(frozen=True, slots=True)
@@ -126,9 +127,9 @@ class Guild(ZcordModel):
     verification_level: VerificationLevel
     default_message_notifications: MessageNotificationLevel
     explicit_content_filter: ExplicitContentFilterLevel
-    roles: list[Role]
-    emojis: list[Any]
-    features: list[Any]
+    roles: tuple[Role, ...]
+    emojis: tuple[Any]
+    features: tuple[Any]
     mfa_level: MFALevel
     application_id: Snowflake | None
     system_channel_id: Snowflake | None
@@ -157,7 +158,7 @@ class Guild(ZcordModel):
     approximate_member_count: int | MISSING = MISSING
     approximate_presence_count: int | MISSING = MISSING
     welcome_screen: Any | MISSING = MISSING
-    stickers: list[Any] | MISSING = MISSING
+    stickers: tuple[Sticker, ...] | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -175,4 +176,5 @@ class Guild(ZcordModel):
         "public_updates_channel_id": Snowflake,
         "safety_alerts_channel_id": Snowflake,
         "widget_channel_id": Snowflake,
+        "stickers": Sticker,
     }

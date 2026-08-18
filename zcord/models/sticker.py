@@ -85,7 +85,7 @@ class StickerPack(ZcordModel):
     """
 
     id: Snowflake
-    stickers: list[Sticker]
+    stickers: tuple[Sticker, ...]
     name: str
     sku_id: Snowflake
     description: str

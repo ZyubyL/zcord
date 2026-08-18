@@ -74,7 +74,7 @@ class Attachment(ZcordModel):
     duration_secs: float | MISSING = MISSING
     waveform: str | MISSING = MISSING
     flags: AttachmentFlags | MISSING = MISSING
-    clip_participants: list[User] | MISSING = MISSING
+    clip_participants: tuple[User] | MISSING = MISSING
     clip_created_at: datetime | MISSING = MISSING
     application: Any | None | MISSING = MISSING
 

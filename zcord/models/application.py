@@ -96,7 +96,7 @@ class Application(ZcordModel):
     bot_require_code_grant: bool
     verify_key: str
     team: Any | None
-    rpc_origin: list[str] | MISSING = MISSING
+    rpc_origin: tuple[str, ...] | MISSING = MISSING
     bot: User | MISSING = MISSING
     term_of_service_url: str | MISSING = MISSING
     privacy_policy_url: str | MISSING = MISSING
@@ -110,13 +110,13 @@ class Application(ZcordModel):
     approximate_guild_count: int | MISSING = MISSING
     approximate_user_install_count: int | MISSING = MISSING
     approximate_user_authorization_count: int | MISSING = MISSING
-    redirect_uris: list[str] | MISSING = MISSING
+    redirect_uris: tuple[str, ...] | MISSING = MISSING
     interactions_endpoint_url: str | None | MISSING = MISSING
     role_connections_verification_url: str | None | MISSING = MISSING
     event_webhooks_url: str | None | MISSING = MISSING
     event_webhooks_status: Any | MISSING = MISSING
-    event_webhooks_types: list[str] | MISSING = MISSING
-    tags: list[str] | MISSING = MISSING
+    event_webhooks_types: tuple[str, ...] | MISSING = MISSING
+    tags: tuple[str, ...] | MISSING = MISSING
     install_params: Any | MISSING = MISSING
     integration_types_config: dict | MISSING = MISSING
     custom_install_url: str | MISSING = MISSING

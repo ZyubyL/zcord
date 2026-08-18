@@ -132,7 +132,7 @@ class Channel(ZcordModel):
     bitrate: int | MISSING = MISSING
     user_limit: int | MISSING = MISSING
     rate_limit_per_user: int | MISSING = MISSING
-    recipients: list[User] | MISSING = MISSING
+    recipients: tuple[User, ...] | MISSING = MISSING
     icon: str | None | MISSING = MISSING
     owner_id: Snowflake | MISSING = MISSING
     application_id: Snowflake | MISSING = MISSING
@@ -149,8 +149,8 @@ class Channel(ZcordModel):
     permissions: str | MISSING = MISSING
     flags: ChannelFlags | MISSING = MISSING
     total_message_sent: int | MISSING = MISSING
-    available_tags: list | MISSING = MISSING
-    applied_tags: list[Snowflake] | MISSING = MISSING
+    available_tags: tuple | MISSING = MISSING
+    applied_tags: tuple[Snowflake, ...] | MISSING = MISSING
     default_reaction_emoji: Any | None | MISSING = MISSING
     default_thread_rate_limit_per_user: int | MISSING = MISSING
     default_sort_order: int | None | MISSING = MISSING

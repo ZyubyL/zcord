@@ -36,7 +36,7 @@ class Emoji(ZcordModel):
 
     id: Snowflake | None = None
     name: str | None = None
-    roles: list[Snowflake] | MISSING = MISSING
+    roles: tuple[Snowflake, ...] | MISSING = MISSING
     user: User | MISSING = MISSING
     require_colons: bool | MISSING = MISSING
     managed: bool | MISSING = MISSING

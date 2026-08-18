@@ -42,7 +42,7 @@ class StringSelect(SelectMenu):
     """
 
     type: ComponentType = ComponentType.STRING_SELECT
-    options: list[SelectOption] | MISSING = MISSING
+    options: tuple[SelectOption, ...] | MISSING = MISSING
     placeholder: str | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
@@ -55,7 +55,9 @@ class StringSelect(SelectMenu):
         cls,
         *,
         custom_id: str | MISSING = MISSING,
-        options: list[SelectOption] | MISSING = MISSING,
+        options: tuple[SelectOption, ...]
+        | list[SelectOption]
+        | MISSING = MISSING,
         placeholder: str | MISSING = MISSING,
         min_values: int = 1,
         max_values: int = 1,
@@ -69,8 +71,8 @@ class StringSelect(SelectMenu):
         return (
             cls(
                 custom_id=custom_id,
-                options=options,
             )
+            .set_options(options if options is not MISSING else ())
             .set_placeholder(placeholder)
             .set_min_values(min_values)
             .set_max_values(max_values)
@@ -78,14 +80,18 @@ class StringSelect(SelectMenu):
             .set_disabled(disabled)
         )
 
-    def set_options(self, options: list[SelectOption]) -> StringSelect:
+    def set_options(
+        self, options: tuple[SelectOption, ...] | list[SelectOption]
+    ) -> StringSelect:
         """
         Set the options of the string select component.
         """
         select = self.clear_options()
         return select.add_options(options)
 
-    def add_options(self, options: list[SelectOption]) -> StringSelect:
+    def add_options(
+        self, options: tuple[SelectOption, ...] | list[SelectOption]
+    ) -> StringSelect:
         """
         Add options to the string select component.
         """
@@ -98,17 +104,15 @@ class StringSelect(SelectMenu):
         """
         Add an option to the string select component.
         """
-        if self.options is MISSING:
-            return replace(self, options=[option])
-        if len(self.options) + 1 > 25:
+        if self.options is not MISSING and len(self.options) >= 25:
             raise ZcordError(
                 "String select component cannot have more than 25 options."
             )
         return replace(
             self,
-            options=[*self.options, option]
+            options=(*self.options, option)
             if self.options is not MISSING
-            else [option],
+            else (option,),
         )
 
     def clear_options(self) -> StringSelect:

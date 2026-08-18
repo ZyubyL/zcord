@@ -28,8 +28,8 @@ def from_payload(cls, payload: dict | MISSING, **transforms) -> Any:
             and value is not f.default
         ):
             t = transforms[f.name]
-            if isinstance(value, list):
-                value = [_apply_transform(t, v) for v in value]
+            if isinstance(value, (tuple, list)):
+                value = tuple(_apply_transform(t, v) for v in value)
             # NOTE: This doesn't work for stacked payload objects
             # NOTE: Maybe I could find a better way to do it.
 
@@ -72,10 +72,11 @@ class ZcordModel:
                 payload[f.name] = value._to_payload()
             # Nested list of ZcordModel
             elif (
-                isinstance(value, list)
+                isinstance(value, tuple)
                 and value
                 and isinstance(value[0], ZcordModel)
             ):
+                # Convert back to list to send
                 payload[f.name] = [item._to_payload() for item in value]
             elif isinstance(value, datetime):
                 payload[f.name] = value.isoformat()

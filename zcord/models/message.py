@@ -183,27 +183,27 @@ class Message(ZcordModel):
     timestamp: datetime | MISSING = MISSING
     tts: bool | MISSING = MISSING
     mention_everyone: bool | MISSING = MISSING
-    mentions: list[User] | MISSING = MISSING
-    mention_roles: list[Snowflake] | MISSING = MISSING
-    attachments: list[Attachment] | MISSING = MISSING
-    embeds: list[Embed] | MISSING = MISSING
+    mentions: tuple[User, ...] | MISSING = MISSING
+    mention_roles: tuple[Snowflake, ...] | MISSING = MISSING
+    attachments: tuple[Attachment, ...] | MISSING = MISSING
+    embeds: tuple[Embed, ...] | MISSING = MISSING
     pinned: bool | MISSING = MISSING
     type: MessageType | MISSING = MISSING
     edited_timestamp: datetime | None = None
-    mention_channels: list[Channel] | MISSING = MISSING
-    reactions: list[Reaction] | MISSING = MISSING
+    mention_channels: tuple[Channel, ...] | MISSING = MISSING
+    reactions: tuple[Reaction, ...] | MISSING = MISSING
     webhook_id: Snowflake | MISSING = MISSING
     activity: MessageActivity | MISSING = MISSING
     application: Application | MISSING = MISSING
     application_id: Snowflake | MISSING = MISSING
     flags: MessageFlags | MISSING = MISSING
     message_reference: MessageReference | MISSING = MISSING
-    message_snapshots: list[MessageSnapshot] | MISSING = MISSING
+    message_snapshots: tuple[MessageSnapshot, ...] | MISSING = MISSING
     referenced_message: Message | None | MISSING = MISSING
     interaction_metadata: InteractionMetadata | MISSING = MISSING
     thread: Channel | MISSING = MISSING
-    components: list[Component] | MISSING = MISSING
-    sticker_items: list[Sticker] | MISSING = MISSING
+    components: tuple[Component, ...] | MISSING = MISSING
+    sticker_items: tuple[Sticker, ...] | MISSING = MISSING
     position: int | MISSING = MISSING
     role_subscription_data: RoleSubscriptionData | MISSING = MISSING
     resolved: Resolved | MISSING = MISSING
@@ -247,14 +247,18 @@ class Message(ZcordModel):
         cls,
         *,
         content: str | MISSING = MISSING,
-        attachments: list[Attachment] | MISSING = MISSING,
-        embeds: list[Embed] | MISSING = MISSING,
+        attachments: tuple[Attachment, ...]
+        | list[Attachment]
+        | MISSING = MISSING,
+        embeds: tuple[Embed, ...] | list[Embed] | MISSING = MISSING,
         # webhook_id: Snowflake | MISSING = MISSING,
         message_reference: MessageReference | MISSING = MISSING,
-        message_snapshots: list[MessageSnapshot] | MISSING = MISSING,
+        message_snapshots: tuple[MessageSnapshot, ...]
+        | list[MessageSnapshot]
+        | MISSING = MISSING,
         referenced_message: Message | None | MISSING = MISSING,
         # thread: Channel | MISSING = MISSING,
-        components: list[Component] | MISSING = MISSING,
+        components: tuple[Component, ...] | list[Component] | MISSING = MISSING,
         # sticker_items: list[Sticker] | MISSING = MISSING,
         poll: Poll | MISSING = MISSING,
         # call: Any | MISSING = MISSING,
@@ -266,15 +270,14 @@ class Message(ZcordModel):
         """
         message = (
             cls(
-                attachments=attachments,
-                embeds=embeds,
                 message_reference=message_reference,
-                message_snapshots=message_snapshots,
                 referenced_message=referenced_message,
             )
+            ._set_message_snapshots(message_snapshots)
             .set_content(content)
-            .set_embeds(embeds)
-            .set_components(components)
+            .set_embeds(embeds if embeds is not MISSING else ())
+            .set_components(components if components is not MISSING else ())
+            .set_attachments(attachments if attachments is not MISSING else ())
         )
         if poll is not MISSING:
             message = message.set_poll(poll)
@@ -282,27 +285,42 @@ class Message(ZcordModel):
             message = message.add_shared_client_theme(shared_client_theme)
         return message
 
+    def _set_message_snapshots(
+        self,
+        message_snapshots: tuple[MessageSnapshot, ...]
+        | list[MessageSnapshot]
+        | MISSING,
+    ) -> Message:
+        if message_snapshots is not MISSING:
+            return replace(self, message_snapshots=message_snapshots)
+        return self
+
     def set_content(self, content: str | MISSING = MISSING) -> Message:
         """
         Set the content of the message.
         """
         return replace(self, content=content)
 
-    def set_embeds(self, embeds: list[Embed] | MISSING = MISSING) -> Message:
+    def set_embeds(self, embeds: tuple[Embed, ...] | list[Embed]) -> Message:
         """
         Set the embeds of the message.
         """
-        return replace(self, embeds=embeds)
+        m = self
+        for embed in embeds:
+            m = m.add_embed(embed)
+        return m
 
     def add_embed(self, embed: Embed) -> Message:
         """
         Add an embed to the message.
         """
+        if self.embeds is not MISSING and len(self.embeds) >= 10:
+            raise ZcordError("Cannot add more than 10 embeds to a message.")
         return replace(
             self,
-            embeds=[*self.embeds, embed]
+            embeds=(*self.embeds, embed)
             if self.embeds is not MISSING
-            else [embed],
+            else (embed,),
         )
 
     def add_shared_client_theme(self, theme: SharedClientTheme) -> Message:
@@ -317,12 +335,12 @@ class Message(ZcordModel):
         """
         return replace(self, poll=poll)
 
-    def set_components(self, components: list[Component] | MISSING) -> Message:
+    def set_components(
+        self, components: tuple[Component, ...] | list[Component]
+    ) -> Message:
         """
         Set the components of the message.
         """
-        if components is MISSING:
-            return replace(self, components=MISSING)
         m = self
         for component in components:
             m = m.add_component(component)
@@ -338,9 +356,31 @@ class Message(ZcordModel):
             raise ZcordError("You can only have 5 components for now.")
         return replace(
             self,
-            components=[*self.components, component]
+            components=(*self.components, component)
             if self.components is not MISSING
-            else [component],
+            else (component,),
+        )
+
+    def set_attachments(
+        self, attachments: tuple[Attachment, ...] | list[Attachment]
+    ) -> Message:
+        """
+        Set the attachments of the message.
+        """
+        m = self
+        for attachment in attachments:
+            m = m.add_attachment(attachment)
+        return m
+
+    def add_attachment(self, attachment: Attachment) -> Message:
+        """
+        Add an attachment to the message.
+        """
+        return replace(
+            self,
+            attachments=(*self.attachments, attachment)
+            if self.attachments is not MISSING
+            else (attachment,),
         )
 
     async def send(self, channel: int | Snowflake | Channel) -> Message:

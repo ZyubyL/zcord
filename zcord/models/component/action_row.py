@@ -22,7 +22,7 @@ class ActionRow(Component):
     """
 
     type: ComponentType = ComponentType.ACTION_ROW
-    components: list[Button | SelectMenu] | MISSING = MISSING
+    components: tuple[Button | SelectMenu, ...] | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "type": ComponentType,
@@ -31,7 +31,11 @@ class ActionRow(Component):
 
     @classmethod
     def new(
-        cls, components: list[Button] | SelectMenu | MISSING = MISSING
+        cls,
+        components: list[Button]
+        | tuple[Button, ...]
+        | SelectMenu
+        | MISSING = MISSING,
     ) -> ActionRow:
         """*|classmethod|*
 
@@ -47,7 +51,9 @@ class ActionRow(Component):
             row = row.set_buttons(components)
         return row
 
-    def set_buttons(self, buttons: list[Button]) -> ActionRow:
+    def set_buttons(
+        self, buttons: tuple[Button, ...] | list[Button]
+    ) -> ActionRow:
         """
         Set the buttons of the action row.
         """
@@ -61,18 +67,18 @@ class ActionRow(Component):
         Add a button to the action row.
         """
         if self.components is MISSING or not self.components:
-            return replace(self, components=[button])
+            return replace(self, components=(button,))
         if isinstance(self.components[0], SelectMenu) or (
             isinstance(self.components[0], Button) and len(self.components) >= 5
         ):
             raise ZcordError("Cannot add more components to this action row")
-        return replace(self, components=[*self.components, button])
+        return replace(self, components=(*self.components, button))
 
     def set_select(self, select: SelectMenu) -> ActionRow:
         """
         Set the select menu of the action row.
         """
-        return replace(self, components=[select])
+        return replace(self, components=(select,))
 
 
 Component._registry[ComponentType.ACTION_ROW] = ActionRow

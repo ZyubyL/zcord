@@ -239,7 +239,7 @@ class Embed(ZcordModel):
     video: EmbedVideo | MISSING = MISSING
     provider: EmbedProvider | MISSING = MISSING
     author: EmbedAuthor | MISSING = MISSING
-    fields: list[EmbedField] | MISSING = MISSING
+    fields: tuple[EmbedField, ...] | MISSING = MISSING
     flags: EmbedFlags | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
@@ -295,7 +295,7 @@ class Embed(ZcordModel):
         image_url: str | MISSING = MISSING,
         thumbnail_url: str | MISSING = MISSING,
         author: EmbedAuthor | MISSING = MISSING,
-        fields: list[EmbedField] | MISSING = MISSING,
+        fields: tuple[EmbedField, ...] | MISSING = MISSING,
     ) -> Embed:
         """*|classmethod|*
 
@@ -496,7 +496,8 @@ class Embed(ZcordModel):
         )
 
     def add_field(self, *, name: str, value: str, inline: bool = True) -> Embed:
-        """Add a field to the embed.
+        """
+        Add a field to the embed.
 
         Params:
             name:
@@ -518,12 +519,12 @@ class Embed(ZcordModel):
         field = EmbedField(name=name, value=value, inline=inline)
         return replace(
             self,
-            fields=[
+            fields=(
                 *self.fields,
                 field,
-            ]
+            )
             if self.fields is not MISSING
-            else [field],
+            else (field,),
         )
 
     def remove_fields(self) -> Embed:

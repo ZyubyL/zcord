@@ -84,7 +84,7 @@ class PollResults(ZcordModel):
     """
 
     is_finalized: bool
-    answer_counts: list[PollAnswerCount]
+    answer_counts: tuple[PollAnswerCount, ...]
 
     _transforms: ClassVar[dict] = {
         "answer_counts": PollAnswerCount,
@@ -112,7 +112,7 @@ class Poll(ZcordModel):
     """
 
     question: PollMedia
-    answers: list[PollAnswer]
+    answers: tuple[PollAnswer, ...]
     allow_multiselect: bool
     layout_type: int
     expiry: datetime | None = None
@@ -138,7 +138,7 @@ class Poll(ZcordModel):
         cls,
         *,
         question: str | MISSING = MISSING,
-        answers: list[str] | MISSING = MISSING,
+        answers: tuple[str, ...] | list[str] | MISSING = MISSING,
         duration: int = 24,
         allow_multiselect: bool = False,
     ) -> Poll:
@@ -152,9 +152,9 @@ class Poll(ZcordModel):
 
         return cls(
             question=PollMedia(text=question),
-            answers=[PollAnswer.new(text=answer) for answer in answers]
+            answers=tuple(PollAnswer.new(text=answer) for answer in answers)
             if answers is not MISSING
-            else [],
+            else (),
             allow_multiselect=allow_multiselect,
             _duration=duration,
             layout_type=1,
@@ -166,17 +166,14 @@ class Poll(ZcordModel):
         """
         return replace(self, question=PollMedia(text=question))
 
-    def set_answers(self, answers: list[str]) -> Poll:
+    def set_answers(self, answers: tuple[str, ...] | list[str]) -> Poll:
         """
         Set the answers of the poll.
         """
-        if len(answers) == 0:
-            # I'm not too sure to keep the poll object or raise an error.
-            return self
-        return replace(
-            self,
-            answers=[PollAnswer.new(text=answer) for answer in answers],
-        )
+        poll = self
+        for answer in answers:
+            poll = poll.add_answer(answer)
+        return poll
 
     def add_answer(self, text: str) -> Poll:
         """
@@ -184,12 +181,12 @@ class Poll(ZcordModel):
         """
         return replace(
             self,
-            answers=[
+            answers=(
                 *self.answers,
                 PollAnswer(
                     poll_media=PollMedia(text=text),
                 ),
-            ],
+            ),
         )
 
     def set_duration(self, hours: int) -> Poll:
