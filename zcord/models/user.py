@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar, Literal
+from typing import ClassVar, Literal
 
 from zcord.cdn import CDN
 from zcord.flags.user import UserFlags
 from zcord.missing import MISSING
 from zcord.models.avatar_decoration_data import AvatarDecorationData
 from zcord.models.base import ZcordModel
+from zcord.models.collectibles import Collectibles
+from zcord.models.primary_guild import PrimaryGuild
 from zcord.models.snowflake import Snowflake
 
 
@@ -76,14 +78,16 @@ class User(ZcordModel):
     premium_type: int | MISSING = MISSING
     public_flags: UserFlags | MISSING = MISSING
     avatar_decoration_data: AvatarDecorationData | None | MISSING = MISSING
-    collectibles: Any | None | MISSING = MISSING
-    primary_guild: Any | None | MISSING = MISSING
+    collectibles: Collectibles | None | MISSING = MISSING
+    primary_guild: PrimaryGuild | None | MISSING = MISSING
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
         "flags": UserFlags,
         "public_flags": UserFlags,
         "avatar_decoration_data": AvatarDecorationData,
+        "collectibles": Collectibles,
+        "primary_guild": PrimaryGuild,
     }
 
     def avatar_url(

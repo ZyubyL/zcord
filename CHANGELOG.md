@@ -4,6 +4,11 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
 ## 2026.0.4 - [Unreleased]
 
+### Added:
+  - Models:
+    - `PrimaryGuild`.
+    - `Collectibles`.
+
 ### Changed:
   - ZcordModel's list attributes are now tuple, making it truly frozen.
     - Note: All the `set_*()s` methods still work with list.

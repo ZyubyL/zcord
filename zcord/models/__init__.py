@@ -4,6 +4,7 @@ from .application import Application
 from .attachment import Attachment
 from .avatar_decoration_data import AvatarDecorationData
 from .channel import Channel
+from .collectibles import Collectibles, Nameplate
 from .component import (
     ActionRow,
     Button,
@@ -28,6 +29,7 @@ from .guild import Guild
 from .interaction import Interaction, InteractionMetadata
 from .message import Message, MessageActivity, MessageReference, MessageSnapshot
 from .poll import Poll, PollAnswer, PollAnswerCount, PollMedia, PollResults
+from .primary_guild import PrimaryGuild
 from .reaction import Reaction, ReactionCountDetails
 from .role import Role, RoleColors, RoleSubscriptionData, RoleTags
 from .shared_client_theme import SharedClientTheme
@@ -42,6 +44,7 @@ __all__ = [
     "AvatarDecorationData",
     "Button",
     "Channel",
+    "Collectibles",
     "Component",
     "DefaultValue",
     "Embed",
@@ -59,11 +62,13 @@ __all__ = [
     "MessageActivity",
     "MessageReference",
     "MessageSnapshot",
+    "Nameplate",
     "Poll",
     "PollAnswer",
     "PollAnswerCount",
     "PollMedia",
     "PollResults",
+    "PrimaryGuild",
     "Reaction",
     "ReactionCountDetails",
     "Role",

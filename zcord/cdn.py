@@ -64,3 +64,16 @@ class CDN:
     ) -> str:
         format = _pick_best_format(format, hash)
         return f"{_BASE_URL}/emojis/{hash}.{format}?size={size}"
+
+    @staticmethod
+    def badge(
+        *,
+        guild_id: int,
+        hash: str,
+        size: int,
+        format: str | None,
+    ) -> str:
+        format = _pick_best_format(format, hash)
+        return f"""
+            {_BASE_URL}/guild-tag-badges/{guild_id}/{hash}.{format}?size={size}
+        """
