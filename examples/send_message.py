@@ -43,7 +43,7 @@ async def main():
                 )
                 .set_image(bot_user.banner_url() or MISSING)
             )
-            .add_shared_client_theme(
+            .set_shared_client_theme(
                 zcord.SharedClientTheme.new()
                 .add_color("11111b")
                 .add_colors(["181825", "1e1e2e"])
