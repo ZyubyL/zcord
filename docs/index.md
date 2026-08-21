@@ -48,3 +48,7 @@ if __name__ == "__main__":
 ## Usage
 
 See the [API documentation](api.md).
+
+## Class Diagram
+
+See the [class diagram](class_diagram.md).

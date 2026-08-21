@@ -70,7 +70,11 @@ markdown_extensions:
       permalink: true
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 extra_css:
   - stylesheets/extra.css
@@ -78,3 +82,4 @@ extra_css:
 nav:
   - Home: index.md
   - API Reference: api.md
+  - Class Diagram: class_diagram.md
