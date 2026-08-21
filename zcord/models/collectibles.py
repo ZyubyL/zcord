@@ -6,12 +6,12 @@ from typing import ClassVar, Literal
 from zcord.cdn import CDN
 from zcord.errors import ZcordError
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
-class Nameplate(ZcordModel):
+class Nameplate(Model):
     """
     Contain info about the user's nameplate.
 
@@ -61,7 +61,7 @@ class Nameplate(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class Collectibles(ZcordModel):
+class Collectibles(Model):
     """
     Contains info about the user's collectibles.
 

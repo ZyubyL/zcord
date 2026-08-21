@@ -77,3 +77,25 @@ class CDN:
         return f"""
             {_BASE_URL}/guild-tag-badges/{guild_id}/{hash}.{format}?size={size}
         """
+
+    @staticmethod
+    def guild_icon(
+        *,
+        guild_id: int,
+        hash: str,
+        size: int,
+        format: str | None,
+    ) -> str:
+        format = _pick_best_format(format, hash)
+        return f"{_BASE_URL}/icons/{guild_id}/{hash}.{format}?size={size}"
+
+    @staticmethod
+    def guild_banner(
+        *,
+        guild_id: int,
+        hash: str,
+        size: int,
+        format: str | None,
+    ) -> str:
+        format = _pick_best_format(format, hash)
+        return f"{_BASE_URL}/banners/{guild_id}/{hash}.{format}?size={size}"

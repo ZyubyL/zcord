@@ -3,13 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import Any
 
-from zcord.errors import ZcordError
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 
 
 @dataclass(frozen=True, slots=True)
-class SelectOption(ZcordModel):
+class SelectOption(Model):
     """
     A select option for a string select menu.
 
@@ -32,14 +31,13 @@ class SelectOption(ZcordModel):
     emoji: Any | MISSING = MISSING
     default: bool = False
 
-    def _to_payload(self) -> dict:
+    def _check_before(self) -> None:
         if self.label is MISSING or self.value is MISSING:
-            raise ZcordError("Select option's label and value is required.")
+            raise ValueError("Select option's label and value is required.")
         if not self.label or not self.value:
-            raise ZcordError(
+            raise ValueError(
                 "Select option's label and value must not be empty."
             )
-        return ZcordModel._to_payload(self)
 
     @classmethod
     def new(
@@ -55,28 +53,36 @@ class SelectOption(ZcordModel):
 
         Create a select option for a string select menu.
         """
-        return cls(
-            label=label,
-            value=value,
-            description=description,
-            emoji=emoji,
-            default=default,
+        return (
+            cls(emoji=emoji)
+            .set_description(description)
+            .set_default(default)
+            .set_label(label)
+            .set_value(value)
         )
 
-    def set_label(self, label: str) -> SelectOption:
+    def set_label(self, label: str | MISSING = MISSING) -> SelectOption:
         """
         Set the label of the select option.
+
+        Raises:
+            ValueError:
+                Label must be between 1 and 100 characters.
         """
-        if len(label) > 100 or len(label) < 1:
-            raise ZcordError("Label must be between 1 and 100 characters.")
+        if label is not MISSING and (len(label) > 100 or len(label) < 1):
+            raise ValueError("Label must be between 1 and 100 characters.")
         return replace(self, label=label)
 
-    def set_value(self, value: str) -> SelectOption:
+    def set_value(self, value: str | MISSING = MISSING) -> SelectOption:
         """
         Set the value of the select option.
+
+        Raises:
+            ValueError:
+                Value must be between 1 and 100 characters.
         """
-        if len(value) > 100 or len(value) < 1:
-            raise ZcordError("Value must be between 1 and 100 characters.")
+        if value is not MISSING and (len(value) > 100 or len(value) < 1):
+            raise ValueError("Value must be between 1 and 100 characters.")
         return replace(self, value=value)
 
     def set_description(
@@ -84,9 +90,13 @@ class SelectOption(ZcordModel):
     ) -> SelectOption:
         """
         Set the description of the select option.
+
+        Raises:
+            ValueError:
+                Description must be between 1 and 100 characters.
         """
         if description is not MISSING and len(description) > 100:
-            raise ZcordError(
+            raise ValueError(
                 "Description must be between 1 and 100 characters."
             )
         return replace(self, description=description)
@@ -97,7 +107,7 @@ class SelectOption(ZcordModel):
         """
         raise NotImplementedError
 
-    def set_default(self, default: bool | MISSING = MISSING) -> SelectOption:
+    def set_default(self, default: bool) -> SelectOption:
         """
         Set whether showing this option as selected by default.
         """

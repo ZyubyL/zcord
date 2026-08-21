@@ -3,6 +3,7 @@
 from .application import Application
 from .attachment import Attachment
 from .avatar_decoration_data import AvatarDecorationData
+from .base import Model
 from .channel import Channel
 from .collectibles import Collectibles, Nameplate
 from .component import (
@@ -62,6 +63,7 @@ __all__ = [
     "MessageActivity",
     "MessageReference",
     "MessageSnapshot",
+    "Model",
     "Nameplate",
     "Poll",
     "PollAnswer",

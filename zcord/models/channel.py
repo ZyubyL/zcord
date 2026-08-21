@@ -8,7 +8,7 @@ from zcord.enums import ChannelType
 from zcord.errors import ZcordError
 from zcord.flags import ChannelFlags
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
 
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, slots=True)
-class Channel(ZcordModel):
+class Channel(Model):
     """
     Represent a Discord server or DM channel.
 

@@ -56,6 +56,10 @@ class ActionRow(Component):
     ) -> ActionRow:
         """
         Set the buttons of the action row.
+
+        Raises:
+            ZcordError:
+                Cannot add more components to this action row.
         """
         row = self
         for button in buttons:
@@ -65,6 +69,10 @@ class ActionRow(Component):
     def add_button(self, button: Button) -> ActionRow:
         """
         Add a button to the action row.
+
+        Raises:
+            ZcordError:
+                Cannot add more components to this action row.
         """
         if self.components is MISSING or not self.components:
             return replace(self, components=(button,))
@@ -77,6 +85,9 @@ class ActionRow(Component):
     def set_select(self, select: SelectMenu) -> ActionRow:
         """
         Set the select menu of the action row.
+
+        Notes:
+            This will replace any existing select menu or buttons.
         """
         return replace(self, components=(select,))
 

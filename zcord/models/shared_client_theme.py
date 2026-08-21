@@ -5,11 +5,11 @@ from typing import ClassVar
 
 from zcord.enums.shared_client_theme import BaseThemeType
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 
 
 @dataclass(frozen=True, slots=True)
-class SharedClientTheme(ZcordModel):
+class SharedClientTheme(Model):
     """
     Represent a shared client theme.
 
@@ -33,19 +33,13 @@ class SharedClientTheme(ZcordModel):
         "base_theme": BaseThemeType,
     }
 
-    def _to_payload(self) -> dict:
+    def _check_before(self) -> None:
         if self.colors is MISSING:
             raise ValueError("colors must be provided")
-        if (
-            self.gradient_angle is MISSING
-            or self.gradient_angle < 0
-            or self.gradient_angle > 360
-        ):
-            raise ValueError("gradient_angle must be between 0 and 360")
-        if self.base_mix is MISSING or self.base_mix < 0 or self.base_mix > 100:
-            raise ValueError("base_mix must be between 0 and 100")
-        payload = ZcordModel._to_payload(self)
-        return payload
+        if self.gradient_angle is MISSING:
+            raise ValueError("gradient_angle must be provided")
+        if self.base_mix is MISSING:
+            raise ValueError("base_mix must be provided")
 
     @classmethod
     def new(
@@ -62,8 +56,8 @@ class SharedClientTheme(ZcordModel):
         """
         return (
             cls()
-            .set_colors(colors if colors is not MISSING else ())
-            .set_base_mix(base_mix if base_mix is not MISSING else 0)
+            .set_colors(colors)
+            .set_base_mix(base_mix)
             .set_base_theme(base_theme)
             .set_gradient_angle(gradient_angle)
         )
@@ -71,6 +65,10 @@ class SharedClientTheme(ZcordModel):
     def add_color(self, color: str) -> SharedClientTheme:
         """
         Add a color to the theme.
+
+        Raises:
+            ValueError:
+                - Cannot add more than 5 colors to the theme.
         """
         if self.colors is not MISSING and len(self.colors) >= 5:
             raise ValueError("Cannot add more than 5 colors to the theme.")
@@ -86,6 +84,10 @@ class SharedClientTheme(ZcordModel):
     ) -> SharedClientTheme:
         """
         Add multiple colors to the theme.
+
+        Raises:
+            ValueError:
+                - Cannot add more than 5 colors to the theme.
         """
         theme = self
         for color in colors:
@@ -93,18 +95,23 @@ class SharedClientTheme(ZcordModel):
         return theme
 
     def set_colors(
-        self, colors: tuple[str, ...] | list[str]
+        self, colors: tuple[str, ...] | list[str] | MISSING = MISSING
     ) -> SharedClientTheme:
         """
         Set the colors of the theme.
+
+        Raises:
+            ValueError:
+                - Cannot add more than 5 colors to the theme.
 
         Warning:
             This will **remove** all the old colors.
             If you want to add color to the theme, use `add_color(s)` instead.
         """
         theme = self.clear_colors()
-        for color in colors:
-            theme = theme.add_color(color)
+        if colors is not MISSING:
+            for color in colors:
+                theme = theme.add_color(color)
         return theme
 
     def clear_colors(self) -> SharedClientTheme:
@@ -118,7 +125,13 @@ class SharedClientTheme(ZcordModel):
     ) -> SharedClientTheme:
         """
         Set the gradient angle of the theme.
+
+        Raises:
+            ValueError:
+                gradient_angle must be between 0 and 360.
         """
+        if angle is not MISSING and (angle < 0 or angle > 360):
+            raise ValueError("gradient_angle must be between 0 and 360")
         return replace(self, gradient_angle=angle)
 
     def set_base_mix(
@@ -126,7 +139,13 @@ class SharedClientTheme(ZcordModel):
     ) -> SharedClientTheme:
         """
         Set the base mix of the theme.
+
+        Raises:
+            ValueError:
+                base_mix must be between 0 and 100.
         """
+        if base_mix is not MISSING and (base_mix < 0 or base_mix > 100):
+            raise ValueError("base_mix must be between 0 and 100")
         return replace(self, base_mix=base_mix)
 
     def set_base_theme(

@@ -3,14 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import ClassVar, Literal
 
-from zcord.errors import ZcordError
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
-class DefaultValue(ZcordModel):
+class DefaultValue(Model):
     """
     The default value of the select menu.
 
@@ -28,23 +27,18 @@ class DefaultValue(ZcordModel):
         "id": Snowflake,
     }
 
-    def _to_payload(self) -> dict:
-        if self.id is MISSING or self.type is MISSING:
-            raise ZcordError("id and type must be provided")
-        return ZcordModel._to_payload(self)
+    def _check_before(self) -> None:
+        # Because we set the type in the corresponding Select
+        # It won't be MISSING
+        if self.id is MISSING:
+            raise ValueError("id must be provided")
 
     @classmethod
     def new(
         cls,
         id: Snowflake | MISSING = MISSING,
-        type: Literal["user", "role", "channel"] | MISSING = MISSING,
     ) -> DefaultValue:
-        return cls(id=id, type=type)
+        return cls(id=id)
 
     def set_id(self, id: Snowflake) -> DefaultValue:
         return replace(self, id=id)
-
-    def set_type(
-        self, type: Literal["user", "role", "channel"]
-    ) -> DefaultValue:
-        return replace(self, type=type)

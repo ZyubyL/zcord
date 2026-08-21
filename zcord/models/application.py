@@ -6,14 +6,14 @@ from typing import Any, ClassVar, Literal
 from zcord.cdn import CDN
 from zcord.flags import ApplicationFlags
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.guild import Guild
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
 
 
 @dataclass(frozen=True, slots=True)
-class Application(ZcordModel):
+class Application(Model):
     """
     Represent a Discord Application.
 

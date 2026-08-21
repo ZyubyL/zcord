@@ -4,7 +4,6 @@ from dataclasses import dataclass, replace
 from typing import ClassVar
 
 from zcord.enums.component import ComponentType
-from zcord.errors import ZcordError
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
 from zcord.models.component.select_menu.base import SelectMenu
@@ -67,26 +66,39 @@ class StringSelect(SelectMenu):
         """*|classmethod|*
 
         Create a new string select component.
+
+        Raises:
+            ValueError:
+                - placeholder cannot be longer than 150 characters.
+                - options cannot have more than 25 options.
         """
         return (
-            cls(
-                custom_id=custom_id,
-            )
-            .set_options(options if options is not MISSING else ())
+            cls(custom_id=custom_id)
             .set_placeholder(placeholder)
             .set_min_values(min_values)
             .set_max_values(max_values)
             .set_required(required)
             .set_disabled(disabled)
+            .set_options(options)
         )
 
     def set_options(
-        self, options: tuple[SelectOption, ...] | list[SelectOption]
+        self,
+        options: tuple[SelectOption, ...]
+        | list[SelectOption]
+        | MISSING = MISSING,
     ) -> StringSelect:
         """
         Set the options of the string select component.
+
+        Raises:
+            ValueError:
+                String select component cannot have more than 25 options.
         """
         select = self.clear_options()
+        if options is MISSING:
+            return select
+
         return select.add_options(options)
 
     def add_options(
@@ -94,6 +106,10 @@ class StringSelect(SelectMenu):
     ) -> StringSelect:
         """
         Add options to the string select component.
+
+        Raises:
+            ValueError:
+                String select component cannot have more than 25 options.
         """
         select = self
         for option in options:
@@ -103,9 +119,13 @@ class StringSelect(SelectMenu):
     def add_option(self, option: SelectOption) -> StringSelect:
         """
         Add an option to the string select component.
+
+        Raises:
+            ValueError:
+                String select component cannot have more than 25 options.
         """
         if self.options is not MISSING and len(self.options) >= 25:
-            raise ZcordError(
+            raise ValueError(
                 "String select component cannot have more than 25 options."
             )
         return replace(
@@ -121,12 +141,18 @@ class StringSelect(SelectMenu):
         """
         return replace(self, options=MISSING)
 
-    def set_placeholder(self, placeholder: str | MISSING) -> StringSelect:
+    def set_placeholder(
+        self, placeholder: str | MISSING = MISSING
+    ) -> StringSelect:
         """
         Set the placeholder of the string select component.
+
+        Raises:
+            ValueError:
+                Placeholder cannot be longer than 150 characters.
         """
         if placeholder is not MISSING and len(placeholder) > 150:
-            raise ZcordError(
+            raise ValueError(
                 "Placeholder cannot be longer than 150 characters."
             )
         return replace(self, placeholder=placeholder)

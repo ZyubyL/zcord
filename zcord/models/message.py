@@ -14,7 +14,7 @@ from zcord.flags import MessageFlags
 from zcord.missing import MISSING
 from zcord.models.application import Application
 from zcord.models.attachment import Attachment
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.channel import Channel
 from zcord.models.component import Component
 from zcord.models.component.action_row import ActionRow
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, slots=True)
-class MessageActivity(ZcordModel):
+class MessageActivity(Model):
     """
     Contain info about a [`Message`][zcord.Message]'s activity.
 
@@ -51,7 +51,7 @@ class MessageActivity(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class MessageReference(ZcordModel):
+class MessageReference(Model):
     """
     Contains the additional data of the referenced message.
 
@@ -84,7 +84,7 @@ class MessageReference(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class MessageSnapshot(ZcordModel):
+class MessageSnapshot(Model):
     """
     The snapshot of a forwarded message.
 
@@ -97,7 +97,7 @@ class MessageSnapshot(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class Message(ZcordModel):
+class Message(Model):
     """Represent a Discord message.
 
     Attributes:
@@ -267,23 +267,26 @@ class Message(ZcordModel):
         """*|classmethod|*
 
         Create a new message.
+
+        Raises:
+            ValueError:
+                - Number of embeds exceeds 10.
+                - You can only add ActionRow for now.
+                - Number of components exceeds 5.
         """
-        message = (
+        return (
             cls(
                 message_reference=message_reference,
                 referenced_message=referenced_message,
             )
             ._set_message_snapshots(message_snapshots)
             .set_content(content)
-            .set_embeds(embeds if embeds is not MISSING else ())
-            .set_components(components if components is not MISSING else ())
-            .set_attachments(attachments if attachments is not MISSING else ())
+            .set_embeds(embeds)
+            .set_components(components)
+            .set_attachments(attachments)
+            .set_poll(poll)
+            .set_shared_client_theme(shared_client_theme)
         )
-        if poll is not MISSING:
-            message = message.set_poll(poll)
-        if shared_client_theme is not MISSING:
-            message = message.add_shared_client_theme(shared_client_theme)
-        return message
 
     def _set_message_snapshots(
         self,
@@ -301,21 +304,32 @@ class Message(ZcordModel):
         """
         return replace(self, content=content)
 
-    def set_embeds(self, embeds: tuple[Embed, ...] | list[Embed]) -> Message:
+    def set_embeds(
+        self, embeds: tuple[Embed, ...] | list[Embed] | MISSING = MISSING
+    ) -> Message:
         """
         Set the embeds of the message.
+
+        Raises:
+            ValueError:
+                Number of embeds exceeds 10.
         """
-        m = self
-        for embed in embeds:
-            m = m.add_embed(embed)
+        m = self.clear_embeds()
+        if embeds is not MISSING:
+            for embed in embeds:
+                m = m.add_embed(embed)
         return m
 
     def add_embed(self, embed: Embed) -> Message:
         """
         Add an embed to the message.
+
+        Raises:
+            ValueError:
+                Number of embeds exceeds 10.
         """
         if self.embeds is not MISSING and len(self.embeds) >= 10:
-            raise ZcordError("Cannot add more than 10 embeds to a message.")
+            raise ValueError("Cannot add more than 10 embeds to a message.")
         return replace(
             self,
             embeds=(*self.embeds, embed)
@@ -323,37 +337,57 @@ class Message(ZcordModel):
             else (embed,),
         )
 
-    def add_shared_client_theme(self, theme: SharedClientTheme) -> Message:
+    def clear_embeds(self) -> Message:
+        """
+        Clear the embeds of the message.
+        """
+        return replace(self, embeds=MISSING)
+
+    def set_shared_client_theme(
+        self, theme: SharedClientTheme | MISSING = MISSING
+    ) -> Message:
         """
         Add a shared client theme to the message.
         """
         return replace(self, shared_client_theme=theme)
 
-    def set_poll(self, poll: Poll) -> Message:
+    def set_poll(self, poll: Poll | MISSING = MISSING) -> Message:
         """
         Add a poll to the message.
         """
         return replace(self, poll=poll)
 
     def set_components(
-        self, components: tuple[Component, ...] | list[Component]
+        self,
+        components: tuple[Component, ...] | list[Component] | MISSING = MISSING,
     ) -> Message:
         """
         Set the components of the message.
+
+        Raises:
+            ValueError:
+                - You can only add an ActionRow for now.
+                - Number of components exceeds 5.
         """
-        m = self
-        for component in components:
-            m = m.add_component(component)
+        m = self.clear_components()
+        if components is not MISSING:
+            for component in components:
+                m = m.add_component(component)
         return m
 
     def add_component(self, component: Component) -> Message:
         """
         Add a component to the message.
+
+        Raises:
+            ValueError:
+                - You can only add an ActionRow for now.
+                - Number of components exceeds 5.
         """
         if not isinstance(component, ActionRow):
-            raise ZcordError("You can only add an ActionRow for now.")
+            raise ValueError("You can only add an ActionRow for now.")
         if self.components is not MISSING and len(self.components) >= 5:
-            raise ZcordError("You can only have 5 components for now.")
+            raise ValueError("You can only have 5 components for now.")
         return replace(
             self,
             components=(*self.components, component)
@@ -361,15 +395,25 @@ class Message(ZcordModel):
             else (component,),
         )
 
+    def clear_components(self) -> Message:
+        """
+        Clear all components from the message.
+        """
+        return replace(self, components=MISSING)
+
     def set_attachments(
-        self, attachments: tuple[Attachment, ...] | list[Attachment]
+        self,
+        attachments: tuple[Attachment, ...]
+        | list[Attachment]
+        | MISSING = MISSING,
     ) -> Message:
         """
         Set the attachments of the message.
         """
-        m = self
-        for attachment in attachments:
-            m = m.add_attachment(attachment)
+        m = self.clear_attachments()
+        if attachments is not MISSING:
+            for attachment in attachments:
+                m = m.add_attachment(attachment)
         return m
 
     def add_attachment(self, attachment: Attachment) -> Message:
@@ -383,10 +427,20 @@ class Message(ZcordModel):
             else (attachment,),
         )
 
+    def clear_attachments(self) -> Message:
+        """
+        Clear the attachments of the message.
+        """
+        return replace(self, attachments=MISSING)
+
     async def send(self, channel: int | Snowflake | Channel) -> Message:
         """*|coro|*
 
         Send the message to the specified channel.
+
+        Raises:
+            ZcordError:
+                - Cannot send a message that already has an ID.
         """
         if self.id is not MISSING:
             raise ZcordError("Cannot send a message that already has an ID")
@@ -397,6 +451,11 @@ class Message(ZcordModel):
         """*|coro|*
 
         Reply to the message.
+
+        Raises:
+            ZcordError:
+                - Cannot reply to a message with no ID.
+                - Cannot reply to a message with no channel ID.
         """
         if self.id is MISSING:
             raise ZcordError("Cannot reply to a message with no ID.")
@@ -410,7 +469,7 @@ class Message(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class Resolved(ZcordModel):
+class Resolved(Model):
     """
     Resolved data in the [`Message`][].
 

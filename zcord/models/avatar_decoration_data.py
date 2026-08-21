@@ -4,14 +4,14 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from zcord.cdn import CDN
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 
 if TYPE_CHECKING:
     from zcord.models.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
-class AvatarDecorationData(ZcordModel):
+class AvatarDecorationData(Model):
     """
     Contain data for the user's avatar decoration.
 

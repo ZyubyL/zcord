@@ -5,11 +5,11 @@ from datetime import datetime
 from typing import Any, ClassVar
 
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 
 
 @dataclass(frozen=True, slots=True)
-class PollMedia(ZcordModel):
+class PollMedia(Model):
     """
     Attributes:
         text:
@@ -25,7 +25,7 @@ class PollMedia(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class PollAnswer(ZcordModel):
+class PollAnswer(Model):
     """
     Attributes:
         answer_id:
@@ -46,13 +46,14 @@ class PollAnswer(ZcordModel):
         cls, *, text: str | MISSING = MISSING, emoji: str | MISSING = MISSING
     ) -> PollAnswer:
         """*|classmethod|*
+
         Create a new poll answer.
         """
         return cls(poll_media=PollMedia(text=text, emoji=emoji))
 
 
 @dataclass(frozen=True, slots=True)
-class PollAnswerCount(ZcordModel):
+class PollAnswerCount(Model):
     """
     Represents the number of votes for a single answer.
 
@@ -71,7 +72,7 @@ class PollAnswerCount(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class PollResults(ZcordModel):
+class PollResults(Model):
     """
     Attributes:
         is_finalized:
@@ -92,7 +93,7 @@ class PollResults(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class Poll(ZcordModel):
+class Poll(Model):
     """
     Represents a Discord poll.
 
@@ -128,8 +129,7 @@ class Poll(ZcordModel):
         "results": PollResults,
     }
 
-    def _to_payload(self) -> dict:
-        payload = ZcordModel._to_payload(self)
+    def _check_after(self, payload: dict) -> dict:
         payload["duration"] = self._duration
         return payload
 
@@ -145,6 +145,10 @@ class Poll(ZcordModel):
         """*|classmethod|*
 
         Create a new poll.
+
+        Raises:
+            ValueError:
+                - Duration must be between 1 and 768 hours.
 
         Notes:
             `duration` is in hours.
@@ -192,6 +196,10 @@ class Poll(ZcordModel):
     def set_duration(self, hours: int) -> Poll:
         """
         Set the duration of the poll.
+
+        Raises:
+            ValueError:
+                - Duration must be between 1 and 768 hours.
         """
         if hours < 1 or hours > 32 * 24:
             raise ValueError("Duration must be between 1 and 768 hours")

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal
 
+from zcord.cdn import CDN
 from zcord.enums import (
     ExplicitContentFilterLevel,
     MessageNotificationLevel,
@@ -11,14 +12,14 @@ from zcord.enums import (
 )
 from zcord.flags import SystemChannelFlags
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.role import Role
 from zcord.models.snowflake import Snowflake
 from zcord.models.sticker import Sticker
 
 
 @dataclass(frozen=True, slots=True)
-class Guild(ZcordModel):
+class Guild(Model):
     """
     Represent a Discord server.
 
@@ -178,3 +179,43 @@ class Guild(ZcordModel):
         "widget_channel_id": Snowflake,
         "stickers": Sticker,
     }
+
+    def icon_url(
+        self,
+        size: int = CDN.MAX_SIZE,
+        format: Literal["png", "jpg", "jpeg", "webp", "gif"] | None = None,
+    ) -> str | None:
+        """
+        The URL of the guild's icon.
+
+        Notes:
+            `size` needs to be a power of 2 between `16` and `4096`.
+        """
+        if self.icon_hash is None or self.icon_hash is MISSING:
+            return None
+        return CDN.guild_icon(
+            guild_id=self.id,
+            hash=self.icon_hash,
+            size=size,
+            format=format,
+        )
+
+    def banner_url(
+        self,
+        size: int = CDN.MAX_SIZE,
+        format: Literal["png", "jpg", "jpeg", "webp", "gif"] | None = None,
+    ) -> str | None:
+        """
+        The URL of the guild's icon.
+
+        Notes:
+            `size` needs to be a power of 2 between `16` and `4096`.
+        """
+        if self.banner is None:
+            return None
+        return CDN.guild_banner(
+            guild_id=self.id,
+            hash=self.banner,
+            size=size,
+            format=format,
+        )

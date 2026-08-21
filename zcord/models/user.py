@@ -7,14 +7,14 @@ from zcord.cdn import CDN
 from zcord.flags.user import UserFlags
 from zcord.missing import MISSING
 from zcord.models.avatar_decoration_data import AvatarDecorationData
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.collectibles import Collectibles
 from zcord.models.primary_guild import PrimaryGuild
 from zcord.models.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
-class User(ZcordModel):
+class User(Model):
     """
     Represent a Discord User
 

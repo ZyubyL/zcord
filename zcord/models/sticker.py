@@ -5,13 +5,13 @@ from typing import ClassVar
 
 from zcord.enums import StickerFormatType, StickerType
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
 
 
 @dataclass(frozen=True, slots=True)
-class Sticker(ZcordModel):
+class Sticker(Model):
     """
     Represent a Discord Sticker.
 
@@ -63,7 +63,7 @@ class Sticker(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class StickerPack(ZcordModel):
+class StickerPack(Model):
     """
     Represent a pack of standard stickers.
 

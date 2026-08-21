@@ -5,12 +5,12 @@ from typing import ClassVar, Literal
 
 from zcord.flags import RoleFlags
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
-class RoleTags(ZcordModel):
+class RoleTags(Model):
     """
     Role tags.
     """
@@ -31,7 +31,7 @@ class RoleTags(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class RoleColors(ZcordModel):
+class RoleColors(Model):
     """
     Contain the colors of the role.
 
@@ -65,7 +65,7 @@ class RoleColors(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class Role(ZcordModel):
+class Role(Model):
     """
     Represent a Discord role.
 
@@ -119,7 +119,7 @@ class Role(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class RoleSubscriptionData(ZcordModel):
+class RoleSubscriptionData(Model):
     """
     Contain data of the role subscription purchase or renewal.
 

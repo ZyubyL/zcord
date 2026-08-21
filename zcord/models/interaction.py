@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, ClassVar
 
 from zcord.enums.interaction import InteractionType
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.channel import Channel
 from zcord.models.guild import Guild
 from zcord.models.snowflake import Snowflake
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True, slots=True)
-class InteractionMetadata(ZcordModel):
+class InteractionMetadata(Model):
     """
     Contain metadata about the [`Interaction`][zcord.Interaction].
 
@@ -68,7 +68,7 @@ InteractionMetadata._transforms["triggering_interaction_metadata"] = (
 
 
 @dataclass(frozen=True, slots=True)
-class Interaction(ZcordModel):
+class Interaction(Model):
     """
     Represent a Discord interaction.
 

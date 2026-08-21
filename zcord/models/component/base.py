@@ -4,10 +4,10 @@ from typing import ClassVar
 
 from zcord.enums.component import ComponentType
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel, from_payload
+from zcord.models.base import Model, from_payload
 
 
-class Component(ZcordModel):
+class Component(Model):
     """
     Generic component model.
     """

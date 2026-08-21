@@ -6,13 +6,13 @@ from typing import Any, ClassVar
 
 from zcord.flags import AttachmentFlags
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
 
 
 @dataclass(frozen=True, slots=True)
-class Attachment(ZcordModel):
+class Attachment(Model):
     """
     Represent a Discord attachment.
 

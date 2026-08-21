@@ -5,13 +5,13 @@ from typing import ClassVar, Literal
 
 from zcord.cdn import CDN
 from zcord.missing import MISSING
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
 
 
 @dataclass
-class Emoji(ZcordModel):
+class Emoji(Model):
     """
     Represent a Discord emoji.
 

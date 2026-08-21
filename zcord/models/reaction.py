@@ -3,12 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar
 
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.emoji import Emoji
 
 
 @dataclass(frozen=True, slots=True)
-class ReactionCountDetails(ZcordModel):
+class ReactionCountDetails(Model):
     """
     Contain a breakdown of normal and super reaction counts for the associated \
     emoji.
@@ -25,7 +25,7 @@ class ReactionCountDetails(ZcordModel):
 
 
 @dataclass(frozen=True, slots=True)
-class Reaction(ZcordModel):
+class Reaction(Model):
     """
     Represent a Discord reaction.
 

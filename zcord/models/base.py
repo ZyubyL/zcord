@@ -45,7 +45,7 @@ def from_payload(cls, payload: dict | MISSING, **transforms) -> Any:
     return cls(**kwargs)
 
 
-class ZcordModel:
+class Model:
     """
     Base class for all Discord API Models.
     """
@@ -58,7 +58,14 @@ class ZcordModel:
     def _from_payload(cls, payload):
         return from_payload(cls, payload, **getattr(cls, "_transforms", {}))
 
+    def _check_before(self) -> None:
+        pass
+
+    def _check_after(self, payload: dict) -> dict:
+        return payload
+
     def _to_payload(self) -> dict:
+        self._check_before()
         payload = {}
         for f in dataclasses.fields(self):  # type: ignore
             # Same as from_payload, we will skip private fields
@@ -68,13 +75,13 @@ class ZcordModel:
             if value is MISSING:
                 continue
             # Nested ZcordModel
-            if isinstance(value, ZcordModel):
+            if isinstance(value, Model):
                 payload[f.name] = value._to_payload()
             # Nested list of ZcordModel
             elif (
                 isinstance(value, tuple)
                 and value
-                and isinstance(value[0], ZcordModel)
+                and isinstance(value[0], Model)
             ):
                 # Convert back to list to send
                 payload[f.name] = [item._to_payload() for item in value]
@@ -82,4 +89,5 @@ class ZcordModel:
                 payload[f.name] = value.isoformat()
             else:
                 payload[f.name] = value
+        payload = self._check_after(payload)
         return payload

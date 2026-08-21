@@ -4,12 +4,12 @@ from dataclasses import dataclass
 from typing import ClassVar, Literal
 
 from zcord.cdn import CDN
-from zcord.models.base import ZcordModel
+from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
-class PrimaryGuild(ZcordModel):
+class PrimaryGuild(Model):
     """
     Represent the user's primary guild.
 
