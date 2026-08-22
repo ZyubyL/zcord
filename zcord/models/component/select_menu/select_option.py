@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import Any
+from typing import ClassVar
 
 from zcord.missing import MISSING
 from zcord.models.base import Model
+from zcord.models.emoji import Emoji
 
 
 @dataclass(frozen=True, slots=True)
@@ -28,8 +29,12 @@ class SelectOption(Model):
     label: str | MISSING = MISSING
     value: str | MISSING = MISSING
     description: str | MISSING = MISSING
-    emoji: Any | MISSING = MISSING
+    emoji: Emoji | MISSING = MISSING
     default: bool = False
+
+    _transforms: ClassVar[dict] = {
+        "emoji": Emoji,
+    }
 
     def _check_before(self) -> None:
         if self.label is MISSING or self.value is MISSING:
@@ -46,7 +51,7 @@ class SelectOption(Model):
         label: str | MISSING = MISSING,
         value: str | MISSING = MISSING,
         description: str | MISSING = MISSING,
-        emoji: Any | MISSING = MISSING,
+        emoji: Emoji | MISSING = MISSING,
         default: bool = False,
     ) -> SelectOption:
         """*|classmethod|*
@@ -54,11 +59,12 @@ class SelectOption(Model):
         Create a select option for a string select menu.
         """
         return (
-            cls(emoji=emoji)
+            cls()
             .set_description(description)
             .set_default(default)
             .set_label(label)
             .set_value(value)
+            .set_emoji(emoji)
         )
 
     def set_label(self, label: str | MISSING = MISSING) -> SelectOption:
@@ -101,11 +107,11 @@ class SelectOption(Model):
             )
         return replace(self, description=description)
 
-    def set_emoji(self, emoji: Any | MISSING = MISSING) -> SelectOption:
+    def set_emoji(self, emoji: Emoji | MISSING = MISSING) -> SelectOption:
         """
         Set the emoji of the select option.
         """
-        raise NotImplementedError
+        return replace(self, emoji=emoji)
 
     def set_default(self, default: bool) -> SelectOption:
         """

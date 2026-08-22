@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord.enums.component import ButtonStyle, ComponentType
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
+from zcord.models.emoji import Emoji
 
 if TYPE_CHECKING:
     from zcord.models.snowflake import Snowflake
@@ -36,7 +37,7 @@ class Button(Component):
     type: ComponentType = ComponentType.BUTTON
     style: ButtonStyle = ButtonStyle.SECONDARY
     label: str | MISSING = MISSING
-    emoji: Any | MISSING = MISSING
+    emoji: Emoji | MISSING = MISSING
     custom_id: str | MISSING = MISSING
     sku_id: Snowflake | MISSING = MISSING
     url: str | MISSING = MISSING
@@ -45,6 +46,7 @@ class Button(Component):
     _transforms: ClassVar[dict] = {
         "type": ComponentType,
         "style": ButtonStyle,
+        "emoji": Emoji,
     }
 
     @classmethod
@@ -53,7 +55,7 @@ class Button(Component):
         *,
         style: ButtonStyle = ButtonStyle.SECONDARY,
         label: str | MISSING = MISSING,
-        # emoji: Any | MISSING = MISSING,
+        emoji: Emoji | MISSING = MISSING,
         custom_id: str | MISSING = MISSING,
         # sku_id: Snowflake | MISSING = MISSING,
         url: str | MISSING = MISSING,
@@ -73,13 +75,13 @@ class Button(Component):
         return (
             cls(
                 custom_id=custom_id,
-                # emoji=emoji,
                 # sku_id=sku_id,
             )
             .set_style(style)
             .set_label(label)
             .set_disabled(disabled)
             .set_url(url)
+            .set_emoji(emoji)
         )
 
     def _check_before(self) -> None:
@@ -120,11 +122,18 @@ class Button(Component):
             raise ValueError("Label must be 80 characters or less.")
         return replace(self, label=label)
 
-    def set_emoji(self, emoji: Any) -> Button:
+    def set_emoji(self, emoji: Emoji | str | MISSING = MISSING) -> Button:
         """
         Set the emoji of the button.
         """
-        raise NotImplementedError
+        return replace(
+            self,
+            emoji=emoji
+            if isinstance(emoji, Emoji)
+            else Emoji.new(emoji)
+            if emoji is not MISSING
+            else MISSING,
+        )
 
     def set_url(self, url: str | MISSING = MISSING) -> Button:
         """

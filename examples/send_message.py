@@ -24,8 +24,11 @@ async def main():
             .set_poll(
                 zcord.Poll.new()
                 .set_question("Do you like Zcord?")
-                .set_answers(["Yes", "No :("])
-                .add_answer("Maybe :shrug:")
+                .add_answer(
+                    text="Yes", emoji=zcord.Emoji.new("\N{THUMBS UP SIGN}")
+                )
+                .add_answer(text="Maybe", emoji="\N{SHRUG}")
+                .add_answer(text="No", emoji="<a:crossout:1358833476979261702>")
                 .set_duration(67)
             )
             .add_embed(

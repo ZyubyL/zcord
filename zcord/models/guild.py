@@ -13,6 +13,7 @@ from zcord.enums import (
 from zcord.flags import SystemChannelFlags
 from zcord.missing import MISSING
 from zcord.models.base import Model
+from zcord.models.emoji import Emoji
 from zcord.models.role import Role
 from zcord.models.snowflake import Snowflake
 from zcord.models.sticker import Sticker
@@ -129,7 +130,7 @@ class Guild(Model):
     default_message_notifications: MessageNotificationLevel
     explicit_content_filter: ExplicitContentFilterLevel
     roles: tuple[Role, ...]
-    emojis: tuple[Any]
+    emojis: tuple[Emoji, ...]
     features: tuple[Any]
     mfa_level: MFALevel
     application_id: Snowflake | None
@@ -178,6 +179,7 @@ class Guild(Model):
         "safety_alerts_channel_id": Snowflake,
         "widget_channel_id": Snowflake,
         "stickers": Sticker,
+        "emojis": Emoji,
     }
 
     def icon_url(

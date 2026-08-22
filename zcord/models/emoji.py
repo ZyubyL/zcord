@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import ClassVar, Literal
+
+import regex
 
 from zcord.cdn import CDN
 from zcord.missing import MISSING
@@ -49,6 +52,23 @@ class Emoji(Model):
         "user": User,
     }
 
+    REGEX: ClassVar[re.Pattern] = re.compile(
+        r"^<?(?:(?P<animated>a):)?(?P<name>[^:]+):(?P<id>\d+)>?$"
+    )
+
+    _EMOJI_REGEX: ClassVar[re.Pattern] = regex.compile(r"\X")
+
+    @classmethod
+    def is_unicode(cls, emoji: str) -> bool:
+        """
+        Check if the emoji is a valid Unicode emoji.
+        """
+        clusters = cls._EMOJI_REGEX.findall(emoji)
+        return (
+            len(clusters) == 1
+            and regex.search(r"\p{Emoji}", clusters[0]) is not None
+        )
+
     def url(
         self,
         size: int = CDN.MAX_SIZE,
@@ -67,3 +87,36 @@ class Emoji(Model):
             size=size,
             format=format,
         )
+
+    @classmethod
+    def new(cls, emoji: str) -> Emoji:
+        """*|classmethod|*
+
+        Create a new emoji object.
+
+        Examples:
+            ```py
+            # 1. Unicode emoji
+            Emoji.new("\N{ROLLING ON THE FLOOR LAUGHING}")
+
+            # 2. Custom static emoji
+            Emoji.new("<:custom:1234567>")
+            # 3. Custom animated emoji
+            Emoji.new("<a:custom:1234567>")
+
+            # NOTE: The '<>' can be omitted
+            Emoji.new(":custom:1234567")
+
+            ```
+        """
+        if match := cls.REGEX.fullmatch(emoji):
+            return cls(
+                name=match["name"],
+                id=Snowflake(match["id"]),
+                animated=match["animated"] is not None,
+            )
+
+        if cls.is_unicode(emoji):
+            return cls(name=emoji)
+
+        raise ValueError(f"Invalid emoji: {emoji!r}")

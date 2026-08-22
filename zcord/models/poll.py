@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from datetime import datetime
-from typing import Any, ClassVar
+from typing import ClassVar
 
 from zcord.missing import MISSING
 from zcord.models.base import Model
+from zcord.models.emoji import Emoji
 
 
 @dataclass(frozen=True, slots=True)
@@ -21,7 +22,11 @@ class PollMedia(Model):
     """
 
     text: str | MISSING = MISSING
-    emoji: Any | MISSING = MISSING
+    emoji: Emoji | MISSING = MISSING
+
+    _transforms: ClassVar[dict] = {
+        "emoji": Emoji,
+    }
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,13 +48,25 @@ class PollAnswer(Model):
 
     @classmethod
     def new(
-        cls, *, text: str | MISSING = MISSING, emoji: str | MISSING = MISSING
+        cls,
+        *,
+        text: str | MISSING = MISSING,
+        emoji: Emoji | str | MISSING = MISSING,
     ) -> PollAnswer:
         """*|classmethod|*
 
         Create a new poll answer.
         """
-        return cls(poll_media=PollMedia(text=text, emoji=emoji))
+        return cls(
+            poll_media=PollMedia(
+                text=text,
+                emoji=emoji
+                if isinstance(emoji, Emoji)
+                else Emoji.new(emoji)
+                if emoji is not MISSING
+                else MISSING,
+            )
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -112,10 +129,10 @@ class Poll(Model):
             The results of the poll.
     """
 
-    question: PollMedia
-    answers: tuple[PollAnswer, ...]
-    allow_multiselect: bool
-    layout_type: int
+    question: PollMedia | MISSING = MISSING
+    answers: tuple[PollAnswer, ...] | MISSING = MISSING
+    allow_multiselect: bool = False
+    layout_type: int = 1  # Discord only support 1 for now
     expiry: datetime | None = None
     results: PollResults | MISSING = MISSING
 
@@ -129,6 +146,12 @@ class Poll(Model):
         "results": PollResults,
     }
 
+    def _check_before(self) -> None:
+        if not self.question or self.question is MISSING:
+            raise ValueError("question is required")
+        if not self.answers or self.answers is MISSING:
+            raise ValueError("answers are required")
+
     def _check_after(self, payload: dict) -> dict:
         payload["duration"] = self._duration
         return payload
@@ -138,7 +161,7 @@ class Poll(Model):
         cls,
         *,
         question: str | MISSING = MISSING,
-        answers: tuple[str, ...] | list[str] | MISSING = MISSING,
+        answers: tuple[PollAnswer, ...] | list[PollAnswer] | MISSING = MISSING,
         duration: int = 24,
         allow_multiselect: bool = False,
     ) -> Poll:
@@ -148,52 +171,85 @@ class Poll(Model):
 
         Raises:
             ValueError:
-                - Duration must be between 1 and 768 hours.
+                Duration must be between 1 and 768 hours.
 
         Notes:
             `duration` is in hours.
         """
 
-        return cls(
-            question=PollMedia(text=question),
-            answers=tuple(PollAnswer.new(text=answer) for answer in answers)
-            if answers is not MISSING
-            else (),
-            allow_multiselect=allow_multiselect,
-            _duration=duration,
-            layout_type=1,
+        return (
+            cls()
+            .set_question(question)
+            .set_answers(answers)
+            .set_multiselect(allow_multiselect)
+            .set_duration(duration)
         )
 
-    def set_question(self, question: str) -> Poll:
+    def set_question(self, question: str | MISSING = MISSING) -> Poll:
         """
         Set the question of the poll.
         """
         return replace(self, question=PollMedia(text=question))
 
-    def set_answers(self, answers: tuple[str, ...] | list[str]) -> Poll:
+    def set_answers(
+        self,
+        answers: tuple[PollAnswer, ...] | list[PollAnswer] | MISSING = MISSING,
+    ) -> Poll:
         """
         Set the answers of the poll.
         """
-        poll = self
-        for answer in answers:
-            poll = poll.add_answer(answer)
+        poll = self.clear_answers()
+        if answers is not MISSING:
+            for answer in answers:
+                poll = poll.add_answer(answer=answer)
         return poll
 
-    def add_answer(self, text: str) -> Poll:
+    def add_answer(
+        self,
+        *,
+        text: str | MISSING = MISSING,
+        emoji: Emoji | str | MISSING = MISSING,
+        answer: PollAnswer | MISSING = MISSING,
+    ) -> Poll:
         """
         Add an answer to the poll.
+
+        Parameters:
+            text:
+                The text of the answer.
+            emoji:
+                The emoji of the answer.
+            answer:
+                The answer to add.
+
+        Notes:
+            If `answer` is provided, `text` and `emoji` are ignored.
         """
+        if answer is MISSING:
+            answer = PollAnswer(
+                poll_media=PollMedia(
+                    text=text,
+                    emoji=emoji
+                    if isinstance(emoji, Emoji)
+                    else Emoji.new(emoji)
+                    if emoji is not MISSING
+                    else MISSING,
+                )
+            )
         return replace(
             self,
-            answers=(
-                *self.answers,
-                PollAnswer(
-                    poll_media=PollMedia(text=text),
-                ),
-            ),
+            answers=(*self.answers, answer)
+            if self.answers is not MISSING
+            else (answer,),
         )
 
-    def set_duration(self, hours: int) -> Poll:
+    def clear_answers(self) -> Poll:
+        """
+        Clear all answers from the poll.
+        """
+        return replace(self, answers=MISSING)
+
+    def set_duration(self, hours: int = 24) -> Poll:
         """
         Set the duration of the poll.
 
