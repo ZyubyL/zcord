@@ -1,5 +1,11 @@
 name: Run tests
-on: push
+on:
+  push:
+    paths:
+      - "tests/**"
+      - "zcord/**"
+      - ".github/workflows/test.yml"
+      - "pyproject.toml"
 jobs:
   test:
     runs-on: ubuntu-latest
