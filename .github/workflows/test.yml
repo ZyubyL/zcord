@@ -13,4 +13,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Test with Python ${{ matrix.python-version }}
-        run: uv run --frozen pytest
+        run: |
+          uv pip install --group dev
+          uv run --frozen pytest

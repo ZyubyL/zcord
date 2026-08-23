@@ -6,6 +6,7 @@
     </a>
     <br />
     <img src="https://img.shields.io/pypi/v/zcord" alt="PyPI version" />
+    <br />
     <img src="https://img.shields.io/pypi/pyversions/zcord" alt="Python versions" />
 </p>
 
