@@ -1,4 +1,6 @@
-"""Discord API enums."""
+"""
+Discord API enums module.
+"""
 
 from .channel import ChannelType
 from .component import ButtonStyle, ComponentType

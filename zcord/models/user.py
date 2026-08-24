@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar, Literal
 
+from zcord import bitfields
 from zcord.cdn import CDN
-from zcord.flags.user import UserFlags
 from zcord.missing import MISSING
 from zcord.models.avatar_decoration_data import AvatarDecorationData
 from zcord.models.base import Model
@@ -17,74 +17,109 @@ from zcord.models.snowflake import Snowflake
 class User(Model):
     """
     Represent a Discord User
-
-    Attributes:
-        id:
-            The user's ID.
-        username:
-            The user's username.
-        discriminator:
-            The user's Discord tag.
-
-            **Notes**: Except bots, this field will be `0`.
-        global_name:
-            The user's display name if it is set.
-        avatar:
-            The user's avatar hash.
-        bot:
-            Whether the user is a bot.
-        system:
-            Whether the user is an **Official Discord System** user.
-        mfa_enabled:
-            Whether the user has multi factor authentication enabled.
-        banner:
-            The user's banner hash.
-        accent_color:
-            The user's banner color encoded as an `int`.
-        locale:
-            The user's chosen language option.
-        verified:
-            Whether the email on this account is verified.
-        email:
-            The user's email.
-        flags:
-            The user's account flags.
-        premium_type:
-            The type of Nitro subscription of the user.
-        public_flags:
-            The user's public account flags.
-        avatar_decoration_data:
-            The user's avatar decoration data.
-        collectibles:
-            The user's collectibles data.
-        primary_guild:
-            The user's primary guild.
     """
 
     id: Snowflake
+    """
+    The user's ID.
+    """
+
     username: str
+    """
+    The user's username.
+    """
+
     discriminator: str
+    """
+    The user's Discord tag[^1].
+
+    [^1]: Except bots, this field will be `"0"`.
+    """
+
     global_name: str | None
+    """
+    The user's display name if it is set.
+    """
+
     avatar: str | None
+    """
+    The user's avatar hash.
+    """
+
     bot: bool | MISSING = MISSING
+    """
+    Whether the user is a bot.
+    """
+
     system: bool | MISSING = MISSING
+    """
+    Whether the user is an **Official Discord System** user.
+    """
+
     mfa_enabled: bool | MISSING = MISSING
+    """
+    Whether the user has multi factor authentication enabled.
+    """
+
     banner: str | None | MISSING = MISSING
+    """
+    The user's banner hash.
+    """
+
     accent_color: int | None | MISSING = MISSING
+    """
+    The user's banner color encoded as an `int`.
+    """
+
     locale: str | MISSING = MISSING
+    """
+    The user's chosen language option.
+    """
+
     verified: bool | MISSING = MISSING
+    """
+    Whether the email on this account is verified.
+    """
+
     email: str | None | MISSING = MISSING
-    flags: UserFlags | MISSING = MISSING
+    """
+    The user's email.
+    """
+
+    flags: bitfields.UserFlags | MISSING = MISSING
+    """
+    The user's account flags.
+    """
+
     premium_type: int | MISSING = MISSING
-    public_flags: UserFlags | MISSING = MISSING
+    """
+    The type of Nitro subscription of the user.
+    """
+
+    public_flags: bitfields.UserFlags | MISSING = MISSING
+    """
+    The user's public account flags.
+    """
+
     avatar_decoration_data: AvatarDecorationData | None | MISSING = MISSING
+    """
+    The user's avatar decoration data.
+    """
+
     collectibles: Collectibles | None | MISSING = MISSING
+    """
+    The user's collectibles data.
+    """
+
     primary_guild: PrimaryGuild | None | MISSING = MISSING
+    """
+    The user's primary guild.
+    """
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
-        "flags": UserFlags,
-        "public_flags": UserFlags,
+        "flags": bitfields.UserFlags,
+        "public_flags": bitfields.UserFlags,
         "avatar_decoration_data": AvatarDecorationData,
         "collectibles": Collectibles,
         "primary_guild": PrimaryGuild,

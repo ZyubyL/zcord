@@ -4,13 +4,13 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, ClassVar
 
+from zcord import bitfields
 from zcord.enums.message import (
     MessageActivityType,
     MessageReferenceType,
     MessageType,
 )
 from zcord.errors import ZcordError
-from zcord.flags import MessageFlags
 from zcord.missing import MISSING
 from zcord.models.application import Application
 from zcord.models.attachment import Attachment
@@ -36,44 +36,54 @@ if TYPE_CHECKING:
 class MessageActivity(Model):
     """
     Contain info about a [`Message`][zcord.Message]'s activity.
-
-    Attributes:
-        type:
-            The type of activity.
-        party_id:
-            The party ID from a Rich presence event.
     """
 
     type: MessageActivityType
-    party_id: str | MISSING = MISSING
+    """
+    The type of activity.
+    """
 
-    _transforms: ClassVar[dict] = {"type": MessageActivityType}
+    party_id: str | MISSING = MISSING
+    """
+    The party ID from a Rich presence event.
+    """
+
+    _transforms: ClassVar[dict] = {
+        "type": MessageActivityType,
+    }
 
 
 @dataclass(frozen=True, slots=True)
 class MessageReference(Model):
     """
-    Contains the additional data of the referenced message.
-
-    Attributes:
-        type:
-            The type of reference.
-        message_id:
-            The ID of the originating message.
-        channel_id:
-            The ID of the originating message's channnel.
-        guild_id:
-            The ID of the originating messgae's guild.
-        fail_if_not_exists:
-            Whether to error if the referenced message doesn't exist instead \
-            of sending as a normal (non-reply) message
+    Contain the additional data of the referenced message.
     """
 
     type: MessageReferenceType = MessageReferenceType.DEFAULT
+    """
+    The type of reference.
+    """
+
     message_id: Snowflake | MISSING = MISSING
+    """
+    The ID of the originating message.
+    """
+
     channel_id: Snowflake | MISSING = MISSING
+    """
+    The ID of the originating message's channnel.
+    """
+
     guild_id: Snowflake | MISSING = MISSING
+    """
+    The ID of the originating messgae's guild.
+    """
+
     fail_if_not_exists: bool = True  # Maybe I won't need to expose this, idk
+    """
+    Whether to error if the referenced message doesn't exist instead \
+    of sending as a normal (non-reply) message.
+    """
 
     _transforms: ClassVar[dict] = {
         "type": MessageReferenceType,
@@ -87,129 +97,192 @@ class MessageReference(Model):
 class MessageSnapshot(Model):
     """
     The snapshot of a forwarded message.
-
-    Attributes:
-        message:
-            The forwarded message.
     """
 
     message: Message
+    """
+    The forwarded message.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class Message(Model):
-    """Represent a Discord message.
-
-    Attributes:
-        id:
-            The ID of the message.
-        channel_id:
-            The ID of the channel the message was sent in.
-        author:
-            The author of this message.
-        content:
-            The message content.
-        timestamp:
-            The timestamp when this message was sent.
-        edited_timestamp:
-            The timestamp when this message was edited.
-        tts:
-            Whether this message is a text-to-speech message.
-        mention_everyone:
-            Whether this message mentions everyone.
-        mentions:
-            Users mentioned in this message.
-        mention_roles:
-            Roles mentioned in this message.
-        mention_channels:
-            Channels mentioned in this message.
-        attachments:
-            Attached files in this message.
-        embeds:
-            Embeded contents in this message.
-        reactions:
-            Reactions to this message.
-        pinned:
-            Whether this message is pinned.
-        webhook_id:
-            The webhook's ID if this message was sent via webhook.
-        type:
-            The type of the message.
-        activity:
-            Activity object sent via Rich presence related embeds.
-        application:
-            Partial application object sent via Rich presence related embeds.
-        application_id:
-            The application ID if this message was sent via an `Interaction`
-            or an application-owned webhook.
-        flags:
-            The message flags combined as a bitfield.
-        message_reference:
-            The source of the crosspost, channel follow add, pin, or reply
-            message.
-        message_snapshots:
-            The message associated with the `message_reference`. This is a
-            minimal subset of fields in a `Message`.
-        referenced_message:
-            The message associated with the `message_reference`.
-        interaction_metadata:
-            Message interaction metadata.
-        thread:
-            The thread that was started from this message.
-        components:
-            Interactive components in this message.
-        sticker_items:
-            Stickers in this message.
-        position:
-            The approximated position of the message in a thread.
-        role_subscription_data:
-            Data of the subscription if this message is a
-            `ROLE_SUBSCRIPTION_PURCHASE` message
-        resolved:
-            Data for users, members, channels, and roles referenced in
-            this message.
-        poll:
-            A poll.
-        call:
-            The call associated with this message.
-        shared_client_theme:
-            The custom client-side theme shared in this message.
+    """
+    Represent a Discord message.
     """
 
     id: Snowflake | MISSING = MISSING
+    """
+    The ID of the message.
+    """
+
     channel_id: Snowflake | MISSING = MISSING
+    """
+    The ID of the channel the message was sent in.
+    """
+
     author: User | MISSING = MISSING
+    """
+    The author of this message.
+    """
+
     content: str | MISSING = MISSING
+    """
+    The message content.
+    """
+
     timestamp: datetime | MISSING = MISSING
+    """
+    The timestamp when this message was sent.
+    """
+
     tts: bool | MISSING = MISSING
+    """
+    Whether this message is a text-to-speech message.
+    """
+
     mention_everyone: bool | MISSING = MISSING
+    """
+    Whether this message mentions everyone.
+    """
+
     mentions: tuple[User, ...] | MISSING = MISSING
+    """
+    Users mentioned in this message.
+    """
+
     mention_roles: tuple[Snowflake, ...] | MISSING = MISSING
+    """
+    Roles mentioned in this message.
+    """
+
     attachments: tuple[Attachment, ...] | MISSING = MISSING
+    """
+    Attached files in this message.
+    """
+
     embeds: tuple[Embed, ...] | MISSING = MISSING
+    """
+    Embeded contents in this message.
+    """
+
     pinned: bool | MISSING = MISSING
+    """
+    Whether this message is pinned.
+    """
+
     type: MessageType | MISSING = MISSING
+    """
+    The type of the message.
+    """
+
     edited_timestamp: datetime | None = None
+    """
+    The timestamp when this message was edited.
+    """
+
     mention_channels: tuple[Channel, ...] | MISSING = MISSING
+    """
+    Channels mentioned in this message.
+    """
+
     reactions: tuple[Reaction, ...] | MISSING = MISSING
+    """
+    Reactions to this message.
+    """
+
     webhook_id: Snowflake | MISSING = MISSING
+    """
+    The webhook's ID if this message was sent via webhook.
+    """
+
     activity: MessageActivity | MISSING = MISSING
+    """
+    Activity object sent via Rich presence related embeds.
+    """
+
     application: Application | MISSING = MISSING
+    """
+    Partial application object sent via Rich presence related embeds.
+    """
+
     application_id: Snowflake | MISSING = MISSING
-    flags: MessageFlags | MISSING = MISSING
+    """
+    The application ID if this message was sent via an `Interaction`
+    or an application-owned webhook.
+    """
+
+    flags: bitfields.MessageFlags | MISSING = MISSING
+    """
+    The message flags combined as a bitfield.
+    """
+
     message_reference: MessageReference | MISSING = MISSING
+    """
+    The source of the crosspost, channel follow add, pin, or reply message.
+    """
+
     message_snapshots: tuple[MessageSnapshot, ...] | MISSING = MISSING
+    """
+    The message associated with the `message_reference`. This is a
+    minimal subset of fields in a `Message`.
+    """
+
     referenced_message: Message | None | MISSING = MISSING
+    """
+    The message associated with the `message_reference`.
+    """
+
     interaction_metadata: InteractionMetadata | MISSING = MISSING
+    """
+    Message interaction metadata.
+    """
+
     thread: Channel | MISSING = MISSING
+    """
+    The thread that was started from this message.
+    """
+
     components: tuple[Component, ...] | MISSING = MISSING
+    """
+    Interactive components in this message.
+    """
+
     sticker_items: tuple[Sticker, ...] | MISSING = MISSING
+    """
+    Stickers in this message.
+    """
+
     position: int | MISSING = MISSING
+    """
+    The approximated position of the message in a thread.
+    """
+
     role_subscription_data: RoleSubscriptionData | MISSING = MISSING
+    """
+    Data of the subscription if this message is a
+    `ROLE_SUBSCRIPTION_PURCHASE` message
+    """
+
     resolved: Resolved | MISSING = MISSING
+    """
+    Data for users, members, channels, and roles referenced in this message.
+    """
+
     poll: Poll | MISSING = MISSING
+    """
+    A poll.
+    """
+
     call: Any | MISSING = MISSING
+    """
+    The call associated with this message.
+    """
+
     shared_client_theme: SharedClientTheme | MISSING = MISSING
+    """
+    The custom client-side theme shared in this message.
+    """
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -228,7 +301,7 @@ class Message(Model):
         "application": Application,
         "type": MessageType,
         "application_id": Snowflake,
-        "flags": MessageFlags,
+        "flags": bitfields.MessageFlags,
         "message_reference": MessageReference,
         "message_snapshots": MessageSnapshot,
         "interaction_metadata": InteractionMetadata,
@@ -264,8 +337,7 @@ class Message(Model):
         # call: Any | MISSING = MISSING,
         shared_client_theme: SharedClientTheme | MISSING = MISSING,
     ) -> Message:
-        """*|classmethod|*
-
+        """
         Create a new message.
 
         Raises:
@@ -434,8 +506,7 @@ class Message(Model):
         return replace(self, attachments=MISSING)
 
     async def send(self, channel: int | Snowflake | Channel) -> Message:
-        """*|coro|*
-
+        """
         Send the message to the specified channel.
 
         Raises:
@@ -448,8 +519,7 @@ class Message(Model):
         return await self._state.send_message(channel_id=channel, message=self)
 
     async def reply(self, message: Message) -> Message:
-        """*|coro|*
-
+        """
         Reply to the message.
 
         Raises:
@@ -472,28 +542,37 @@ class Message(Model):
 class Resolved(Model):
     """
     Resolved data in the [`Message`][].
-
-    Attributes:
-        users:
-            A dict of user ID to User.
-        members:
-            A dict of member ID to Member.
-        roles:
-            A dict of role ID to Role.
-        channels:
-            A dict of channel ID to Channel.
-        messages:
-            A dict of message ID to Message.
-        attachments:
-            A dict of attachment ID to Attachment.
     """
 
     users: dict[Snowflake, User] | MISSING = MISSING
+    """
+    A dict of user ID to User.
+    """
+
     members: dict[Snowflake, Any] | MISSING = MISSING
+    """
+    A dict of member ID to Member.
+    """
+
     roles: dict[Snowflake, Role] | MISSING = MISSING
+    """
+    A dict of role ID to Role.
+    """
+
     channels: dict[Snowflake, Channel] | MISSING = MISSING
+    """
+    A dict of channel ID to Channel.
+    """
+
     messages: dict[Snowflake, Message] | MISSING = MISSING
+    """
+    A dict of message ID to Message.
+    """
+
     attachments: dict[Snowflake, Attachment] | MISSING = MISSING
+    """
+    A dict of attachment ID to Attachment.
+    """
 
     _transforms: ClassVar[dict] = {
         "users": dict[Snowflake, User],

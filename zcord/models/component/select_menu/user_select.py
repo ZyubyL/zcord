@@ -15,22 +15,6 @@ class UserSelect(SelectMenu):
     """
     A user select menu component.
 
-    Attributes:
-        custom_id:
-            The custom ID of the select menu.
-        options:
-            A list of select options.
-        placeholder:
-            The placeholder text of the select menu.
-        min_values:
-            The minimum number of values that can be selected.
-        max_values:
-            The maximum number of values that can be selected.
-        required:
-            Whether the select menu is required.
-        disabled:
-            Whether the select menu is disabled.
-
     Notes:
         - If `required` is True or [`MISSING`][], `min_values` must be 1 \
         or [`MISSING`][].
@@ -41,8 +25,16 @@ class UserSelect(SelectMenu):
     """
 
     type: ComponentType = ComponentType.USER_SELECT
+
     placeholder: str | MISSING = MISSING
+    """
+    The placeholder text of the select menu.
+    """
+
     default_values: tuple[DefaultValue] | MISSING = MISSING
+    """
+    List of default values for auto-populated select menu components.
+    """
 
     _transforms: ClassVar[dict] = {
         "type": ComponentType,

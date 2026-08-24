@@ -1,29 +1,28 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import ClassVar
 
 from zcord.cdn import CDN
 from zcord.models.base import Model
-
-if TYPE_CHECKING:
-    from zcord.models.snowflake import Snowflake
+from zcord.models.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
 class AvatarDecorationData(Model):
     """
     Contain data for the user's avatar decoration.
-
-    Attributes:
-        asset:
-            The avatar decoration hash.
-        sku_id:
-            The SKU ID of the avatar decoration.
     """
 
     asset: str
+    """The avatar decoration hash."""
+
     sku_id: Snowflake
+    """The SKU ID of the avatar decoration."""
+
+    _transforms: ClassVar[dict] = {
+        "sku_id": Snowflake,
+    }
 
     def asset_url(self, size: int = CDN.MAX_SIZE) -> str:
         """

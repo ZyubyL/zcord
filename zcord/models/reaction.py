@@ -12,44 +12,56 @@ class ReactionCountDetails(Model):
     """
     Contain a breakdown of normal and super reaction counts for the associated \
     emoji.
-
-    Attributes:
-        burst:
-            Count of super reactions.
-        normal:
-            Count of normal reactions.
     """
 
     burst: int
+    """
+    Count of super reactions.
+    """
+
     normal: int
+    """
+    Count of normal reactions.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class Reaction(Model):
     """
     Represent a Discord reaction.
-
-    Attributes:
-        count:
-            Total number of times this emoji has been used to react.
-        count_details:
-            Reaction count details.
-        me:
-            Whether the bot reacted using this emoji.
-        me_burst:
-            Whether the bot super-reacted using this emoji.
-        emoji:
-            Emoji info.
-        burst_colors:
-            A list of colors used for super reaction.
     """
 
     count: int
+    """
+    Total number of times this emoji has been used to react.
+    """
+
     count_details: ReactionCountDetails
+    """
+    Reaction count details.
+    """
+
     me: bool
+    """
+    Whether the bot reacted using this emoji.
+    """
+
     me_burst: bool
+    """
+    Whether the user super-reacted using this emoji.[^1]
+
+    [^1]: Since bot can't super react, this field should always be `False`(?).
+    """
+
     emoji: Emoji
+    """
+    Emoji info.
+    """
+
     burst_colors: tuple[int, ...]
+    """
+    A list of colors used for super reaction.
+    """
 
     _transforms: ClassVar[dict] = {
         "count_details": ReactionCountDetails,

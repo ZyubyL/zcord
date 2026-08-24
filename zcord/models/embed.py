@@ -4,7 +4,7 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import ClassVar
 
-from zcord.flags.embed import EmbedFlags, EmbedMediaFlags
+from zcord import bitfields
 from zcord.missing import MISSING
 from zcord.models.base import Model
 
@@ -13,26 +13,28 @@ from zcord.models.base import Model
 class EmbedFooter(Model):
     """
     Contain embed's footer info.
-
-    Attributes:
-        text:
-            Footer text.
-        icon_url:
-            URL of footer icon.
-        proxy_icon_url:
-            A proxied URL of footer icon.
     """
 
     text: str | MISSING = MISSING
+    """
+    Footer text.
+    """
+
     icon_url: str | MISSING = MISSING
+    """
+    URL of footer icon.
+    """
+
     proxy_icon_url: str | MISSING = MISSING
+    """
+    A proxied URL of footer icon.
+    """
 
     @classmethod
     def new(
         cls, *, text: str | MISSING = MISSING, icon_url: str | MISSING = MISSING
     ) -> EmbedFooter:
-        """*|classmethod|*
-
+        """
         Create a new embed footer.
         """
         return cls(text=text, icon_url=icon_url)
@@ -42,40 +44,55 @@ class EmbedFooter(Model):
 class EmbedImage(Model):
     """
     Contain embed's image info.
-
-    Attributes:
-        url:
-            Source URL of the image.
-        proxy_url:
-            A proxied URL of the image.
-        height:
-            The image's height.
-        width:
-            The image's width.
-        content_type:
-            The image's media type.
-        placeholder:
-            Thumbhash placeholder of the image.
-        placeholder_version:
-            Version of the placeholder.
-        description:
-            Alt text of the image.
-        flags:
-            Embed media flags combined as a bitfield.
     """
 
     url: str
+    """
+    Source URL of the image.
+    """
+
     proxy_url: str | MISSING = MISSING
+    """
+    A proxied URL of the image.
+    """
+
     height: int | MISSING = MISSING
+    """
+    The image's height.
+    """
+
     width: int | MISSING = MISSING
+    """
+    The image's width.
+    """
+
     content_type: str | MISSING = MISSING
+    """
+    The image's media type.
+    """
+
     placeholder: str | MISSING = MISSING
+    """
+    Thumbhash placeholder of the image.
+    """
+
     placeholder_version: int | MISSING = MISSING
+    """
+    Version of the placeholder.
+    """
+
     description: str | MISSING = MISSING
-    flags: EmbedMediaFlags | MISSING = MISSING
+    """
+    Alt text of the image.
+    """
+
+    flags: bitfields.EmbedMediaFlags | MISSING = MISSING
+    """
+    Embed media flags combined as a bitfield.
+    """
 
     _transforms: ClassVar[dict] = {
-        "flags": EmbedMediaFlags,
+        "flags": bitfields.EmbedMediaFlags,
     }
 
 
@@ -83,40 +100,55 @@ class EmbedImage(Model):
 class EmbedVideo(Model):
     """
     Contain embed's video info.
-
-    Attributes:
-        url:
-            Source URL of the video.
-        proxy_url:
-            A proxied URL of the video.
-        height:
-            The video's height.
-        width:
-            The video's width.
-        content_type:
-            The video's media type.
-        placeholder:
-            Thumbhash placeholder of the video.
-        placeholder_version:
-            Version of the placeholder.
-        description:
-            Alt text of the video.
-        flags:
-            Embed media flags combined as a bitfield.
     """
 
     url: str | MISSING = MISSING
+    """
+    Source URL of the video.
+    """
+
     proxy_url: str | MISSING = MISSING
+    """
+    A proxied URL of the video.
+    """
+
     height: int | MISSING = MISSING
+    """
+    The video's height.
+    """
+
     width: int | MISSING = MISSING
+    """
+    The video's width.
+    """
+
     content_type: str | MISSING = MISSING
+    """
+    The video's media type.
+    """
+
     placeholder: str | MISSING = MISSING
+    """
+    Thumbhash placeholder of the video.
+    """
+
     placeholder_version: int | MISSING = MISSING
+    """
+    Version of the placeholder.
+    """
+
     description: str | MISSING = MISSING
-    flags: EmbedMediaFlags | MISSING = MISSING
+    """
+    Alt text of the video.
+    """
+
+    flags: bitfields.EmbedMediaFlags | MISSING = MISSING
+    """
+    Embed media flags combined as a bitfield.
+    """
 
     _transforms: ClassVar[dict] = {
-        "flags": EmbedMediaFlags,
+        "flags": bitfields.EmbedMediaFlags,
     }
 
 
@@ -124,38 +156,44 @@ class EmbedVideo(Model):
 class EmbedProvider(Model):
     """
     Contain embed's provider info.
-
-    Attributes:
-        name:
-            Name of the provider.
-        url:
-            URL of the provider.
     """
 
     name: str | MISSING = MISSING
+    """
+    Name of the provider.
+    """
+
     url: str | MISSING = MISSING
+    """
+    URL of the provider.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class EmbedAuthor(Model):
     """
     Contain embed's author info.
-
-    Attributes:
-        name:
-            The name of the author.
-        url:
-            The URL of the author.
-        icon_url:
-            The URL of the author icon.
-        proxy_icon_url:
-            A proxied url of the author icon.
     """
 
     name: str | MISSING = MISSING
+    """
+    The name of the author.
+    """
+
     url: str | MISSING = MISSING
+    """
+    The URL of the author.
+    """
+
     icon_url: str | MISSING = MISSING
+    """
+    The URL of the author icon.
+    """
+
     proxy_icon_url: str | MISSING = MISSING
+    """
+    A proxied url of the author icon.
+    """
 
     @classmethod
     def new(
@@ -164,8 +202,7 @@ class EmbedAuthor(Model):
         url: str | MISSING = MISSING,
         icon_url: str | MISSING = MISSING,
     ) -> EmbedAuthor:
-        """*|classmethod|*
-
+        """
         Create a new embed author.
         """
         return cls(name=name, url=url, icon_url=icon_url)
@@ -175,71 +212,99 @@ class EmbedAuthor(Model):
 class EmbedField(Model):
     """
     Contain embed's field info.
-
-    Attributes:
-        name:
-            The name of the field.
-        value:
-            The value of the field.
-        inline:
-            Whether or not this field should display inline.
     """
 
     name: str
+    """
+    The name of the field.
+    """
+
     value: str
+    """
+    The value of the field.
+    """
+
     inline: bool | MISSING = MISSING
+    """
+    Whether or not this field should display inline.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class Embed(Model):
     """
     Represent a Discord embed.
-
-    Attributes:
-        title:
-            Title of the embed.
-        type:
-            Type of the embed.
-        description:
-            Description of the embed.
-        url:
-            URL of the embed.
-        timestamp:
-            Timestamp of the embed.
-        color:
-            Color of the embed.
-        footer:
-            Embed's footer info.
-        image:
-            Embed's image info.
-        thumbnail:
-            Embed's thumbnail info.
-        video:
-            Embed's video info.
-        provider:
-            Embed's provider info.
-        author:
-            Embed's author info.
-        fields:
-            Embed's field info.
-        flags:
-            Embed's flags combined as a bitfield.
     """
 
     title: str | MISSING = MISSING
+    """
+    Title of the embed.
+    """
+
     type: str | MISSING = MISSING
+    """
+    Type of the embed.
+    """
+
     description: str | MISSING = MISSING
+    """
+    Description of the embed.
+    """
+
     url: str | MISSING = MISSING
+    """
+    URL of the embed.
+    """
+
     timestamp: datetime | MISSING = MISSING
+    """
+    Timestamp of the embed.
+    """
+
     color: int | MISSING = MISSING
+    """
+    Color of the embed.
+    """
+
     footer: EmbedFooter | MISSING = MISSING
+    """
+    Embed's footer info.
+    """
+
     image: EmbedImage | MISSING = MISSING
+    """
+    Embed's image info.
+    """
+
     thumbnail: EmbedImage | MISSING = MISSING
+    """
+    Embed's thumbnail info.
+    """
+
     video: EmbedVideo | MISSING = MISSING
+    """
+    Embed's video info.
+    """
+
     provider: EmbedProvider | MISSING = MISSING
+    """
+    Embed's provider info.
+    """
+
     author: EmbedAuthor | MISSING = MISSING
+    """
+    Embed's author info.
+    """
+
     fields: tuple[EmbedField, ...] | MISSING = MISSING
-    flags: EmbedFlags | MISSING = MISSING
+    """
+    Embed's field info.
+    """
+
+    flags: bitfields.EmbedFlags | MISSING = MISSING
+    """
+    Embed's flags combined as a bitfield.
+    """
 
     _transforms: ClassVar[dict] = {
         "timestamp": datetime.fromisoformat,
@@ -250,7 +315,7 @@ class Embed(Model):
         "provider": EmbedProvider,
         "author": EmbedAuthor,
         "fields": EmbedField,
-        "flags": EmbedFlags,
+        "flags": bitfields.EmbedFlags,
     }
 
     def _check_before(self) -> None:
@@ -295,8 +360,7 @@ class Embed(Model):
         author: EmbedAuthor | MISSING = MISSING,
         fields: tuple[EmbedField, ...] | MISSING = MISSING,
     ) -> Embed:
-        """*|classmethod|*
-
+        """
         Create a new embed.
 
         Examples:
@@ -322,11 +386,11 @@ class Embed(Model):
         """
         embed = (
             cls(
-                url=url,
                 timestamp=timestamp,
                 fields=fields,
                 type="rich",
             )
+            .set_url(url)
             .set_title(title)
             .set_description(description)
             .set_color(color)

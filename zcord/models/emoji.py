@@ -17,34 +17,47 @@ from zcord.models.user import User
 class Emoji(Model):
     """
     Represent a Discord emoji.
-
-    Attributes:
-        id:
-            The ID of the emoji.
-        name:
-            The name of the emoji.
-        roles:
-            A list of role IDs that the emoji is restricted to.
-        user:
-            The user who created the emoji.
-        require_colons:
-            Whether the emoji requires colons to be used.
-        managed:
-            Whether the emoji is managed.
-        animated:
-            Whether the emoji is animated.
-        available:
-            Whether the emoji is available.
     """
 
     id: Snowflake | None = None
+    """
+    The ID of the emoji.
+    """
+
     name: str | None = None
+    """
+    The name of the emoji.
+    """
+
     roles: tuple[Snowflake, ...] | MISSING = MISSING
+    """
+    A list of role IDs that the emoji is restricted to.
+    """
+
     user: User | MISSING = MISSING
+    """
+    The user who created the emoji.
+    """
+
     require_colons: bool | MISSING = MISSING
+    """
+    Whether the emoji requires colons to be used.
+    """
+
     managed: bool | MISSING = MISSING
+    """
+    Whether the emoji is managed.
+    """
+
     animated: bool | MISSING = MISSING
+    """
+    Whether the emoji is animated.
+    """
+
     available: bool | MISSING = MISSING
+    """
+    Whether the emoji is available.
+    """
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -90,8 +103,7 @@ class Emoji(Model):
 
     @classmethod
     def new(cls, emoji: str) -> Emoji:
-        """*|classmethod|*
-
+        """
         Create a new emoji object.
 
         Examples:

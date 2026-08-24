@@ -15,14 +15,14 @@ from zcord.models.component.select_menu.base import SelectMenu
 class ActionRow(Component):
     """
     Represent an action row that holds max to 5 buttons or a select menu.
-
-    Attributes:
-        components:
-            A list of components inside the action row.
     """
 
     type: ComponentType = ComponentType.ACTION_ROW
+
     components: tuple[Button | SelectMenu, ...] | MISSING = MISSING
+    """
+    A list of components inside the action row.
+    """
 
     _transforms: ClassVar[dict] = {
         "type": ComponentType,
@@ -37,8 +37,7 @@ class ActionRow(Component):
         | SelectMenu
         | MISSING = MISSING,
     ) -> ActionRow:
-        """*|classmethod|*
-
+        """
         Create a new action row component.
         """
         if components is MISSING:

@@ -15,22 +15,6 @@ class StringSelect(SelectMenu):
     """
     A string select menu that holds a list of max to 25 options.
 
-    Attributes:
-        custom_id:
-            The custom ID of the select menu.
-        options:
-            A list of select options.
-        placeholder:
-            The placeholder text of the select menu.
-        min_values:
-            The minimum number of values that can be selected.
-        max_values:
-            The maximum number of values that can be selected.
-        required:
-            Whether the select menu is required.
-        disabled:
-            Whether the select menu is disabled.
-
     Notes:
         - If `required` is True or [`MISSING`][], `min_values` must be 1 \
         or [`MISSING`][].
@@ -41,8 +25,16 @@ class StringSelect(SelectMenu):
     """
 
     type: ComponentType = ComponentType.STRING_SELECT
+
     options: tuple[SelectOption, ...] | MISSING = MISSING
+    """
+    A list of select options.
+    """
+
     placeholder: str | MISSING = MISSING
+    """
+    The placeholder text of the select menu.
+    """
 
     _transforms: ClassVar[dict] = {
         "type": ComponentType,
@@ -63,8 +55,7 @@ class StringSelect(SelectMenu):
         required: bool = True,
         disabled: bool = False,
     ) -> StringSelect:
-        """*|classmethod|*
-
+        """
         Create a new string select component.
 
         Raises:

@@ -12,17 +12,20 @@ from zcord.models.emoji import Emoji
 @dataclass(frozen=True, slots=True)
 class PollMedia(Model):
     """
-    Attributes:
-        text:
-            The text of the field.
-
-            **Notes**: 300 characters max for question, and 55 max for answer.
-        emoji:
-            The emoji of the field.
+    Generic poll media data.
     """
 
     text: str | MISSING = MISSING
+    """
+    The text of the field.
+
+    **Notes**: 300 characters max for question, and 55 max for answer.
+    """
+
     emoji: Emoji | MISSING = MISSING
+    """
+    The emoji of the field.
+    """
 
     _transforms: ClassVar[dict] = {
         "emoji": Emoji,
@@ -32,15 +35,18 @@ class PollMedia(Model):
 @dataclass(frozen=True, slots=True)
 class PollAnswer(Model):
     """
-    Attributes:
-        answer_id:
-            The ID of the answer.
-        poll_media:
-            The data of the answer.
+    Contain info about a poll answer.
     """
 
     poll_media: PollMedia
+    """
+    The data of the answer.
+    """
+
     answer_id: int | MISSING = MISSING
+    """
+    The ID of the answer.
+    """
 
     _transforms: ClassVar[dict] = {
         "poll_media": PollMedia,
@@ -53,8 +59,7 @@ class PollAnswer(Model):
         text: str | MISSING = MISSING,
         emoji: Emoji | str | MISSING = MISSING,
     ) -> PollAnswer:
-        """*|classmethod|*
-
+        """
         Create a new poll answer.
         """
         return cls(
@@ -72,37 +77,40 @@ class PollAnswer(Model):
 @dataclass(frozen=True, slots=True)
 class PollAnswerCount(Model):
     """
-    Represents the number of votes for a single answer.
-
-    Attributes:
-        id:
-            The ID of the answer.
-        count:
-            The number of votes for the answer.
-        me_voted:
-            Whether the bot voted for this answer.
+    Contain info about the poll answer vote count.
     """
 
     id: int
+    """
+    The ID of the answer.
+    """
+
     count: int
+    """
+    The number of votes for the answer.
+    """
+
     me_voted: bool
+    """
+    Whether the bot voted for this answer.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class PollResults(Model):
     """
-    Attributes:
-        is_finalized:
-            Whether the votes have been precisely counted.
-        answer_counts:
-            A list of number of votes for each answer.
-
-    Notes:
-        https://docs.discord.com/developers/resources/poll#poll-results-object
+    Contain info about the poll results.
     """
 
     is_finalized: bool
+    """
+    Whether the votes have been precisely counted.
+    """
+
     answer_counts: tuple[PollAnswerCount, ...]
+    """
+    A list of number of votes for each answer.
+    """
 
     _transforms: ClassVar[dict] = {
         "answer_counts": PollAnswerCount,
@@ -112,29 +120,40 @@ class PollResults(Model):
 @dataclass(frozen=True, slots=True)
 class Poll(Model):
     """
-    Represents a Discord poll.
-
-    Attributes:
-        question:
-            The question of the poll.
-        answers:
-            A list of answers for the poll.
-        expiry:
-            The time when the poll ends.
-        allow_multiselect:
-            Whether a user can select multiple answers.
-        layout_type:
-            The layout type of the poll.
-        results:
-            The results of the poll.
+    Represent a Discord poll.
     """
 
     question: PollMedia | MISSING = MISSING
+    """
+    The question of the poll.
+    """
+
     answers: tuple[PollAnswer, ...] | MISSING = MISSING
+    """
+    A list of answers for the poll.
+    """
+
     allow_multiselect: bool = False
-    layout_type: int = 1  # Discord only support 1 for now
+    """
+    Whether a user can select multiple answers.
+    """
+
+    layout_type: int = 1
+    """
+    The layout type of the poll.[^1]
+
+    [^1]: Discord only supports layout type `1` for now.
+    """
+
     expiry: datetime | None = None
+    """
+    The time when the poll ends.
+    """
+
     results: PollResults | MISSING = MISSING
+    """
+    The results of the poll.
+    """
 
     # For creating request. thanks Discord for the inconsistency
     _duration: int | MISSING = MISSING
@@ -165,8 +184,7 @@ class Poll(Model):
         duration: int = 24,
         allow_multiselect: bool = False,
     ) -> Poll:
-        """*|classmethod|*
-
+        """
         Create a new poll.
 
         Raises:

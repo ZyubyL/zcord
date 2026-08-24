@@ -14,21 +14,25 @@ from zcord.models.snowflake import Snowflake
 class Nameplate(Model):
     """
     Contain info about the user's nameplate.
-
-    Attributes:
-        sku_id:
-            The ID of the nameplate SKU.
-        asset:
-            Path to the nameplate asset.
-        label:
-            The label of the nameplate. (Unused)
-        palette:
-            The background color of the nameplate.
     """
 
     sku_id: Snowflake
+    """
+    The ID of the nameplate SKU.
+    """
+
     asset: str
+    """
+    Path to the nameplate asset.
+    """
+
     label: str
+    """
+    The label of the nameplate.[^1]
+
+    [^1]: This field is unused.
+    """
+
     palette: Literal[
         "crimson",
         "berry",
@@ -42,6 +46,9 @@ class Nameplate(Model):
         "lemon",
         "white",
     ]
+    """
+    The background color of the nameplate.
+    """
 
     _transforms: ClassVar[dict] = {
         "sku_id": Snowflake,
@@ -63,14 +70,13 @@ class Nameplate(Model):
 @dataclass(frozen=True, slots=True)
 class Collectibles(Model):
     """
-    Contains info about the user's collectibles.
-
-    Attributes:
-        nameplate:
-            The user's nameplate.
+    Contain info about the user's collectibles.
     """
 
     nameplate: Nameplate | MISSING = MISSING
+    """
+    The user's nameplate.
+    """
 
     _transforms: ClassVar[dict] = {
         "nameplate": Nameplate,

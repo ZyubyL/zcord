@@ -12,22 +12,27 @@ from zcord.models.base import Model
 class SharedClientTheme(Model):
     """
     Represent a shared client theme.
-
-    Attributes:
-        colors:
-            A list of colors of the theme.
-        gradient_angle:
-            The direction of the theme's colors (max 360).
-        base_mix:
-            The intensity of the theme's colors (max 100).
-        base_theme:
-            The mode of the theme.
     """
 
     colors: tuple[str, ...] | MISSING = MISSING
+    """
+    A list of colors of the theme.
+    """
+
     gradient_angle: int | MISSING = MISSING
+    """
+    The direction of the theme's colors (max 360).
+    """
+
     base_mix: int | MISSING = MISSING
+    """
+    The intensity of the theme's colors (max 100).
+    """
+
     base_theme: BaseThemeType = BaseThemeType.UNSET
+    """
+    The mode of the theme.
+    """
 
     _transforms: ClassVar[dict] = {
         "base_theme": BaseThemeType,
@@ -50,8 +55,7 @@ class SharedClientTheme(Model):
         base_mix: int | MISSING = MISSING,
         base_theme: BaseThemeType = BaseThemeType.UNSET,
     ) -> SharedClientTheme:
-        """*|classmethod|*
-
+        """
         Create a new shared client theme.
         """
         return (

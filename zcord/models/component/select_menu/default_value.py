@@ -12,16 +12,17 @@ from zcord.models.snowflake import Snowflake
 class DefaultValue(Model):
     """
     The default value of the select menu.
-
-    Attributes:
-        id:
-            The ID of the user/role/channel.
-        type:
-            The type of the default value.
     """
 
     id: Snowflake | MISSING = MISSING
+    """
+    The ID of the user/role/channel.
+    """
+
     type: Literal["user", "role", "channel"] | MISSING = MISSING
+    """
+    The type of the default value.
+    """
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,

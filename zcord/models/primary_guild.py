@@ -12,24 +12,29 @@ from zcord.models.snowflake import Snowflake
 class PrimaryGuild(Model):
     """
     Represent the user's primary guild.
-
-    Attributes:
-        identity_guild_id:
-            The ID of the user's primary guild.
-        identity_enabled:
-            Whether the user displaying the primary guild's server tag.
-            This will be `None` if the system clears the identity,
-            and `False` if the user manually removed their tag.
-        tag:
-            The text of the user's tag. Max `4` characters.
-        badge:
-            The server tag badge.
     """
 
     identity_guild_id: Snowflake | None
+    """
+    The ID of the user's primary guild.
+    """
+
     identity_enabled: bool | None
+    """
+    Whether the user displaying the primary guild's server tag.
+    This will be `None` if the system clears the identity,
+    and `False` if the user manually removed their tag.
+    """
+
     tag: str | None
+    """
+    The text of the user's tag. Max `4` characters.
+    """
+
     badge: str | None
+    """
+    The server tag badge.
+    """
 
     _transforms: ClassVar[dict] = {
         "identity_guild_id": Snowflake,

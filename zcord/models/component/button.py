@@ -15,33 +15,45 @@ if TYPE_CHECKING:
 @dataclass(frozen=True, slots=True)
 class Button(Component):
     """
-    Represents an interactive button.
-
-    Attributes:
-        style:
-            The style of the button.
-        label:
-            The label of the button.
-        emoji:
-            The emoji of the button.
-        custom_id:
-            The custom ID of the button.
-        sku_id:
-            The SKU ID of the button.
-        url:
-            The URL of the button.
-        disabled:
-            Whether the button is disabled.
+    Represent an interactive button.
     """
 
     type: ComponentType = ComponentType.BUTTON
+
     style: ButtonStyle = ButtonStyle.SECONDARY
+    """
+    The style of the button.
+    """
+
     label: str | MISSING = MISSING
+    """
+    The label of the button.
+    """
+
     emoji: Emoji | MISSING = MISSING
+    """
+    The emoji of the button.
+    """
+
     custom_id: str | MISSING = MISSING
+    """
+    The custom ID of the button.
+    """
+
     sku_id: Snowflake | MISSING = MISSING
+    """
+    The SKU ID of the button.
+    """
+
     url: str | MISSING = MISSING
+    """
+    The URL of the button.
+    """
+
     disabled: bool = False
+    """
+    Whether the button is disabled.
+    """
 
     _transforms: ClassVar[dict] = {
         "type": ComponentType,
@@ -61,8 +73,7 @@ class Button(Component):
         url: str | MISSING = MISSING,
         disabled: bool = False,
     ) -> Button:
-        """*|classmethod|*
-
+        """
         Create a new button.
 
         Raises:

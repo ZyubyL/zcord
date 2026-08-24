@@ -47,7 +47,12 @@ if __name__ == "__main__":
 
 ## Usage
 
-See the [API documentation](api.md).
+Zcord is split into submodules:
+
+- [`zcord`](api/zcord.md) - Contains the core classes.
+- [`zcord.errors`](api/errors.md) - Contains error from the library.
+- [`zcord.bitfields`](api/bitfields.md) - Contains bitfield flag types.
+- [`zcord.enums`](api/enums.md) - Contains enum types.
 
 ## Class Diagram
 

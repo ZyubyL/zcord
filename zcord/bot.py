@@ -37,36 +37,31 @@ class Bot:
         await self._state._http.close()
 
     async def fetch_current_application(self) -> Application:
-        """*|coro|*
-
+        """
         Fetch info about the current application.
         """
         return await self._state.fetch_current_application()
 
     async def fetch_channel(self, channel_id: int | Snowflake) -> Channel:
-        """*|coro|*
-
+        """
         Fetch a channel by its ID.
         """
         return await self._state.fetch_channel(channel_id)
 
     async def fetch_guild(self, guild_id: int | Snowflake) -> Guild:
-        """*|coro|*
-
+        """
         Fetch a guild by its ID.
         """
         return await self._state.fetch_guild(guild_id)
 
     async def fetch_user(self, user_id: int | Snowflake) -> User:
-        """*|coro|*
-
+        """
         Fetch a user by their ID.
         """
         return await self._state.fetch_user(user_id)
 
     async def fetch_current_user(self) -> User:
-        """*|coro|*
-
+        """
         Fetch the current bot user.
         """
         return await self._state.fetch_current_user()
@@ -74,8 +69,7 @@ class Bot:
     async def fetch_message(
         self, *, channel_id: int | Snowflake, message_id: int | Snowflake
     ) -> Message:
-        """*|coro|*
-
+        """
         Fetch a message by its ID and channel ID.
         """
         return await self._state.fetch_channel_message(

@@ -29,6 +29,7 @@ theme:
     - search.share
     - content.code.copy
     - toc.integrate
+    - content.footnote.tooltips
   icon:
     repo: fontawesome/brands/github
   logo: assets/zcord_original.png
@@ -45,12 +46,15 @@ plugins:
   - search:
       enabled: true
   - mkdocstrings:
+      custom_templates: docs/templates
       handlers:
         python:
+          inventories:
+            - https://docs.python.org/3/objects.inv
           options:
             show_source: false
             show_signature_annotations: true
-            show_root_heading: true
+            show_root_heading: false
             show_bases: false
             show_root_members_full_path: false
             show_root_full_path: false
@@ -59,17 +63,23 @@ plugins:
             show_root_toc_entry: false
             show_labels: false
             modernize_annotations: true
+            line_length: 80
+            separate_signature: true
+            signature_crossrefs: true
+            annotations_path: source
             members_order: source
             docstring_style: google
-          inventories:
-            - https://docs.python.org/3/objects.inv
 
 markdown_extensions:
   - toc:
-      toc_depth: 4
+      toc_depth: 2
       permalink: true
+  - abbr
   - admonition
+  - footnotes
   - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -81,5 +91,9 @@ extra_css:
 
 nav:
   - Home: index.md
-  - API Reference: api.md
+  - API Reference:
+    - zcord: api/zcord.md
+    - enums: api/enums.md
+    - bitfields: api/bitfields.md
+    - errors: api/errors.md
   - Class Diagram: class_diagram.md

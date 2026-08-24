@@ -29,8 +29,7 @@ class HTTPClient:
     async def request(
         self, method: str, endpoint: str, *, json: dict | list | None = None
     ) -> tuple[int, dict | list[dict] | None]:
-        """*|coro|*
-
+        """
         Perform a HTTP request.
 
         Returns:

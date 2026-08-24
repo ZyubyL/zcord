@@ -12,25 +12,32 @@ from zcord.models.emoji import Emoji
 class SelectOption(Model):
     """
     A select option for a string select menu.
-
-    Attributes:
-        label:
-            The bold text displayed on the option.
-        value:
-            The value under-the-hood of the option.
-        description:
-            The small text displayed below the label.
-        emoji:
-            The emoji next to the label.
-        default:
-            Whether the option is selected by default.
     """
 
     label: str | MISSING = MISSING
+    """
+    The bold text displayed on the option.
+    """
+
     value: str | MISSING = MISSING
+    """
+    The value under-the-hood of the option.
+    """
+
     description: str | MISSING = MISSING
+    """
+    The small text displayed below the label.
+    """
+
     emoji: Emoji | MISSING = MISSING
+    """
+    The emoji next to the label.
+    """
+
     default: bool = False
+    """
+    Whether the option is selected by default.
+    """
 
     _transforms: ClassVar[dict] = {
         "emoji": Emoji,
@@ -54,8 +61,7 @@ class SelectOption(Model):
         emoji: Emoji | MISSING = MISSING,
         default: bool = False,
     ) -> SelectOption:
-        """*|classmethod|*
-
+        """
         Create a select option for a string select menu.
         """
         return (

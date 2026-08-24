@@ -13,6 +13,9 @@ def _pick_best_format(format: str | None, hash: str) -> str:
 
 class CDN:
     MAX_SIZE = 4096
+    """
+    The maximum size of a CDN image.
+    """
 
     @staticmethod
     def application_icon(

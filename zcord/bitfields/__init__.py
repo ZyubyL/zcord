@@ -1,3 +1,7 @@
+"""
+Discord API bitfield flags module.
+"""
+
 from .application import ApplicationFlags
 from .attachment import AttachmentFlags
 from .channel import ChannelFlags

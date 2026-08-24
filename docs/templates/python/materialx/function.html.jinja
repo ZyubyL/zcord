@@ -1,0 +1,27 @@
+{#
+MIT LICENSE (c) ZyubyL
+
+Better function heading: async function and classmethod support
+#}
+
+{% extends "_base/function.html.jinja" %}
+
+{% block heading scoped %}
+    {% if config.show_symbol_type_heading %}
+        <code class="doc-symbol doc-symbol-heading doc-symbol-{{ symbol_type }}">
+            {% if "async" in function.labels %}
+                async
+            {% elif "classmethod" in function.labels %}
+                @classmethod
+            {% endif %}
+        </code>
+    {% endif %}
+
+    {% if config.heading and root %}
+        {{ config.heading }}
+    {% elif config.separate_signature %}
+        <span class="doc doc-object-name doc-function-name">
+            {{ function_name }}
+        </span>
+    {% endif %}
+{% endblock heading %}
