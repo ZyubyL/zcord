@@ -30,6 +30,7 @@ theme:
     - content.code.copy
     - toc.integrate
     - content.footnote.tooltips
+    - content.tooltips
   icon:
     repo: fontawesome/brands/github
   logo: assets/zcord_original.png
