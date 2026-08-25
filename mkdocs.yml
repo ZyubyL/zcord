@@ -40,6 +40,7 @@ extra:
   homepage: https://zcord.readthedocs.io
 
 plugins:
+  - privacy
   - autorefs:
       strip_title_tags: false
   - document-dates:

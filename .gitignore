@@ -12,3 +12,5 @@ wheels/
 publish.sh
 uv.lock
 
+# Mkdocs plugins
+.cache
