@@ -2,7 +2,7 @@
 
 This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
-## 2026.0.4 - [Unreleased]
+## 2026.0.4 - 2026/08/27
 
 ### Added:
   - Models:
