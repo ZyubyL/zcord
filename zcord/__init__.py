@@ -43,6 +43,8 @@ from .models import (
     Snowflake,
     Sticker,
     StringSelect,
+    Team,
+    TeamMember,
     User,
     UserSelect,
 )
@@ -93,6 +95,8 @@ __all__ = [
     "Snowflake",
     "Sticker",
     "StringSelect",
+    "Team",
+    "TeamMember",
     "User",
     "UserSelect",
 ]

@@ -9,6 +9,7 @@ from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.guild import Guild
 from zcord.models.snowflake import Snowflake
+from zcord.models.team import Team
 from zcord.models.user import User
 
 
@@ -53,7 +54,7 @@ class Application(Model):
     Hex encoded key for verification in interaction.
     """
 
-    team: Any | None
+    team: Team | None
     """
     A list of member from the app's team, if the app belongs to one.
     """
@@ -189,6 +190,7 @@ class Application(Model):
         "guild_id": Snowflake,
         "guild": Guild,
         "primary_sku_id": Snowflake,
+        "team": Team,
     }
 
     def icon_url(

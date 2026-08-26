@@ -36,6 +36,7 @@ from .role import Role, RoleColors, RoleSubscriptionData, RoleTags
 from .shared_client_theme import SharedClientTheme
 from .snowflake import Snowflake
 from .sticker import Sticker, StickerPack
+from .team import Team, TeamMember
 from .user import User
 
 __all__ = [
@@ -84,6 +85,8 @@ __all__ = [
     "Sticker",
     "StickerPack",
     "StringSelect",
+    "Team",
+    "TeamMember",
     "User",
     "UserSelect",
 ]

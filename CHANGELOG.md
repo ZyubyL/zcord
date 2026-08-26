@@ -8,6 +8,9 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
   - Models:
     - `PrimaryGuild`.
     - `Collectibles`.
+    - `Team`, `TeamMember`.
+  - Enums:
+    - `MemberStatus`.
   - Documentation:
     - Mermaid class diagram script.
     - Class diagram page.

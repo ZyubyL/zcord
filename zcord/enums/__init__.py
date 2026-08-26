@@ -14,6 +14,7 @@ from .interaction import InteractionType
 from .message import MessageActivityType, MessageReferenceType, MessageType
 from .shared_client_theme import BaseThemeType
 from .sticker import StickerFormatType, StickerType
+from .team import MembershipState
 
 __all__ = [
     "BaseThemeType",
@@ -23,6 +24,7 @@ __all__ = [
     "ExplicitContentFilterLevel",
     "InteractionType",
     "MFALevel",
+    "MembershipState",
     "MessageActivityType",
     "MessageNotificationLevel",
     "MessageReferenceType",

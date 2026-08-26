@@ -102,3 +102,14 @@ class CDN:
     ) -> str:
         format = _pick_best_format(format, hash)
         return f"{_BASE_URL}/banners/{guild_id}/{hash}.{format}?size={size}"
+
+    @staticmethod
+    def team_icon(
+        *,
+        team_id: int,
+        hash: str,
+        size: int,
+        format: str | None,
+    ) -> str:
+        format = _pick_best_format(format, hash)
+        return f"{_BASE_URL}/team-icons/{team_id}/{hash}.{format}?size={size}"
