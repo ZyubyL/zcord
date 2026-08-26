@@ -7,6 +7,7 @@ from .missing import MISSING
 from .models import (
     ActionRow,
     Application,
+    Attachment,
     Button,
     Channel,
     Component,
@@ -52,6 +53,7 @@ __all__ = [
     "MISSING",
     "ActionRow",
     "Application",
+    "Attachment",
     "Bot",
     "Button",
     "Channel",
