@@ -11,6 +11,9 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
   - Documentation:
     - Mermaid class diagram script.
     - Class diagram page.
+    - Split `API Reference` into separate section for each submodule.
+    - Enable show object full path, so the class headings will show as `zcord.User` instead of just `User`.
+      - Same for all the submodules, e.g. `zcord.enums.ChannelType`, `zcord.errors.HTTPError`.
 
 ### Changed:
   - Renamed `ZcordModel` to `Model`.

@@ -48,6 +48,9 @@ from .models import (
 )
 
 __version__ = version("zcord")
+"""
+Zcord version
+"""
 
 __all__ = [
     "MISSING",
