@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import ClassVar
 
-from zcord.enums.component import ComponentType
-from zcord.errors import ZcordError
+from zcord import enums, errors
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
 from zcord.models.component.button import Button
@@ -17,7 +16,7 @@ class ActionRow(Component):
     Represent an action row that holds max to 5 buttons or a select menu.
     """
 
-    type: ComponentType = ComponentType.ACTION_ROW
+    type: enums.ComponentType = enums.ComponentType.ACTION_ROW
 
     components: tuple[Button | SelectMenu, ...] | MISSING = MISSING
     """
@@ -25,7 +24,7 @@ class ActionRow(Component):
     """
 
     _transforms: ClassVar[dict] = {
-        "type": ComponentType,
+        "type": enums.ComponentType,
         "components": Component,
     }
 
@@ -78,7 +77,9 @@ class ActionRow(Component):
         if isinstance(self.components[0], SelectMenu) or (
             isinstance(self.components[0], Button) and len(self.components) >= 5
         ):
-            raise ZcordError("Cannot add more components to this action row")
+            raise errors.ZcordError(
+                "Cannot add more components to this action row"
+            )
         return replace(self, components=(*self.components, button))
 
     def set_select(self, select: SelectMenu) -> ActionRow:
@@ -91,4 +92,4 @@ class ActionRow(Component):
         return replace(self, components=(select,))
 
 
-Component._registry[ComponentType.ACTION_ROW] = ActionRow
+Component._registry[enums.ComponentType.ACTION_ROW] = ActionRow

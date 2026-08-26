@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, ClassVar
 
-from zcord.enums.component import ButtonStyle, ComponentType
+from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
 from zcord.models.emoji import Emoji
@@ -18,9 +18,9 @@ class Button(Component):
     Represent an interactive button.
     """
 
-    type: ComponentType = ComponentType.BUTTON
+    type: enums.ComponentType = enums.ComponentType.BUTTON
 
-    style: ButtonStyle = ButtonStyle.SECONDARY
+    style: enums.ButtonStyle = enums.ButtonStyle.SECONDARY
     """
     The style of the button.
     """
@@ -56,8 +56,8 @@ class Button(Component):
     """
 
     _transforms: ClassVar[dict] = {
-        "type": ComponentType,
-        "style": ButtonStyle,
+        "type": enums.ComponentType,
+        "style": enums.ButtonStyle,
         "emoji": Emoji,
     }
 
@@ -65,7 +65,7 @@ class Button(Component):
     def new(
         cls,
         *,
-        style: ButtonStyle = ButtonStyle.SECONDARY,
+        style: enums.ButtonStyle = enums.ButtonStyle.SECONDARY,
         label: str | MISSING = MISSING,
         emoji: Emoji | MISSING = MISSING,
         custom_id: str | MISSING = MISSING,
@@ -96,11 +96,11 @@ class Button(Component):
         )
 
     def _check_before(self) -> None:
-        if self.style == ButtonStyle.LINK and self.url is MISSING:
+        if self.style == enums.ButtonStyle.LINK and self.url is MISSING:
             raise ValueError("URL button must have a URL.")
         if self.url is not MISSING and self.custom_id is not MISSING:
             raise ValueError("Cannot set both URL and custom ID on a button.")
-        if self.style != ButtonStyle.LINK and self.custom_id is MISSING:
+        if self.style != enums.ButtonStyle.LINK and self.custom_id is MISSING:
             raise ValueError("Custom ID is required for non-URL buttons.")
 
     def set_custom_id(self, custom_id: str) -> Button:
@@ -115,7 +115,9 @@ class Button(Component):
             raise ValueError("Custom ID must be 100 characters or less.")
         return replace(self, custom_id=custom_id)
 
-    def set_style(self, style: ButtonStyle = ButtonStyle.SECONDARY) -> Button:
+    def set_style(
+        self, style: enums.ButtonStyle = enums.ButtonStyle.SECONDARY
+    ) -> Button:
         """
         Set the style of the button.
         """
@@ -165,4 +167,4 @@ class Button(Component):
         return replace(self, disabled=disabled)
 
 
-Component._registry[ComponentType.BUTTON] = Button
+Component._registry[enums.ComponentType.BUTTON] = Button

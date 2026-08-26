@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import ClassVar
 
-from zcord.enums.component import ComponentType
+from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
 from zcord.models.component.select_menu.base import SelectMenu
@@ -24,7 +24,7 @@ class UserSelect(SelectMenu):
         - You can't use `disabled` with [`Modal`][].
     """
 
-    type: ComponentType = ComponentType.USER_SELECT
+    type: enums.ComponentType = enums.ComponentType.USER_SELECT
 
     placeholder: str | MISSING = MISSING
     """
@@ -37,7 +37,7 @@ class UserSelect(SelectMenu):
     """
 
     _transforms: ClassVar[dict] = {
-        "type": ComponentType,
+        "type": enums.ComponentType,
         "default_values": DefaultValue,
     }
 
@@ -138,4 +138,4 @@ class UserSelect(SelectMenu):
         return replace(self, default_values=MISSING)
 
 
-Component._registry[ComponentType.USER_SELECT] = UserSelect
+Component._registry[enums.ComponentType.USER_SELECT] = UserSelect
