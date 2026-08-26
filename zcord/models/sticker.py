@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar
 
-from zcord.enums import StickerFormatType, StickerType
+from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
@@ -26,7 +26,7 @@ class Sticker(Model):
     The name of the sticker.
     """
 
-    format_type: StickerFormatType
+    format_type: enums.StickerFormatType
     """
     The type of sticker format.
     """
@@ -36,7 +36,7 @@ class Sticker(Model):
     The tags for autocomplete/suggestion for the sticker.
     """
 
-    type: StickerType | MISSING = MISSING
+    type: enums.StickerType | MISSING = MISSING
     """
     The type of the sticker.
     """
@@ -73,8 +73,8 @@ class Sticker(Model):
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
-        "type": StickerType,
-        "format_type": StickerFormatType,
+        "type": enums.StickerType,
+        "format_type": enums.StickerFormatType,
         "pack_id": Snowflake,
         "guild_id": Snowflake,
         "user": User,

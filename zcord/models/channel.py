@@ -4,9 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from zcord import bitfields
-from zcord.enums import ChannelType
-from zcord.errors import ZcordError
+from zcord import bitfields, enums, errors
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
@@ -28,7 +26,7 @@ class Channel(Model):
     The ID of the channel.
     """
 
-    type: ChannelType | MISSING = MISSING
+    type: enums.ChannelType | MISSING = MISSING
     """
     The channel type.
     """
@@ -225,7 +223,7 @@ class Channel(Model):
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
-        "type": ChannelType,
+        "type": enums.ChannelType,
         "guild_id": Snowflake,
         "last_message_id": Snowflake,
         "recipients": User,
@@ -242,8 +240,12 @@ class Channel(Model):
         Send a message to this channel.
         """
         if self.id is MISSING:
-            raise ZcordError("Cannot send a message to a channel without an ID")
+            raise errors.ZcordError(
+                "Cannot send a message to a channel without an ID"
+            )
         if message.id is not MISSING:
-            raise ZcordError("Cannot send a message that already has an ID")
+            raise errors.ZcordError(
+                "Cannot send a message that already has an ID"
+            )
         assert self._state is not MISSING
         return await self._state.send_message(channel_id=self, message=message)

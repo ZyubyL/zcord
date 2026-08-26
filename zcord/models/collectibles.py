@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar, Literal
 
+from zcord import errors
 from zcord.cdn import CDN
-from zcord.errors import ZcordError
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
@@ -59,7 +59,7 @@ class Nameplate(Model):
         size: int = CDN.MAX_SIZE,
         format: Literal["png", "jpg", "jpeg", "webp"] | None = None,
     ) -> str:
-        raise ZcordError(
+        raise errors.ZcordError(
             """
             Discord doesn't provide nameplate URL.
             So this will be the error until they update their docs

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import ClassVar
 
-from zcord.enums.shared_client_theme import BaseThemeType
+from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.base import Model
 
@@ -29,13 +29,13 @@ class SharedClientTheme(Model):
     The intensity of the theme's colors (max 100).
     """
 
-    base_theme: BaseThemeType = BaseThemeType.UNSET
+    base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET
     """
     The mode of the theme.
     """
 
     _transforms: ClassVar[dict] = {
-        "base_theme": BaseThemeType,
+        "base_theme": enums.BaseThemeType,
     }
 
     def _check_before(self) -> None:
@@ -53,7 +53,7 @@ class SharedClientTheme(Model):
         colors: tuple[str, ...] | list[str] | MISSING = MISSING,
         gradient_angle: int | MISSING = MISSING,
         base_mix: int | MISSING = MISSING,
-        base_theme: BaseThemeType = BaseThemeType.UNSET,
+        base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET,
     ) -> SharedClientTheme:
         """
         Create a new shared client theme.
@@ -153,7 +153,7 @@ class SharedClientTheme(Model):
         return replace(self, base_mix=base_mix)
 
     def set_base_theme(
-        self, base_theme: BaseThemeType = BaseThemeType.UNSET
+        self, base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET
     ) -> SharedClientTheme:
         """
         Set the base theme of the theme.

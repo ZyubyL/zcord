@@ -3,14 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar, Literal
 
-from zcord import bitfields
+from zcord import bitfields, enums
 from zcord.cdn import CDN
-from zcord.enums import (
-    ExplicitContentFilterLevel,
-    MessageNotificationLevel,
-    MFALevel,
-    VerificationLevel,
-)
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.emoji import Emoji
@@ -67,17 +61,17 @@ class Guild(Model):
     AFK timeout, in seconds.
     """
 
-    verification_level: VerificationLevel
+    verification_level: enums.VerificationLevel
     """
     Verification level of the guild.
     """
 
-    default_message_notifications: MessageNotificationLevel
+    default_message_notifications: enums.MessageNotificationLevel
     """
     Default message notification level.
     """
 
-    explicit_content_filter: ExplicitContentFilterLevel
+    explicit_content_filter: enums.ExplicitContentFilterLevel
     """
     Explicit content filter level.
     """
@@ -97,7 +91,7 @@ class Guild(Model):
     A list of enabled guild features.
     """
 
-    mfa_level: MFALevel
+    mfa_level: enums.MFALevel
     """
     Required MFA level for the guild.
     """
@@ -248,10 +242,10 @@ class Guild(Model):
         "id": Snowflake,
         "owner_id": Snowflake,
         "afk_channel_id": Snowflake,
-        "verification_level": VerificationLevel,
-        "default_message_notifications": MessageNotificationLevel,
-        "explicit_content_filter": ExplicitContentFilterLevel,
-        "mfa_level": MFALevel,
+        "verification_level": enums.VerificationLevel,
+        "default_message_notifications": enums.MessageNotificationLevel,
+        "explicit_content_filter": enums.ExplicitContentFilterLevel,
+        "mfa_level": enums.MFALevel,
         "roles": Role,
         "application_id": Snowflake,
         "system_channel_id": Snowflake,

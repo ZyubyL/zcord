@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from zcord.enums.interaction import InteractionType
+from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.channel import Channel
@@ -26,7 +26,7 @@ class InteractionMetadata(Model):
     The ID of the interaction.
     """
 
-    type: InteractionType
+    type: enums.InteractionType
     """
     The type of the interaction.
     """
@@ -68,7 +68,7 @@ class InteractionMetadata(Model):
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
-        "type": InteractionType,
+        "type": enums.InteractionType,
         "user": User,
         "original_response_message_id": Snowflake,
         "target_user": User,
@@ -98,7 +98,7 @@ class Interaction(Model):
     The ID of the application this interaction is for.
     """
 
-    type: InteractionType
+    type: enums.InteractionType
     """
     The type of interaction.
     """
@@ -189,7 +189,7 @@ class Interaction(Model):
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
         "application_id": Snowflake,
-        "type": InteractionType,
+        "type": enums.InteractionType,
         "guild": Guild,
         "guild_id": Snowflake,
         "channel": Channel,

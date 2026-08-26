@@ -4,13 +4,7 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from zcord import bitfields
-from zcord.enums.message import (
-    MessageActivityType,
-    MessageReferenceType,
-    MessageType,
-)
-from zcord.errors import ZcordError
+from zcord import bitfields, enums, errors
 from zcord.missing import MISSING
 from zcord.models.application import Application
 from zcord.models.attachment import Attachment
@@ -38,7 +32,7 @@ class MessageActivity(Model):
     Contain info about a [`Message`][zcord.Message]'s activity.
     """
 
-    type: MessageActivityType
+    type: enums.MessageActivityType
     """
     The type of activity.
     """
@@ -49,7 +43,7 @@ class MessageActivity(Model):
     """
 
     _transforms: ClassVar[dict] = {
-        "type": MessageActivityType,
+        "type": enums.MessageActivityType,
     }
 
 
@@ -59,7 +53,7 @@ class MessageReference(Model):
     Contain the additional data of the referenced message.
     """
 
-    type: MessageReferenceType = MessageReferenceType.DEFAULT
+    type: enums.MessageReferenceType = enums.MessageReferenceType.DEFAULT
     """
     The type of reference.
     """
@@ -86,7 +80,7 @@ class MessageReference(Model):
     """
 
     _transforms: ClassVar[dict] = {
-        "type": MessageReferenceType,
+        "type": enums.MessageReferenceType,
         "message_id": Snowflake,
         "channel_id": Snowflake,
         "guild_id": Snowflake,
@@ -171,7 +165,7 @@ class Message(Model):
     Whether this message is pinned.
     """
 
-    type: MessageType | MISSING = MISSING
+    type: enums.MessageType | MISSING = MISSING
     """
     The type of the message.
     """
@@ -299,7 +293,7 @@ class Message(Model):
         "webhook_id": Snowflake,
         "activity": MessageActivity,
         "application": Application,
-        "type": MessageType,
+        "type": enums.MessageType,
         "application_id": Snowflake,
         "flags": bitfields.MessageFlags,
         "message_reference": MessageReference,
@@ -514,7 +508,9 @@ class Message(Model):
                 - Cannot send a message that already has an ID.
         """
         if self.id is not MISSING:
-            raise ZcordError("Cannot send a message that already has an ID")
+            raise errors.ZcordError(
+                "Cannot send a message that already has an ID"
+            )
         assert self._state is not MISSING
         return await self._state.send_message(channel_id=channel, message=self)
 
@@ -528,9 +524,11 @@ class Message(Model):
                 - Cannot reply to a message with no channel ID.
         """
         if self.id is MISSING:
-            raise ZcordError("Cannot reply to a message with no ID.")
+            raise errors.ZcordError("Cannot reply to a message with no ID.")
         if self.channel_id is MISSING:
-            raise ZcordError("Cannot reply to a message with no channel ID.")
+            raise errors.ZcordError(
+                "Cannot reply to a message with no channel ID."
+            )
         message = replace(
             message,
             message_reference=MessageReference(message_id=self.id),
