@@ -8,6 +8,7 @@ from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.channel import Channel
 from zcord.models.guild import Guild
+from zcord.models.member import Member
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
 
@@ -148,7 +149,7 @@ class Interaction(Model):
     The channel ID this interaction was sent from.
     """
 
-    member: Any | MISSING = MISSING
+    member: Member | MISSING = MISSING
     """
     The guild member who invoked the interaction.
     """
@@ -196,4 +197,5 @@ class Interaction(Model):
         "channel_id": Snowflake,
         "user": User,
         "message": Message,
+        "member": Member,
     }

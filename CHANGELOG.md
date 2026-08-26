@@ -9,8 +9,13 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
     - `PrimaryGuild`.
     - `Collectibles`.
     - `Team`, `TeamMember`.
+    - `DefaultReaction`.
+    - `ThreadMetadata`, `ThreadMember`.
+    - `Member`.
   - Enums:
     - `MemberStatus`.
+  - Bitfields:
+    - `MemberFlags`.
   - Documentation:
     - Mermaid class diagram script.
     - Class diagram page.

@@ -16,6 +16,7 @@ from .component import (
     StringSelect,
     UserSelect,
 )
+from .default_reaction import DefaultReaction
 from .embed import (
     Embed,
     EmbedAuthor,
@@ -28,6 +29,7 @@ from .embed import (
 from .emoji import Emoji
 from .guild import Guild
 from .interaction import Interaction, InteractionMetadata
+from .member import Member
 from .message import Message, MessageActivity, MessageReference, MessageSnapshot
 from .poll import Poll, PollAnswer, PollAnswerCount, PollMedia, PollResults
 from .primary_guild import PrimaryGuild
@@ -37,6 +39,8 @@ from .shared_client_theme import SharedClientTheme
 from .snowflake import Snowflake
 from .sticker import Sticker, StickerPack
 from .team import Team, TeamMember
+from .thread_member import ThreadMember
+from .thread_metadata import ThreadMetadata
 from .user import User
 
 __all__ = [
@@ -48,6 +52,7 @@ __all__ = [
     "Channel",
     "Collectibles",
     "Component",
+    "DefaultReaction",
     "DefaultValue",
     "Embed",
     "EmbedAuthor",
@@ -60,6 +65,7 @@ __all__ = [
     "Guild",
     "Interaction",
     "InteractionMetadata",
+    "Member",
     "Message",
     "MessageActivity",
     "MessageReference",
@@ -87,6 +93,8 @@ __all__ = [
     "StringSelect",
     "Team",
     "TeamMember",
+    "ThreadMember",
+    "ThreadMetadata",
     "User",
     "UserSelect",
 ]

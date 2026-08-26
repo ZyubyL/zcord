@@ -7,7 +7,10 @@ from typing import TYPE_CHECKING, Any, ClassVar
 from zcord import bitfields, enums, errors
 from zcord.missing import MISSING
 from zcord.models.base import Model
+from zcord.models.default_reaction import DefaultReaction
 from zcord.models.snowflake import Snowflake
+from zcord.models.thread_member import ThreadMember
+from zcord.models.thread_metadata import ThreadMetadata
 from zcord.models.user import User
 
 if TYPE_CHECKING:
@@ -149,12 +152,12 @@ class Channel(Model):
     [^1]: Stop counting at 50.
     """
 
-    thread_metadata: Any | MISSING = MISSING
+    thread_metadata: ThreadMetadata | MISSING = MISSING
     """
     Thread specific fields.
     """
 
-    member: Any | MISSING = MISSING
+    member: ThreadMember | MISSING = MISSING
     """
     Thread member object for the current user, if they have joined the thread.
     """
@@ -196,7 +199,7 @@ class Channel(Model):
     `GUILD_FORUM` channel.
     """
 
-    default_reaction_emoji: Any | None | MISSING = MISSING
+    default_reaction_emoji: DefaultReaction | None | MISSING = MISSING
     """
     The emoji to show in the add reaction button on a thread in a
     `GUILD_FORUM` channel.
@@ -233,6 +236,9 @@ class Channel(Model):
         "last_pin_timestamp": datetime.fromisoformat,
         "flags": bitfields.ChannelFlags,
         "applied_tags": Snowflake,
+        "thread_metadata": ThreadMetadata,
+        "default_reaction_emoji": DefaultReaction,
+        "member": ThreadMember,
     }
 
     async def send(self, message: Message) -> Message:

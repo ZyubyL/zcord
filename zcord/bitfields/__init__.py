@@ -7,6 +7,7 @@ from .attachment import AttachmentFlags
 from .channel import ChannelFlags
 from .embed import EmbedFlags, EmbedMediaFlags
 from .guild import SystemChannelFlags
+from .member import MemberFlags
 from .message import MessageFlags
 from .role import RoleFlags
 from .user import UserFlags
@@ -17,6 +18,7 @@ __all__ = [
     "ChannelFlags",
     "EmbedFlags",
     "EmbedMediaFlags",
+    "MemberFlags",
     "MessageFlags",
     "RoleFlags",
     "SystemChannelFlags",
