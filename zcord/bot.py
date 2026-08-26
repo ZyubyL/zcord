@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import asyncio
+import contextlib
 from typing import TYPE_CHECKING
 
 from zcord.models.channel import Channel
@@ -35,6 +37,13 @@ class Bot:
 
     async def close(self) -> None:
         await self._state._http.close()
+
+    async def start(self) -> None:
+        """
+        Start the bot loop.
+        """
+        with contextlib.suppress(KeyboardInterrupt):
+            await asyncio.Event().wait()
 
     async def fetch_current_application(self) -> Application:
         """

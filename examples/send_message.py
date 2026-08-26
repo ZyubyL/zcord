@@ -1,3 +1,5 @@
+import contextlib
+
 import config
 
 import zcord
@@ -62,9 +64,11 @@ async def main():
                 )
             )
         )
+        await bot.start()
 
 
 if __name__ == "__main__":
     import asyncio
 
-    asyncio.run(main())
+    with contextlib.suppress(KeyboardInterrupt):
+        asyncio.run(main())
