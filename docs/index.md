@@ -26,7 +26,10 @@ import zcord
 
 async def main():
     """You should not commit your bot token to version control."""
-    async with zcord.Bot("your token here"):
+    async with zcord.Bot(
+        "your token here",
+        intents=None  # You don't need websocket for this
+    ):
         await (
             zcord.Message.new()
             .set_content("Hello, from Zcord!")

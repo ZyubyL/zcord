@@ -143,6 +143,11 @@ class Intents(IntFlag):
     GUILD_MESSAGE_POLLS = 1 << 24
     DIRECT_MESSAGE_POLLS = 1 << 25
 
+    NONE = 0
+    """
+    Disable all intents.
+    """
+
     DEFAULT = (
         GUILDS
         | GUILD_MODERATION

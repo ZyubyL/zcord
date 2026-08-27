@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 class ConnectionState:
     _http: HTTPClient
-    _gateway: Gateway
+    _gateway: Gateway | None = None
     _channels: dict[int, Channel]
     _users: dict[int, User]
 

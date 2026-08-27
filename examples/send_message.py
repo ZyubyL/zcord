@@ -4,7 +4,7 @@ import config
 
 import zcord
 import zcord.enums as zenums
-from zcord import MISSING, bitfields
+from zcord import MISSING
 
 zcord.setup_logging()
 
@@ -18,9 +18,7 @@ async def main():
 
     You should not commit your bot token to version control.
     """
-    async with zcord.Bot(
-        config.DISCORD_TOKEN, intents=bitfields.Intents.DEFAULT
-    ) as bot:
+    async with zcord.Bot(config.DISCORD_TOKEN, intents=None) as bot:
         application = await bot.fetch_current_application()
         bot_user = await bot.fetch_current_user()
         channel = await bot.fetch_channel(config.CHANNEL_ID)

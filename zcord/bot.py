@@ -28,7 +28,9 @@ class Bot:
     Represent the bot client
     """
 
-    def __init__(self, token: str, *, intents: bitfields.Intents) -> None:
+    def __init__(
+        self, token: str, *, intents: bitfields.Intents | None
+    ) -> None:
         """
         Params:
             token:
@@ -41,9 +43,14 @@ class Bot:
                     HTTP requests.
         """
         self._state = ConnectionState(token)
-        self._state._gateway = Gateway(
-            http=self._state._http, token=token, intents=intents
-        )
+        if intents is not None:
+            self._state._gateway = Gateway(
+                http=self._state._http, token=token, intents=intents
+            )
+        else:
+            log.warning(
+                "No intents provided, bot will only perform HTTP requests."
+            )
         Message._state = self._state
         Channel._state = self._state
 
@@ -55,19 +62,21 @@ class Bot:
 
     async def close(self) -> None:
         log.info("Closing...")
-        await self._state._gateway.close()
+        if self._state._gateway:
+            await self._state._gateway.close()
         await self._state._http.close()
 
     async def start(self) -> None:
         """
         Start the bot loop.
         """
-        log.debug("zcord version %s", version("zcord"))
+        log.debug("Zcord version %s", version("zcord"))
         log.debug("aiohttp version %s", aiohttp.__version__)
         done = asyncio.Event()
 
         async def _connect() -> None:
-            await self._state._gateway.run()
+            if self._state._gateway is not None:
+                await self._state._gateway.run()
             done.set()
 
         task = asyncio.create_task(_connect())
