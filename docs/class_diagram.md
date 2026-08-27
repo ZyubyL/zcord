@@ -11,9 +11,13 @@ classDiagram
 
     Component <|-- ActionRow
     Model <|-- Application
+    Model <|-- Attachment
+    Model <|-- AvatarDecorationData
     Component <|-- Button
     Model <|-- Channel
+    Model <|-- Collectibles
     Model <|-- Component
+    Model <|-- DefaultReaction
     Model <|-- DefaultValue
     Model <|-- Embed
     Model <|-- EmbedAuthor
@@ -26,7 +30,9 @@ classDiagram
     Model <|-- Guild
     Model <|-- Interaction
     Model <|-- InteractionMetadata
+    Model <|-- Member
     Model <|-- Message
+    Model <|-- Nameplate
     Model <|-- Poll
     Model <|-- PollAnswer
     Model <|-- PollAnswerCount
@@ -44,6 +50,9 @@ classDiagram
     Model <|-- SharedClientTheme
     Model <|-- Sticker
     SelectMenu <|-- StringSelect
+    Model <|-- Team
+    Model <|-- ThreadMember
+    Model <|-- ThreadMetadata
     Model <|-- User
     SelectMenu <|-- UserSelect
 ```
