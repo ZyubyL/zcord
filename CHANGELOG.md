@@ -5,12 +5,15 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 ## 2026.0.5 - [Unreleased]
 
 ### Added:
+  - Gateway connection.
   - Models:
     - `InstallParams`.
     - `InteractionResponse`.
   - Enums:
     - `EventWebhookStatus`.
     - `InteractionCallbackType`.
+  - Bitfields:
+    - `Intents`.
 
 ### Fixed:
   - `enums.InteractionContextType` not being exported.
