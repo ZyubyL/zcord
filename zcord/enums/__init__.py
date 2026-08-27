@@ -2,6 +2,7 @@
 Discord API enums module.
 """
 
+from .application import EventWebhookStatus
 from .channel import ChannelType
 from .component import ButtonStyle, ComponentType
 from .guild import (
@@ -21,6 +22,7 @@ __all__ = [
     "ButtonStyle",
     "ChannelType",
     "ComponentType",
+    "EventWebhookStatus",
     "ExplicitContentFilterLevel",
     "InteractionType",
     "MFALevel",

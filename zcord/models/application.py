@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar, Literal
+from typing import ClassVar, Literal
 
-from zcord import bitfields
+from zcord import bitfields, enums
 from zcord.cdn import CDN
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.guild import Guild
+from zcord.models.install_params import InstallParams
 from zcord.models.snowflake import Snowflake
 from zcord.models.team import Team
 from zcord.models.user import User
@@ -152,7 +153,7 @@ class Application(Model):
     Webhook URL for the app to receive webhook events.
     """
 
-    event_webhooks_status: Any | MISSING = MISSING
+    event_webhooks_status: enums.EventWebhookStatus | MISSING = MISSING
     """
     Status of the app's webhook events.
     """
@@ -167,7 +168,7 @@ class Application(Model):
     A list of tags describing the content and functionality of the app.
     """
 
-    install_params: Any | MISSING = MISSING
+    install_params: InstallParams | MISSING = MISSING
     """
     Settings for the app's default in-app authorization link.
     """
@@ -191,6 +192,7 @@ class Application(Model):
         "guild": Guild,
         "primary_sku_id": Snowflake,
         "team": Team,
+        "install_params": InstallParams,
     }
 
     def icon_url(

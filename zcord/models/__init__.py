@@ -28,6 +28,7 @@ from .embed import (
 )
 from .emoji import Emoji
 from .guild import Guild
+from .install_params import InstallParams
 from .interaction import Interaction, InteractionMetadata
 from .member import Member
 from .message import Message, MessageActivity, MessageReference, MessageSnapshot
@@ -63,6 +64,7 @@ __all__ = [
     "EmbedVideo",
     "Emoji",
     "Guild",
+    "InstallParams",
     "Interaction",
     "InteractionMetadata",
     "Member",
