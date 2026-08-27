@@ -11,7 +11,11 @@ from .guild import (
     MFALevel,
     VerificationLevel,
 )
-from .interaction import InteractionType
+from .interaction import (
+    InteractionCallbackType,
+    InteractionContextType,
+    InteractionType,
+)
 from .message import MessageActivityType, MessageReferenceType, MessageType
 from .shared_client_theme import BaseThemeType
 from .sticker import StickerFormatType, StickerType
@@ -24,6 +28,8 @@ __all__ = [
     "ComponentType",
     "EventWebhookStatus",
     "ExplicitContentFilterLevel",
+    "InteractionCallbackType",
+    "InteractionContextType",
     "InteractionType",
     "MFALevel",
     "MembershipState",

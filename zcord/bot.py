@@ -5,6 +5,7 @@ import contextlib
 from typing import TYPE_CHECKING
 
 from zcord.models.channel import Channel
+from zcord.models.interaction import Interaction
 from zcord.models.message import Message
 from zcord.state import ConnectionState
 
@@ -28,6 +29,7 @@ class Bot:
         self._state = ConnectionState(token)
         Message._state = self._state
         Channel._state = self._state
+        Interaction._state = self._state
 
     async def __aenter__(self) -> Bot:
         return self

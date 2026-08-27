@@ -7,8 +7,13 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 ### Added:
   - Models:
     - `InstallParams`.
+    - `InteractionResponse`.
   - Enums:
     - `EventWebhookStatus`.
+    - `InteractionCallbackType`.
+
+### Fixed:
+  - `enums.InteractionContextType` not being exported.
 
 ## 2026.0.4 - 2026/08/27
 

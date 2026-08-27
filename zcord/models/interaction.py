@@ -180,7 +180,7 @@ class Interaction(Model):
     The guild's preferred locale.
     """
 
-    context: Any | MISSING = MISSING
+    context: enums.InteractionContextType | MISSING = MISSING
     """
     The context where the interaction was triggered from.
     """
@@ -199,3 +199,9 @@ class Interaction(Model):
         "message": Message,
         "member": Member,
     }
+
+
+@dataclass(frozen=True, slots=True)
+class InteractionResponse(Model):
+    type: enums.InteractionCallbackType
+    data: Any | MISSING = MISSING
