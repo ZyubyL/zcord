@@ -7,6 +7,7 @@ from zcord.http.rest import REST
 from zcord.missing import MISSING
 
 if TYPE_CHECKING:
+    from zcord.gateway import Gateway
     from zcord.models import (
         Application,
         Channel,
@@ -21,6 +22,7 @@ if TYPE_CHECKING:
 
 class ConnectionState:
     _http: HTTPClient
+    _gateway: Gateway
     _channels: dict[int, Channel]
     _users: dict[int, User]
 

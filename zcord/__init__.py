@@ -2,6 +2,7 @@
 
 from importlib.metadata import version
 
+from ._logging import setup_logging
 from .bot import Bot
 from .missing import MISSING
 from .models import (
@@ -115,4 +116,5 @@ __all__ = [
     "ThreadMetadata",
     "User",
     "UserSelect",
+    "setup_logging",
 ]

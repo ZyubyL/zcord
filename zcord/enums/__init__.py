@@ -5,6 +5,7 @@ Discord API enums module.
 from .application import EventWebhookStatus
 from .channel import ChannelType
 from .component import ButtonStyle, ComponentType
+from .gateway_opcode import GatewayOpcode
 from .guild import (
     ExplicitContentFilterLevel,
     MessageNotificationLevel,
@@ -28,6 +29,7 @@ __all__ = [
     "ComponentType",
     "EventWebhookStatus",
     "ExplicitContentFilterLevel",
+    "GatewayOpcode",
     "InteractionCallbackType",
     "InteractionContextType",
     "InteractionType",

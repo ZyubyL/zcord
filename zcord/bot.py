@@ -2,18 +2,25 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import logging
+from importlib.metadata import version
 from typing import TYPE_CHECKING
 
+import aiohttp
+
+from zcord.gateway import Gateway
 from zcord.models.channel import Channel
-from zcord.models.interaction import Interaction
 from zcord.models.message import Message
 from zcord.state import ConnectionState
 
 if TYPE_CHECKING:
+    from zcord import bitfields
     from zcord.models.application import Application
     from zcord.models.guild import Guild
     from zcord.models.snowflake import Snowflake
     from zcord.models.user import User
+
+log = logging.getLogger(__name__)
 
 
 class Bot:
@@ -21,15 +28,24 @@ class Bot:
     Represent the bot client
     """
 
-    def __init__(self, token: str) -> None:
+    def __init__(self, token: str, *, intents: bitfields.Intents) -> None:
         """
         Params:
-            token: The bot token.
+            token:
+                The bot token.
+            intents:
+                The intents to use for gateway connection.
+
+                Notes:
+                    If you don't provide intents, the bot can only perform \
+                    HTTP requests.
         """
         self._state = ConnectionState(token)
+        self._state._gateway = Gateway(
+            http=self._state._http, token=token, intents=intents
+        )
         Message._state = self._state
         Channel._state = self._state
-        Interaction._state = self._state
 
     async def __aenter__(self) -> Bot:
         return self
@@ -38,14 +54,26 @@ class Bot:
         await self.close()
 
     async def close(self) -> None:
+        log.info("Closing...")
+        await self._state._gateway.close()
         await self._state._http.close()
 
     async def start(self) -> None:
         """
         Start the bot loop.
         """
+        log.debug("zcord version %s", version("zcord"))
+        log.debug("aiohttp version %s", aiohttp.__version__)
+        done = asyncio.Event()
+
+        async def _connect() -> None:
+            await self._state._gateway.run()
+            done.set()
+
+        task = asyncio.create_task(_connect())
         with contextlib.suppress(KeyboardInterrupt):
-            await asyncio.Event().wait()
+            await done.wait()
+        task.cancel()
 
     async def fetch_current_application(self) -> Application:
         """
