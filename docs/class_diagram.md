@@ -28,6 +28,7 @@ classDiagram
     Model <|-- EmbedVideo
     Model <|-- Emoji
     Model <|-- Guild
+    Model <|-- InstallParams
     Model <|-- Interaction
     Model <|-- InteractionMetadata
     Model <|-- Member
@@ -51,6 +52,7 @@ classDiagram
     Model <|-- Sticker
     SelectMenu <|-- StringSelect
     Model <|-- Team
+    Model <|-- TeamMember
     Model <|-- ThreadMember
     Model <|-- ThreadMetadata
     Model <|-- User
