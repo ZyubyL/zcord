@@ -1,17 +1,21 @@
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
+from zcord import enums
 from zcord.http.client import HTTPClient
 from zcord.http.rest import REST
 from zcord.missing import MISSING
+from zcord.models import (
+    Guild,
+)
 
 if TYPE_CHECKING:
     from zcord.gateway import Gateway
     from zcord.models import (
         Application,
         Channel,
-        Guild,
         Message,
         Snowflake,
         Sticker,
@@ -20,14 +24,35 @@ if TYPE_CHECKING:
     )
 
 
+log = logging.getLogger(__name__)
+
+
 class ConnectionState:
     _http: HTTPClient
     _gateway: Gateway | None = None
     _channels: dict[int, Channel]
     _users: dict[int, User]
+    _guilds: dict[int, Guild]
 
     def __init__(self, token: str):
         self._http = HTTPClient(token)
+        self._channels = {}
+        self._users = {}
+        self._guilds = {}
+
+    def _update_cache(self, event: str, data: dict) -> None:
+        try:
+            match enums.GatewayEvent(event):
+                case enums.GatewayEvent.GUILD_CREATE:
+                    guild = Guild._from_payload(data)
+                    self._guilds[guild.id] = guild
+                case enums.GatewayEvent.GUILD_UPDATE:
+                    guild = Guild._from_payload(data)
+                    self._guilds[guild.id] = guild
+                case _:
+                    pass
+        except Exception:
+            log.exception("Failed to update cache for event %s", event)
 
     async def send_message(
         self, *, channel_id: int | Snowflake | Channel, message: Message

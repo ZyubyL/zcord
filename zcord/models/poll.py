@@ -31,6 +31,16 @@ class PollMedia(Model):
         "emoji": Emoji,
     }
 
+    _is_question: bool = False
+
+    def _check_before(self) -> None:
+        if self.text is MISSING or not self.text:
+            raise ValueError("text is required")
+        if self._is_question and len(self.text) > 300:
+            raise ValueError("question must be 300 characters or less")
+        if len(self.text) > 55:
+            raise ValueError("answer must be 55 characters or less")
+
 
 @dataclass(frozen=True, slots=True)
 class PollAnswer(Model):
@@ -166,7 +176,7 @@ class Poll(Model):
     }
 
     def _check_before(self) -> None:
-        if not self.question or self.question is MISSING:
+        if self.question is MISSING:
             raise ValueError("question is required")
         if not self.answers or self.answers is MISSING:
             raise ValueError("answers are required")
@@ -207,7 +217,9 @@ class Poll(Model):
         """
         Set the question of the poll.
         """
-        return replace(self, question=PollMedia(text=question))
+        return replace(
+            self, question=PollMedia(text=question, _is_question=True)
+        )
 
     def set_answers(
         self,

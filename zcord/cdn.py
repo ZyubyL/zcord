@@ -79,7 +79,7 @@ class CDN:
         format = _pick_best_format(format, hash)
         return f"""
             {_BASE_URL}/guild-tag-badges/{guild_id}/{hash}.{format}?size={size}
-        """
+        """.strip()
 
     @staticmethod
     def guild_icon(

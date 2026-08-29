@@ -1,24 +1,26 @@
-import contextlib
+"""
+Send a message to a channel when the bot starts up.
+"""
+
+import asyncio
 
 import config
 
 import zcord
-import zcord.enums as zenums
-from zcord import MISSING
+from zcord import MISSING, enums
 
 zcord.setup_logging()
 
+bot = zcord.Bot(
+    # Change the config.py.example to config.py and add your bot token
+    config.DISCORD_TOKEN,
+    # Putting intents to None means the bot will not open websocket connections
+    intents=None,
+)
+
 
 async def main():
-    """
-    [[**READ THIS**]]
-
-    You can rename `config.py.example` to `config.py` and fill in your bot \
-    token and channel ID.
-
-    You should not commit your bot token to version control.
-    """
-    async with zcord.Bot(config.DISCORD_TOKEN, intents=None) as bot:
+    async with bot:
         application = await bot.fetch_current_application()
         bot_user = await bot.fetch_current_user()
         channel = await bot.fetch_channel(config.CHANNEL_ID)
@@ -61,16 +63,11 @@ async def main():
                 zcord.ActionRow.new().add_button(
                     zcord.Button.new()
                     .set_label("View source")
-                    .set_style(zenums.ButtonStyle.LINK)
+                    .set_style(enums.ButtonStyle.LINK)
                     .set_url("https://github.com/thqnhz/zcord")
                 )
             )
         )
-        await bot.start()
 
 
-if __name__ == "__main__":
-    import asyncio
-
-    with contextlib.suppress(KeyboardInterrupt):
-        asyncio.run(main())
+asyncio.run(main())

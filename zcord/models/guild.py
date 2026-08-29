@@ -203,7 +203,7 @@ class Guild(Model):
     The maximum number of members for the guild.
     """
 
-    premium_subsription_count: int | MISSING = MISSING
+    premium_subscription_count: int | MISSING = MISSING
     """
     The number of boosts this guild currently has.
     """

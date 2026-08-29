@@ -5,7 +5,7 @@ from enum import IntFlag
 
 class Intents(IntFlag):
     """
-    Represent the gateway intent sent to Discord when connecting.
+    Represent the gateway intent sent to Discord when connecting to the gateway.
 
     | Flag | Value |
     |------|-------|

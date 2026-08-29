@@ -49,7 +49,7 @@ class ThreadMetadata(Model):
     [^1]: Only populated for threads created after January 1, 2022.
     """
 
-    transforms: ClassVar[dict] = {
+    _transforms: ClassVar[dict] = {
         "archive_timestamp": datetime.fromtimestamp,
         "create_timestamp": datetime.fromtimestamp,
     }

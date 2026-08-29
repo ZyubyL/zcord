@@ -7,7 +7,7 @@ from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class DefaultReaction(Model):
     """
     Represent the emoji to use as the default way to react to a forum post.

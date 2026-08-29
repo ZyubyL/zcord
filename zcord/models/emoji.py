@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
-from typing import ClassVar, Literal
+from typing import TYPE_CHECKING, ClassVar, Literal
 
 import regex
 
@@ -12,8 +11,11 @@ from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
 
+if TYPE_CHECKING:
+    import re
 
-@dataclass
+
+@dataclass(frozen=True, slots=True)
 class Emoji(Model):
     """
     Represent a Discord emoji.
@@ -65,7 +67,7 @@ class Emoji(Model):
         "user": User,
     }
 
-    REGEX: ClassVar[re.Pattern] = re.compile(
+    REGEX: ClassVar[re.Pattern] = regex.compile(
         r"^<?(?:(?P<animated>a):)?(?P<name>[^:]+):(?P<id>\d+)>?$"
     )
 

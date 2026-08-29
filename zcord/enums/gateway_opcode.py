@@ -9,3 +9,6 @@ class GatewayOpcode(IntEnum):
     HEARTBEAT_ACK = 11
     IDENTIFY = 2
     DISPATCH = 0
+    RESUME = 6
+    RECONNECT = 7
+    INVALID_SESSION = 9

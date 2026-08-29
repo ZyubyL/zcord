@@ -11,7 +11,7 @@ from zcord.models.user import User
 
 
 @dataclass(frozen=True, slots=True)
-class TeamMember:
+class TeamMember(Model):
     """
     Represent a developer team member.
     """

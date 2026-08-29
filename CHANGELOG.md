@@ -5,18 +5,31 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 ## 2026.0.5 - [Unreleased]
 
 ### Added:
-  - Gateway connection.
+  - Gateway connection:
+    - Event dispatching, using `Bot.on(GatewayEvent, callback)` (or `Bot.once` for one-time handlers).
   - Models:
     - `InstallParams`.
     - `InteractionResponse`.
   - Enums:
     - `EventWebhookStatus`.
     - `InteractionCallbackType`.
+    - `GatewayEvent`.
   - Bitfields:
     - `Intents`.
+  - `PollMedia` text length checks.
+  - `Bot.run` for auto setting up logging and starting the bot.
+  - Basic caching
 
 ### Fixed:
   - `enums.InteractionContextType` not being exported.
+  - `enums.EventWebhookStatus` is empty.
+  - Missing `frozen=True, slots=True` on `DefaultReaction` and `Emoji`.
+  - Typo in `Guild.premium_subscription_count`.
+  - `TeamMember` did not derive from `Model`.
+  - Missing leading underscore in `ThreadMetadata._transform`
+
+### Changed:
+  - Use `regex` instead of `re` to compile both patterns in `Emoji`.
 
 ## 2026.0.4 - 2026/08/27
 
