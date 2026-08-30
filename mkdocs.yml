@@ -45,7 +45,7 @@ plugins:
       strip_title_tags: false
   - document-dates:
       position: top
-      type: date
+      type: timeago
       show_author: false
   - search:
       enabled: true
