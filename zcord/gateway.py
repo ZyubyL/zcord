@@ -12,11 +12,13 @@ import orjson
 
 from zcord import bitfields, enums
 from zcord.enums.gateway_opcode import GatewayOpcode
+from zcord.http.rest import REST
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from zcord.http import HTTPClient
+    from zcord.models._gateway import _GetGatewayBotResponse
 
 log = logging.getLogger(__name__)
 
@@ -43,17 +45,27 @@ class Gateway:
         self._heartbeat_interval: float = 0
         self._heartbeat_task: asyncio.Task[None] | None = None
         self._heartbeat_ack = asyncio.Event()
+        self._heartbeat_timeout = asyncio.Event()
         self._resume_url: str | None = None
         self._session_id: str | None = None
         self._reconnect_event = asyncio.Event()
 
+        self._gateway_response: _GetGatewayBotResponse | None = None
+
         self._backoff = 0.0  # Reconnect backoff
         self._closed = False
 
-    async def _get_wss_url(self) -> str:
-        _, data = await self._http.request("GET", "/gateway/bot")
-        assert isinstance(data, dict)
-        return data["url"]
+    @property
+    def ws_url(self) -> str | None:
+        if self._resume_url is not None:
+            url = self._resume_url
+        elif self._gateway_response is not None:
+            url = self._gateway_response.url
+        else:
+            url = None
+        if url is None:
+            return None
+        return f"{url}?v={self.VERSION}&encoding={self.ENCODING}"
 
     async def _handle_connection(
         self, ws: aiohttp.ClientWebSocketResponse
@@ -64,36 +76,45 @@ class Gateway:
                 aiohttp.WSMsgType.CLOSING,
             ):
                 break
+
             if msg.type != aiohttp.WSMsgType.TEXT:
                 continue
-            payload = orjson.loads(msg.data)
-            op = payload["op"]
-            d = payload.get("d")
-            s = payload.get("s")
-            if s is not None:
-                self._sequence = s
-            match op:
-                case GatewayOpcode.HELLO:
-                    await self._on_hello(d)
-                case GatewayOpcode.HEARTBEAT_ACK:
-                    log.debug("Heartbeat ACK received")
-                    self._heartbeat_ack.set()
-                case GatewayOpcode.HEARTBEAT:
-                    await self._send_heartbeat()
-                case GatewayOpcode.DISPATCH:
-                    t = payload.get("t")
-                    self._on_dispatch(t, d)
-                case GatewayOpcode.RECONNECT:
-                    log.info("Resuming connection...")
-                    await self._disconnect()
-                case GatewayOpcode.INVALID_SESSION:
-                    log.info("Invalid session, reconnecting...")
-                    self._session_id = None
-                    self._resume_url = None
-                    self._sequence = None
-                    await self._disconnect()
-                case _:
-                    log.debug("Unhandled opcode: %s", op)
+
+            await self._handle_ws_msg(msg)
+
+        self._heartbeat_timeout.clear()
+
+    def _update_sequence(self, payload: dict) -> None:
+        s = payload.get("s")
+        if s is not None:
+            self._sequence = s
+
+    async def _handle_ws_msg(self, msg: aiohttp.WSMessage) -> None:
+        payload = orjson.loads(msg.data)
+        op = payload["op"]
+        d = payload.get("d")
+        self._update_sequence(payload)
+
+        match op:
+            case GatewayOpcode.HELLO:
+                await self._on_hello(d)
+            case GatewayOpcode.HEARTBEAT_ACK:
+                log.debug("Heartbeat ACK received")
+                self._heartbeat_ack.set()
+            case GatewayOpcode.HEARTBEAT:
+                await self._send_heartbeat()
+            case GatewayOpcode.DISPATCH:
+                t = payload.get("t")
+                self._on_dispatch(t, d)
+            case GatewayOpcode.RECONNECT:
+                log.info("Resuming connection...")
+                await self._disconnect()
+            case GatewayOpcode.INVALID_SESSION:
+                log.info("Invalid session, reconnecting...")
+                self._reset_session()
+                await self._disconnect()
+            case _:
+                log.debug("Unhandled opcode: %s", op)
 
     async def _on_hello(self, d: dict) -> None:
         self._heartbeat_interval = d["heartbeat_interval"] / 1000
@@ -101,16 +122,26 @@ class Gateway:
             "Hello received, heartbeat interval: %s",
             self._heartbeat_interval,
         )
+        self._cancel_heartbeat_task(renew=True)
+        if self._session_id is not None:
+            await self._send_resume()
+            return
+        await self._send_identify()
+
+    def _reset_session(self) -> None:
+        self._session_id = None
+        self._resume_url = None
+        self._sequence = None
+        self._gateway_response = None
+
+    def _cancel_heartbeat_task(self, renew: bool = False) -> None:
         if self._heartbeat_task:
             self._heartbeat_task.cancel()
-        self._heartbeat_task = asyncio.create_task(self._heartbeat_loop())
-        if self._session_id is not None:
-            await self._resume()
-            return
-        log.debug("Sending identify...")
-        await self._identify()
+        if renew:
+            self._heartbeat_task = asyncio.create_task(self._heartbeat_loop())
 
-    async def _resume(self) -> None:
+    async def _send_resume(self) -> None:
+        log.debug("Sending resume...")
         await self._send(
             {
                 "op": GatewayOpcode.RESUME,
@@ -122,7 +153,8 @@ class Gateway:
             }
         )
 
-    async def _identify(self) -> None:
+    async def _send_identify(self) -> None:
+        log.debug("Sending identify...")
         await self._send(
             {
                 "op": GatewayOpcode.IDENTIFY,
@@ -138,94 +170,129 @@ class Gateway:
             }
         )
 
-    async def _heartbeat_loop(self) -> None:
+    async def _first_heartbeat(self) -> None:
         jitter = random.random()
         await asyncio.sleep(self._heartbeat_interval * jitter)
+        if self._closed:
+            return
         await self._send_heartbeat()
+
+    async def _wait_for_heartbeat_ack(self) -> None:
+        await asyncio.wait_for(
+            self._heartbeat_ack.wait(), timeout=self._heartbeat_interval
+        )
+        self._heartbeat_ack.clear()
+
+    async def _heartbeat_loop(self) -> None:
+        await self._first_heartbeat()
 
         while not self._closed:
             try:
-                await asyncio.wait_for(
-                    self._heartbeat_ack.wait(), timeout=self._heartbeat_interval
-                )
-                self._heartbeat_ack.clear()
+                await self._wait_for_heartbeat_ack()
             except TimeoutError:
-                if self._session and not self._session.closed:
-                    await self._session.close(
-                        code=aiohttp.WSCloseCode.GOING_AWAY,
-                        message=b"heartbeat timeout",
-                    )
+                log.warning("Heart beat timed out")
+                self._heartbeat_timeout.set()
+                await self._close_session(message=b"heartbeat timeout")
                 return
+
             await asyncio.sleep(self._heartbeat_interval)
             await self._send_heartbeat()
 
     async def _send_heartbeat(self) -> None:
+        log.debug("Sending heartbeat...")
         await self._send({"op": GatewayOpcode.HEARTBEAT, "d": self._sequence})
-        log.debug("Sent heartbeat")
 
     def _on_dispatch(self, name: str | None, data: Any) -> None:
         log.debug("Dispatch: %s", name)
         if name == str(enums.GatewayEvent.READY):
             self._on_ready(data)
+        # forward to external handlers
         if self._dispatch and name:
             self._dispatch(name, data)
 
     def _on_ready(self, data: dict) -> None:
         log.info("Gateway ready")
         self._backoff = 0.0
-        self._resume_url = data.get("resume_gateway_url")
-        self._session_id = data.get("session_id")
+        self._resume_url = data["resume_gateway_url"]
+        self._session_id = data["session_id"]
 
     async def _send(self, payload: dict) -> None:
         if self._session and not self._session.closed:
             await self._session.send_str(orjson.dumps(payload).decode())
+        else:
+            log.debug("Session closed while trying to send payload %s", payload)
+
+    async def _get_gateway_bot(self) -> None:
+        if not self._gateway_response:
+            self._gateway_response = await REST._get_gateway_bot(self._http)
+
+    async def connect(self) -> None:
+        if self.ws_url is None:
+            await self._get_gateway_bot()
+
+        # There's no way after trying to get the ws url it's still None
+        if self.ws_url is None:
+            raise RuntimeError("Cannot get websocket url")
+
+        log.info("Connecting to gateway...")
+        log.debug("%s", self.ws_url)
+        try:
+            async with (
+                aiohttp.ClientSession() as session,
+                session.ws_connect(self.ws_url) as ws,
+            ):
+                self._session = ws
+                await self._handle_connection(ws)
+        except (aiohttp.ClientError, OSError) as e:
+            log.warning("Failed to connect to gateway: %s", e)
+        finally:
+            self._session = None
+
+    @property
+    def reconnect_delay(self) -> float:
+        return self._backoff + random.random()
+
+    async def try_reconnect(self) -> None:
+        log.info("Reconnecting in %.2f seconds...", self.reconnect_delay)
+        self._reconnect_event.clear()
+        with contextlib.suppress(TimeoutError):
+            await asyncio.wait_for(
+                self._reconnect_event.wait(), timeout=self.reconnect_delay
+            )
+        self._increase_backoff()
+
+    def _increase_backoff(self) -> None:
+        self._backoff = min(self._backoff + 1.0, 60.0)
 
     async def run(self) -> None:
         """
         Connect to the gateway and start the event loop.
         """
         while not self._closed:
-            if self._resume_url:
-                url = f"{self._resume_url}?v={self.VERSION}&encoding={self.ENCODING}"  # noqa: E501
-            else:
-                wss_url = await self._get_wss_url()
-                url = f"{wss_url}?v={self.VERSION}&encoding={self.ENCODING}"
+            await self.connect()
 
-            log.info("Connecting to gateway...")
-            try:
-                async with (
-                    aiohttp.ClientSession() as session,
-                    session.ws_connect(url) as ws,
-                ):
-                    self._session = ws
-                    await self._handle_connection(ws)
-            except (aiohttp.ClientError, OSError) as e:
-                log.warning("Failed to connect to gateway: %s", e)
-            finally:
-                self._session = None
+            await self.try_reconnect()
 
-            delay = self._backoff + random.random()
-            log.info("Reconnecting in %s seconds...", delay)
-            self._reconnect_event.clear()
-            with contextlib.suppress(TimeoutError):
-                await asyncio.wait_for(
-                    self._reconnect_event.wait(), timeout=delay
-                )
-            self._backoff = min(self._backoff + 1.0, 60.0)
-
-    async def _disconnect(self) -> None:
-        if self._heartbeat_task:
-            self._heartbeat_task.cancel()
+    async def _close_session(
+        self,
+        *,
+        code: aiohttp.WSCloseCode = aiohttp.WSCloseCode.GOING_AWAY,
+        message: bytes = b"",
+    ) -> None:
         if self._session and not self._session.closed:
-            await self._session.close(code=aiohttp.WSCloseCode.GOING_AWAY)
+            await self._session.close(code=code, message=message)
+
+    async def _disconnect(
+        self,
+        *,
+        code: aiohttp.WSCloseCode = aiohttp.WSCloseCode.GOING_AWAY,
+        message: bytes = b"",
+    ) -> None:
+        self._heartbeat_timeout.clear()
+        self._cancel_heartbeat_task()
+        await self._close_session(code=code, message=message)
 
     async def close(self) -> None:
+        await self._disconnect(code=aiohttp.WSCloseCode.OK)
         self._closed = True
         self._reconnect_event.set()
-        if self._heartbeat_task:
-            self._heartbeat_task.cancel()
-        if self._session and not self._session.closed:
-            await self._session.close(
-                code=aiohttp.WSCloseCode.OK,
-                message=b"",
-            )

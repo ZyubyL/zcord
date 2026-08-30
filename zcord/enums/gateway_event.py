@@ -38,3 +38,8 @@ class GatewayEvent(Enum):
 
     The event contains the message's [`Message`][zcord.Message] object.
     """
+
+    RESUMED = "RESUMED"
+    """
+    The connection to the websocket has been resumed.
+    """

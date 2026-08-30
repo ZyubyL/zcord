@@ -14,6 +14,7 @@ from zcord.models import (
     StickerPack,
     User,
 )
+from zcord.models._gateway import _GetGatewayBotResponse
 
 if TYPE_CHECKING:
     from zcord.http import HTTPClient
@@ -42,6 +43,12 @@ def _mutually_exclusive(**params) -> None:
 
 
 class REST:
+    @staticmethod
+    async def _get_gateway_bot(http: HTTPClient) -> _GetGatewayBotResponse:
+        _, r = await http.request("GET", "/gateway/bot")
+        assert isinstance(r, dict)
+        return _GetGatewayBotResponse._from_payload(r)
+
     @staticmethod
     async def send_message(
         http: HTTPClient,
