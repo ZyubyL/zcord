@@ -4,6 +4,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
 ## 2026.0.5 - [Unreleased]
 
+### Zcord repository is moved to [zyubyl/zcord](https://github.com/zyubyl/zcord)
+
 ### Added:
   - Gateway connection:
     - Event dispatching, using `Bot.on(GatewayEvent, callback)` (or `Bot.once` for one-time handlers).
