@@ -90,7 +90,7 @@ class Bot:
         """
         Start the bot loop.
         """
-        log.debug("Zcord version %s", version("zcord"))
+        log.debug("zcord version %s", version("zcord"))
         log.debug("aiohttp version %s", aiohttp.__version__)
         done = asyncio.Event()
 
@@ -112,7 +112,22 @@ class Bot:
         """
         if not logging.getLogger("zcord").handlers:
             setup_logging()
-        asyncio.run(self.start())
+
+        async def _main() -> None:
+            try:
+                await self.start()
+            finally:
+                await self.close()
+
+        try:
+            import uvloop
+
+            log.debug("uvloop version %s", uvloop.__version__)
+            uvloop.run(_main())
+        except ImportError:
+            asyncio.run(_main())
+        except KeyboardInterrupt:
+            pass
 
     def on(
         self, event: str | enums.GatewayEvent, callback: Callable[..., Any]
