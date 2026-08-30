@@ -84,8 +84,7 @@ class Gateway:
 
         self._heartbeat_timeout.clear()
 
-    def _update_sequence(self, payload: dict) -> None:
-        s = payload.get("s")
+    def _update_sequence(self, s: int | None) -> None:
         if s is not None:
             self._sequence = s
 
@@ -93,7 +92,8 @@ class Gateway:
         payload = orjson.loads(msg.data)
         op = payload["op"]
         d = payload.get("d")
-        self._update_sequence(payload)
+        s = payload.get("s")
+        self._update_sequence(s)
 
         match op:
             case GatewayOpcode.HELLO:
