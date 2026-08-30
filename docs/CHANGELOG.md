@@ -4,7 +4,7 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
 ## 2026.0.5 - [Unreleased]
 
-### Zcord repository is moved to [zyubyl/zcord](https://github.com/zyubyl/zcord)
+### Zcord repository has been moved to [zyubyl/zcord](https://github.com/zyubyl/zcord)
 
 ### Added:
   - Gateway connection:

@@ -29,9 +29,13 @@ async def on_message_create(message: zcord.Message):
         await message.reply(zcord.Message.new(content="hello"))
 
 
+async def on_ready(user: zcord.User):
+    log.info("%s is ready", user.username)
+
+
 # Bot.once() will only run once when the event is fired
 # Technically, you can use lambda for this if you don't care about typing
-bot.once(enums.GatewayEvent.READY, lambda *_: log.info("Bot is ready"))
+bot.once(enums.GatewayEvent.READY, on_ready)
 # Bot.on() will run every time the event is fired
 bot.on(enums.GatewayEvent.MESSAGE_CREATE, on_message_create)
 

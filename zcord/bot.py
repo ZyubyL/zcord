@@ -14,6 +14,7 @@ from zcord.gateway import Gateway
 from zcord.models.channel import Channel
 from zcord.models.guild import Guild
 from zcord.models.message import Message
+from zcord.models.user import User
 from zcord.state import ConnectionState
 
 if TYPE_CHECKING:
@@ -23,11 +24,11 @@ if TYPE_CHECKING:
     from zcord.models.application import Application
     from zcord.models.base import Model
     from zcord.models.snowflake import Snowflake
-    from zcord.models.user import User
 
 log = logging.getLogger(__name__)
 
 _EVENT_MODELS: dict[str, type[Model]] = {
+    enums.GatewayEvent.READY.value: User,
     enums.GatewayEvent.GUILD_CREATE.value: Guild,
     enums.GatewayEvent.MESSAGE_CREATE.value: Message,
 }
@@ -169,8 +170,13 @@ class Bot:
             # Some other events will have 1 arg: the object
             elif data and event in _EVENT_MODELS:
                 try:
+                    model_data = (
+                        data["user"]
+                        if event == str(enums.GatewayEvent.READY)
+                        else data
+                    )
                     maybe_coro = callback(
-                        _EVENT_MODELS[event]._from_payload(data)
+                        _EVENT_MODELS[event]._from_payload(model_data)
                     )
                 except Exception:
                     log.exception("Failed to dispatch event %s", event)

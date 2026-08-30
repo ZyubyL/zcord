@@ -56,7 +56,7 @@ class ActionRow(Component):
         Set the buttons of the action row.
 
         Raises:
-            ZcordError:
+            errors.ZcordError:
                 Cannot add more components to this action row.
         """
         row = self
@@ -69,7 +69,7 @@ class ActionRow(Component):
         Add a button to the action row.
 
         Raises:
-            ZcordError:
+            errors.ZcordError:
                 Cannot add more components to this action row.
         """
         if self.components is MISSING or not self.components:
