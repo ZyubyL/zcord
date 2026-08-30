@@ -25,8 +25,8 @@ license = "MIT"
 license-files = ["LICENSE"]
 
 [project.urls]
-Homepage = "https://github.com/thqnhz/zcord"
-Issues = "https://github.com/thqnhz/zcord/issues"
+Homepage = "https://github.com/zyubyl/zcord"
+Issues = "https://github.com/zyubyl/zcord/issues"
 Documentation = "https://zcord.readthedocs.io"
 
 [project.optional-dependencies]

@@ -18,7 +18,7 @@ uv add zcord
 
 ## Example
 
-Detailed examples are available in the [examples directory](https://github.com/thqnhz/zcord/tree/master/examples) on GitHub.
+Detailed examples are available in the [examples directory](https://github.com/zyubyl/zcord/tree/master/examples) on GitHub.
 
 ```py
 import zcord

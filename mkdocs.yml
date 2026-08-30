@@ -2,8 +2,8 @@ site_name: Zcord
 site_description: A thin Discord API wrapper written in Python
 site_url: https://zcord.readthedocs.io/
 
-repo_name: thqnhz/zcord
-repo_url: https://github.com/thqnhz/zcord
+repo_name: zyubyl/zcord
+repo_url: https://github.com/zyubyl/zcord
 copyright: Copyright &copy; 2026 ZyubyL
 
 theme:

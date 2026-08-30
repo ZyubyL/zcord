@@ -4,7 +4,7 @@
 </p>
 
 ![license](https://img.shields.io/badge/license-MIT-green?style=flat)
-![Tests](https://github.com/thqnhz/zcord/actions/workflows/test.yml/badge.svg)
+![Tests](https://github.com/zyubyl/zcord/actions/workflows/test.yml/badge.svg)
 ![PyPI version](https://img.shields.io/pypi/v/zcord)
 ![Python versions](https://img.shields.io/pypi/pyversions/zcord)
 
