@@ -12,7 +12,14 @@ theme:
     code: Jetbrains Mono
   name: materialx
   palette:
-    scheme: slate
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
   locale: en
   features:
     - navigation.tabs
@@ -29,6 +36,7 @@ theme:
     - search.share
     - content.code.copy
     - toc.integrate
+    - toc.follow
     - content.footnote.tooltips
     - content.tooltips
   icon:
@@ -82,8 +90,10 @@ markdown_extensions:
   - admonition
   - footnotes
   - pymdownx.details
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      linenums: true
   - pymdownx.inlinehilite
+  - pymdownx.keys
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid

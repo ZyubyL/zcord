@@ -1,16 +1,47 @@
+/* Dark mode */
 :root {
     --crust: #11111b;
     --mantle: #181825;
     --base: #1e1e2e;
     --blue: #89b4fa;
     --peach: #fab387;
+    --yellow: #f9e2af;
     --sapphire: #74c7ec;
     --green: #a6e3a1;
+    --teal: #94e2d5;
     --mauve: #cba6f7;
+    --red: #f38ba8;
+    --maroon: #eba0ac;
     --text: #cdd6f4;
+    --subtext0: #a6adc8;
     --subtext1: #bac2de;
     --overlay2: #9399b2;
 
+}
+
+/* Light mode */
+[data-md-color-scheme="default"] {
+    --crust: #dce0e8;
+    --mantle: #e6e9ef;
+    --base: #eff1f5;
+    --blue: #1e66f5;
+    --peach: #fe640b;
+    --yellow: #df8e1d;
+    --sapphire: #209fb5;
+    --green: #40a02b;
+    --teal: #179299;
+    --mauve: #8839ef;
+    --red: #d20f39;
+    --maroon: #e64553;
+    --text: #4c4f69;
+    --subtext0: #6c6f85;
+    --subtext1: #5c5f77;
+    --overlay2: #7c7f93;
+}
+
+/* Dark mode */
+[data-md-color-scheme="slate"],
+[data-md-color-scheme="default"] {
     /* Read the docs injected version container */
     --readthedocs-flyout-background-color: var(--crust) !important;
     --readthedocs-flyout-current-version-color: var(--green) !important;
@@ -18,13 +49,17 @@
     --readthedocs-flyout-section-heading-color: var(--subtext1) !important;
     --readthedocs-flyout-link-color: var(--blue) !important;
     --readthedocs-flyout-divider-color: var(--overlay2) !important;
-}
 
-[data-md-color-scheme="slate"] {
+    /* Page content */
     --md-primary-fg-color: var(--blue);
     --md-default-bg-color: var(--base);
-    --mx-topbar-bg: var(--mantle);
+    --md-default-fg-color: var(--text);
+
+    /* Topbar */
+    --mx-topbar-bg: var(--crust);
     --mx-topbar-fg: var(--text);
+
+    /* Symbol headings */
     --doc-symbol-attribute-fg-color: var(--peach);
     --doc-symbol-attribute-bg-color: color-mix(
         in oklab,
@@ -49,6 +84,23 @@
         var(--mauve) 20%,
         var(--base)
     );
+
+    /* Codeblocks */
+    --md-code-bg-color: var(--mantle);
+    --md-code-fg-color: var(--subtext1);
+    --md-code-hl-color: var(--blue);
+    --md-code-hl-number-color: var(--peach);
+    --md-code-hl-special-color: var(--red);
+    --md-code-hl-function-color: var(--blue);
+    --md-code-hl-constant-color: var(--maroon);
+    --md-code-hl-keyword-color: var(--mauve);
+    --md-code-hl-string-color: var(--teal);
+    --md-code-hl-name-color: var(--yellow);
+    --md-code-hl-operator-color: var(--sapphire);
+    --md-code-hl-punctuation-color: var(--text);
+    --md-code-hl-comment-color: var(--subtext0);
+    --md-code-hl-generic-color: var(--text);
+    --md-code-hl-variable-color: var(--text);
 }
 
 html {
@@ -59,10 +111,6 @@ html {
     html {
         font-size: 16px;
     }
-}
-
-body {
-    color: var(--text);
 }
 
 .doc-symbol-parameter::after,
