@@ -93,7 +93,7 @@ class Gateway:
             case GatewayCloseCode.DISALLOWED_INTENTS:
                 await self.close()
                 log.error(
-                    "You have enabled some priviledge intents "
+                    "You have enabled some privileged intents "
                     "that are not enabled in the Developer portal."
                 )
 
@@ -225,10 +225,12 @@ class Gateway:
             self._dispatch(name, data)
 
     def _on_ready(self, data: dict) -> None:
-        log.info("Gateway ready")
         self._backoff = 0.0
         self._resume_url = data["resume_gateway_url"]
         self._session_id = data["session_id"]
+        log.info(
+            "Session ID: %s has connected to the gateway", self._session_id
+        )
 
     async def _send(self, payload: dict) -> None:
         if self._session and not self._session.closed:
@@ -248,8 +250,7 @@ class Gateway:
         if self.ws_url is None:
             raise RuntimeError("Cannot get websocket url")
 
-        log.info("Connecting to gateway...")
-        log.debug("%s", self.ws_url)
+        log.debug("Websocket URL: %s", self.ws_url)
         try:
             async with (
                 aiohttp.ClientSession() as session,
@@ -296,6 +297,7 @@ class Gateway:
         message: bytes = b"",
     ) -> None:
         if self._session and not self._session.closed:
+            log.debug("Closing gateway session (code=%s)", code)
             await self._session.close(code=code, message=message)
 
     async def _disconnect(
@@ -304,6 +306,7 @@ class Gateway:
         code: aiohttp.WSCloseCode = aiohttp.WSCloseCode.GOING_AWAY,
         message: bytes = b"",
     ) -> None:
+        log.debug("Gateway disconnected (code=%s)", code)
         self._heartbeat_timeout.clear()
         self._cancel_heartbeat_task()
         await self._close_session(code=code, message=message)
