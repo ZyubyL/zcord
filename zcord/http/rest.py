@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from zcord.errors import MutuallyExclusiveParamsError
+from zcord.errors import HTTPError, MutuallyExclusiveParamsError
 from zcord.missing import MISSING
 from zcord.models import (
     Application,
@@ -64,7 +64,9 @@ class REST:
             f"/channels/{int(channel_id)}/messages",
             json=message._to_payload(),
         )
-        return Message._from_payload(resp)
+        if isinstance(resp, dict):
+            return Message._from_payload(resp)
+        raise HTTPError(f"Failed to send the message: {resp}")
 
     @staticmethod
     async def fetch_channel_messages(
@@ -112,7 +114,9 @@ class REST:
             around=around, before=before, after=after, limit=limit
         )
         _, resp = await http.request("GET", endpoint)
-        return [Message._from_payload(m) for m in (resp or [])]
+        if isinstance(resp, list):
+            return [Message._from_payload(m) for m in resp]
+        raise HTTPError(f"Failed to fetch channel messages: {resp}")
 
     @staticmethod
     async def fetch_channel_message(
@@ -139,7 +143,9 @@ class REST:
         """
         endpoint = f"/channels/{channel_id}/messages/{message_id}"
         _, resp = await http.request("GET", endpoint)
-        return Message._from_payload(resp)
+        if isinstance(resp, dict):
+            return Message._from_payload(resp)
+        raise HTTPError(f"Failed to fetch message ID {message_id}: {resp}")
 
     @staticmethod
     async def fetch_guild(
@@ -160,7 +166,9 @@ class REST:
         """
         endpoint = f"/guilds/{guild_id}{_build_query(with_counts=with_counts)}"
         _, resp = await http.request("GET", endpoint)
-        return Guild._from_payload(resp)
+        if isinstance(resp, dict):
+            return Guild._from_payload(resp)
+        raise HTTPError(f"Failed to fetch guild ID {guild_id}: {resp}")
 
     @staticmethod
     async def fetch_sticker(
@@ -177,7 +185,9 @@ class REST:
                 The request failed.
         """
         _, resp = await http.request("GET", f"/stickers/{sticker_id}")
-        return Sticker._from_payload(resp)
+        if isinstance(resp, dict):
+            return Sticker._from_payload(resp)
+        raise HTTPError(f"Failed to fetch sticker ID {sticker_id}: {resp}")
 
     @staticmethod
     async def fetch_sticker_packs(http: HTTPClient) -> list[StickerPack]:
@@ -192,10 +202,10 @@ class REST:
                 The request failed.
         """
         _, resp = await http.request("GET", "/sticker-packs")
-        sticker_packs = (
-            resp.get("sticker_packs", []) if isinstance(resp, dict) else []
-        )
-        return [StickerPack._from_payload(r) for r in sticker_packs]
+        if isinstance(resp, dict):
+            sticker_packs = resp.get("sticker_packs", [])
+            return [StickerPack._from_payload(r) for r in sticker_packs]
+        raise HTTPError("Failed to fetch sticker packs: {resp}")
 
     @staticmethod
     async def fetch_sticker_pack(
@@ -212,7 +222,9 @@ class REST:
                 The request failed.
         """
         _, resp = await http.request("GET", f"/sticker-packs/{pack_id}")
-        return StickerPack._from_payload(resp)
+        if isinstance(resp, dict):
+            return StickerPack._from_payload(resp)
+        raise HTTPError(f"Failed to fetch sticker pack ID {pack_id}: {resp}")
 
     @staticmethod
     async def fetch_guild_stickers(
@@ -229,7 +241,9 @@ class REST:
                 The request failed.
         """
         _, resp = await http.request("GET", f"/guilds/{int(guild_id)}/stickers")
-        return [Sticker._from_payload(r) for r in (resp or [])]
+        if isinstance(resp, list):
+            return [Sticker._from_payload(r) for r in (resp or [])]
+        raise HTTPError(f"Failed to fetch guild stickers: {resp}")
 
     @staticmethod
     async def fetch_guild_sticker(
@@ -251,7 +265,9 @@ class REST:
         _, resp = await http.request(
             "GET", f"/guilds/{int(guild_id)}/stickers/{sticker_id}"
         )
-        return Sticker._from_payload(resp)
+        if isinstance(resp, dict):
+            return Sticker._from_payload(resp)
+        raise HTTPError(f"Failed to fetch guild sticker: {resp}")
 
     @staticmethod
     async def create_guild_sticker(
@@ -364,8 +380,10 @@ class REST:
             + _build_query(after=after, limit=limit)
         )
         _, resp = await http.request("GET", endpoint)
-        users = resp.get("users", []) if isinstance(resp, dict) else []
-        return [User._from_payload(user) for user in users]
+        if isinstance(resp, dict):
+            users = resp.get("users", [])
+            return [User._from_payload(user) for user in users]
+        raise HTTPError(f"Failed to fetch poll answer voters: {resp}")
 
     @staticmethod
     async def end_poll(
@@ -386,7 +404,9 @@ class REST:
         """
         endpoint = f"/channels/{int(channel_id)}/polls/{int(message_id)}/expire"
         _, resp = await http.request("POST", endpoint)
-        return Message._from_payload(resp)
+        if isinstance(resp, dict):
+            return Message._from_payload(resp)
+        raise HTTPError(f"Failed to end the poll: {resp}")
 
     @staticmethod
     async def fetch_current_application(http: HTTPClient) -> Application:
@@ -402,7 +422,9 @@ class REST:
         """
         endpoint = "/applications/@me"
         _, resp = await http.request("GET", endpoint)
-        return Application._from_payload(resp)
+        if isinstance(resp, dict):
+            return Application._from_payload(resp)
+        raise HTTPError(f"Failed to fetch current application: {resp}")
 
     @staticmethod
     async def fetch_channel(
@@ -420,7 +442,9 @@ class REST:
         """
         endpoint = f"/channels/{int(channel_id)}"
         _, resp = await http.request("GET", endpoint)
-        return Channel._from_payload(resp)
+        if isinstance(resp, dict):
+            return Channel._from_payload(resp)
+        raise HTTPError(f"Failed to fetch channel ID {channel_id}: {resp}")
 
     @staticmethod
     async def fetch_user(http: HTTPClient, user_id: int | Snowflake) -> User:
@@ -436,7 +460,9 @@ class REST:
         """
         endpoint = f"/users/{int(user_id)}"
         _, resp = await http.request("GET", endpoint)
-        return User._from_payload(resp)
+        if isinstance(resp, dict):
+            return User._from_payload(resp)
+        raise HTTPError(f"Failed to fetch user ID {user_id}")
 
     @staticmethod
     async def fetch_current_user(http: HTTPClient) -> User:
@@ -451,5 +477,8 @@ class REST:
                 The request failed.
         """
         endpoint = "/users/@me"
-        _, resp = await http.request("GET", endpoint)
+        code, resp = await http.request("GET", endpoint)
+        # TODO: This is kinda temporary
+        if code == 401:
+            raise HTTPError("Invalid token has been passed")
         return User._from_payload(resp)

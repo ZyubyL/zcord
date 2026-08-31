@@ -10,6 +10,7 @@ import aiohttp
 
 from zcord import enums
 from zcord._logging import setup_logging
+from zcord.errors import HTTPError
 from zcord.gateway import Gateway
 from zcord.models.channel import Channel
 from zcord.models.guild import Guild
@@ -96,6 +97,11 @@ class Bot:
         done = asyncio.Event()
 
         async def _connect() -> None:
+            try:
+                await self.fetch_current_user()
+            except HTTPError as e:
+                log.fatal(e)
+                return done.set()
             if self._state._gateway is not None:
                 try:
                     await self._state._gateway.run()

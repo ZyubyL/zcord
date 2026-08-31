@@ -3,8 +3,6 @@ from __future__ import annotations
 import aiohttp
 import orjson
 
-from zcord.errors import HTTPError
-
 
 class HTTPClient:
     BASE_URL = "https://discord.com/api/v10"
@@ -28,16 +26,13 @@ class HTTPClient:
 
     async def request(
         self, method: str, endpoint: str, *, json: dict | list | None = None
-    ) -> tuple[int, dict | list[dict] | None]:
+    ) -> tuple[int, dict | list[dict] | str | None]:
         """
         Perform a HTTP request.
 
         Returns:
             A tuple of the HTTP status code and the response JSON.
-
-        Raises:
-            HTTPError:
-                The request returned a non-OK status code.
+            Or a tuple of the HTTP status code and the error message.
         """
         async with self.session.request(
             method, self.BASE_URL + endpoint, json=json
@@ -46,4 +41,4 @@ class HTTPClient:
                 if resp.status == 204:
                     return resp.status, None
                 return resp.status, orjson.loads(await resp.read())
-            raise HTTPError(f"{resp.status} {resp.reason}")
+            return resp.status, resp.reason
