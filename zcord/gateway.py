@@ -111,7 +111,8 @@ class Gateway:
                 await self._disconnect()
             case GatewayOpcode.INVALID_SESSION:
                 log.info("Invalid session, reconnecting...")
-                self._reset_session()
+                if not d:
+                    self._reset_session()
                 await self._disconnect()
             case _:
                 log.debug("Unhandled opcode: %s", op)
