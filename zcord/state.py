@@ -43,16 +43,16 @@ class ConnectionState:
     def _update_cache(self, event: str, data: dict) -> None:
         try:
             match enums.GatewayEvent(event):
-                case enums.GatewayEvent.GUILD_CREATE:
-                    guild = Guild._from_payload(data)
-                    self._guilds[guild.id] = guild
-                case enums.GatewayEvent.GUILD_UPDATE:
+                case (
+                    enums.GatewayEvent.GUILD_CREATE
+                    | enums.GatewayEvent.GUILD_UPDATE
+                ):
                     guild = Guild._from_payload(data)
                     self._guilds[guild.id] = guild
                 case _:
                     pass
         except Exception:
-            log.exception("Failed to update cache for event %s", event)
+            log.warning("Failed to update cache for event %s", event)
 
     async def send_message(
         self, *, channel_id: int | Snowflake | Channel, message: Message

@@ -11,7 +11,7 @@ import aiohttp
 import orjson
 
 from zcord import bitfields, enums
-from zcord.enums.gateway_opcode import GatewayOpcode
+from zcord.enums.gateway import GatewayCloseCode, GatewayOpcode
 from zcord.http.rest import REST
 
 if TYPE_CHECKING:
@@ -83,6 +83,19 @@ class Gateway:
             await self._handle_ws_msg(msg)
 
         self._heartbeat_timeout.clear()
+        await self._handle_ws_close_msg(ws.close_code)
+
+    async def _handle_ws_close_msg(self, close_code: int | None) -> None:
+        if close_code is None:
+            return
+        log.debug("WS was closed with code: %d", close_code)
+        match close_code:
+            case GatewayCloseCode.DISALLOWED_INTENTS:
+                await self.close()
+                log.error(
+                    "You have enabled some priviledge intents "
+                    "that are not enabled in the Developer portal."
+                )
 
     def _update_sequence(self, s: int | None) -> None:
         if s is not None:
@@ -254,6 +267,8 @@ class Gateway:
         return self._backoff + random.random()
 
     async def try_reconnect(self) -> None:
+        if self._closed:
+            return
         log.info("Reconnecting in %.2f seconds...", self.reconnect_delay)
         self._reconnect_event.clear()
         with contextlib.suppress(TimeoutError):

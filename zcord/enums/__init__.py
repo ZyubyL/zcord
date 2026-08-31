@@ -5,7 +5,7 @@ Discord API enums module.
 from .application import EventWebhookStatus
 from .channel import ChannelType
 from .component import ButtonStyle, ComponentType
-from .gateway_event import GatewayEvent
+from .gateway import GatewayEvent
 from .guild import (
     ExplicitContentFilterLevel,
     MessageNotificationLevel,
