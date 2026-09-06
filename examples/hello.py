@@ -13,7 +13,9 @@ import config
 import zcord
 from zcord import MISSING, bitfields, enums
 
-log = logging.getLogger(__file__)
+log = logging.getLogger(__name__)
+
+zcord.setup_logging(logging.DEBUG)
 
 bot = zcord.Bot(
     # Change the config.py.example to config.py and add your bot token
@@ -24,19 +26,20 @@ bot = zcord.Bot(
 )
 
 
-async def on_message_create(message: zcord.Message):
+@bot.on(enums.GatewayEvent.MESSAGE_CREATE)
+async def on_message_create(message: zcord.Message) -> None:
     if message.content is not MISSING and message.content.lower() == "hi":
         await message.reply(zcord.Message.new(content="hello"))
 
 
-async def on_ready(user: zcord.User):
+# Alternatively, you can pass the callback directly
+# The callback is also not required to be asynchronous
+# @bot.once(enums.GatewayEvent.READY)  # Instead of this
+def on_ready(user: zcord.User) -> None:
     log.info("%s is ready", user.username)
 
 
-# Bot.once() will only run once when the event is fired
-# Technically, you can use lambda for this if you don't care about typing
-bot.once(enums.GatewayEvent.READY, on_ready)
-# Bot.on() will run every time the event is fired
-bot.on(enums.GatewayEvent.MESSAGE_CREATE, on_message_create)
+bot.once(enums.GatewayEvent.READY, on_ready)  # You do this
+
 
 bot.run()

@@ -4,7 +4,7 @@ import asyncio
 import contextlib
 import logging
 from importlib.metadata import version
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, overload
 
 import aiohttp
 
@@ -136,21 +136,90 @@ class Bot:
         except KeyboardInterrupt:
             pass
 
+    @overload
     def on(
-        self, event: str | enums.GatewayEvent, callback: Callable[..., Any]
-    ) -> None:
+        self,
+        event: str | enums.GatewayEvent,
+        callback: Callable[..., Any],
+    ) -> None: ...
+    @overload
+    def on(
+        self,
+        event: str | enums.GatewayEvent,
+    ) -> Callable[..., Any]: ...
+    def on(
+        self,
+        event: str | enums.GatewayEvent,
+        callback: Callable[..., Any] | None = None,
+    ) -> Callable[..., Any] | None:
         """
         Register a persistent event listener.
-        """
-        self._events.setdefault(str(event), []).append((callback, False))
 
+        Examples:
+            There are 2 ways of registering events:
+
+            1. By passing the callback function
+            ```py
+            async def callback_func(...):
+                ...
+
+            bot.on(GatewayEvent.READY, callback_func)
+            ```
+            2. Using decorator
+            ```py
+            @bot.on(GatewayEvent.READY)
+            async def callback_func(...):
+                ...
+            ```
+            Notes:
+                The callback function is not required to be asynchronous.
+
+            The same goes for [`Bot.once`][zcord.Bot.once]
+        """
+        return self._register_event_callback(
+            event=event, callback=callback, one_time=False
+        )
+
+    @overload
     def once(
-        self, event: str | enums.GatewayEvent, callback: Callable[..., Any]
-    ) -> None:
+        self,
+        event: str | enums.GatewayEvent,
+        callback: Callable[..., Any],
+    ) -> None: ...
+    @overload
+    def once(
+        self,
+        event: str | enums.GatewayEvent,
+    ) -> Callable[..., Any]: ...
+    def once(
+        self,
+        event: str | enums.GatewayEvent,
+        callback: Callable[..., Any] | None = None,
+    ) -> Callable[..., Any] | None:
         """
         Register a one-time event listener.
+
+        Examples:
+            See [`Bot.on`][zcord.Bot.on] for examples.
         """
-        self._events.setdefault(str(event), []).append((callback, True))
+        return self._register_event_callback(
+            event=event, callback=callback, one_time=True
+        )
+
+    def _register_event_callback(
+        self,
+        *,
+        event: str | enums.GatewayEvent,
+        callback: Callable[..., Any] | None = None,
+        one_time: bool,
+    ) -> Callable[..., Any] | None:
+        def _decorator(cb: Callable[..., Any]) -> Callable[..., Any]:
+            self._events.setdefault(str(event), []).append((cb, one_time))
+            return cb
+
+        if callback is None:  # Acts as a decorator
+            return _decorator
+        _decorator(callback)
 
     def _dispatch(self, event: str, *args: Any) -> None:
         """
@@ -161,38 +230,11 @@ class Bot:
             callback for callback in listeners if not callback[1]
         ]  # keep persistent listeners
         for callback, _ in listeners:
-            data = args[0] if args else None
-            # Update event will have 2 args: old and new
-            if data and event in _UPDATE_EVENTS:
-                model, cache_attr = _UPDATE_EVENTS[event]
-                obj_id = int(data["id"])
-                old = getattr(self._state, cache_attr, {}).get(obj_id)
-                new = model._from_payload(data)
-                try:
-                    maybe_coro = callback(old, new)
-                except Exception:
-                    log.exception("Failed to dispatch event %s", event)
-                    continue
-            # Some other events will have 1 arg: the object
-            elif data and event in _EVENT_MODELS:
-                try:
-                    model_data = (
-                        data["user"]
-                        if event == str(enums.GatewayEvent.READY)
-                        else data
-                    )
-                    maybe_coro = callback(
-                        _EVENT_MODELS[event]._from_payload(model_data)
-                    )
-                except Exception:
-                    log.exception("Failed to dispatch event %s", event)
-                    continue
-            else:
-                try:
-                    maybe_coro = callback(*args) if args else callback()
-                except Exception:
-                    log.exception("Failed to dispatch event %s", event)
-                    continue
+            try:
+                maybe_coro = callback(*self._build_dispatch_args(event, args))
+            except Exception:
+                log.exception("Failed to dispatch event %s", event)
+                continue
             if asyncio.iscoroutine(maybe_coro):
                 task = asyncio.create_task(maybe_coro)
                 self._tasks.add(task)
@@ -200,6 +242,25 @@ class Bot:
 
         if args:
             self._state._update_cache(event, args[0])
+
+    def _build_dispatch_args(
+        self, event: str, args: tuple[Any, ...]
+    ) -> tuple[Any, ...]:
+        data = args[0] if args else None
+        # Update event will have 2 args: old and new
+        if data and event in _UPDATE_EVENTS:
+            model, cache_attr = _UPDATE_EVENTS[event]
+            obj_id = int(data["id"])
+            old = getattr(self._state, cache_attr, {}).get(obj_id)
+            new = model._from_payload(data)
+            return old, new
+        # Some other events will have 1 arg: the object
+        if data and event in _EVENT_MODELS:
+            model_data = (
+                data["user"] if event == str(enums.GatewayEvent.READY) else data
+            )
+            return (_EVENT_MODELS[event]._from_payload(model_data),)
+        return args
 
     async def fetch_current_application(self) -> Application:
         """

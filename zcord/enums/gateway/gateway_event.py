@@ -15,28 +15,28 @@ class GatewayEvent(Enum):
     """
     The bot has successfully connected to the gateway.
 
-    The event contains the bot's [`User`][zcord.User] object.
+    This event contains the bot's [`User`][zcord.User] object.
     """
 
     GUILD_CREATE = "GUILD_CREATE"
     """
     The bot has joined a guild.
 
-    The event contains the guild's [`Guild`][zcord.Guild] object.
+    This event contains the guild's [`Guild`][zcord.Guild] object.
     """
 
     GUILD_UPDATE = "GUILD_UPDATE"
     """
     The guild has been updated.
 
-    The event contains the old and updated [`Guild`][zcord.Guild] objects.
+    This event contains the old and updated [`Guild`][zcord.Guild] objects.
     """
 
     MESSAGE_CREATE = "MESSAGE_CREATE"
     """
     A message has been created.
 
-    The event contains the message's [`Message`][zcord.Message] object.
+    This event contains a [`Message`][zcord.Message] object.
     """
 
     RESUMED = "RESUMED"
