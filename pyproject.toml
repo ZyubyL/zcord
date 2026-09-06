@@ -31,7 +31,7 @@ Documentation = "https://zcord.readthedocs.io"
 
 [project.optional-dependencies]
 speed = [
-    "uvloop>=0.22.1",
+    "uvloop==0.22.1",
 ]
 docs = [
     "mkdocs>=1.6.1",
