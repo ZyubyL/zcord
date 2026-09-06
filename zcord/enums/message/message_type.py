@@ -85,35 +85,3 @@ class MessageType(IntEnum):
     GUILD_INCIDENT_REPORT_FALSE_ALARM = 39
     PURCHASE_NOTIFICATION = 44
     POLL_RESULT = 46
-
-
-class MessageActivityType(IntEnum):
-    """
-    Type of message activity.
-
-    | Type | Value |
-    |------|-------|
-    | `JOIN` | `1` |
-    | `SPECTATE` | `2` |
-    | `LISTEN` | `3` |
-    | `JOIN_REQUEST` | `5` |
-    """
-
-    JOIN = 1
-    SPECTATE = 2
-    LISTEN = 3
-    JOIN_REQUEST = 5
-
-
-class MessageReferenceType(IntEnum):
-    """
-    Type of referenced message.
-
-    | Type | Value | Description |
-    |------|-------|-------------|
-    | `DEFAULT` | `0` | A message reply. |
-    | `FORWARD` | `1` | A forwarded message. |
-    """
-
-    DEFAULT = 0
-    FORWARD = 1

@@ -49,23 +49,3 @@ class ComponentType(IntEnum):
     RADIO_GROUP = 21
     CHECKBOX_GROUP = 22
     CHECKBOX = 23
-
-
-class ButtonStyle(IntEnum):
-    """
-    | Name | Value |
-    |------|-------|
-    | `PRIMARY` | `1` |
-    | `SECONDARY` | `2` |
-    | `SUCCESS` | `3` |
-    | `DANGER` | `4` |
-    | `LINK` | `5` |
-    | `PREMIUM` | `6` |
-    """
-
-    PRIMARY = 1
-    SECONDARY = 2
-    SUCCESS = 3
-    DANGER = 4
-    LINK = 5
-    PREMIUM = 6

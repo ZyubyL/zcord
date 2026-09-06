@@ -69,16 +69,20 @@ bot = zcord.Bot(
         # To receive message content from the gateway
         | bitfields.Intents.MESSAGE_CONTENT
         # ^ Use the OR operator `|` to combine the bitfields
-    )
+    ),
 )
 
 # Bot.once will only fire once on the first time the event is fired
-bot.once(GatewayEvent.READY, lambda user: print(f"Logged in as {user.username}"))
+bot.once(
+    GatewayEvent.READY, lambda user: print(f"Logged in as {user.username}")
+)
+
 
 # You can also pass the handler function (for type hinting)
 async def on_message(message: zcord.Message):
     if message.content is not MISSING and message.content.lower() == "hello":
         await message.reply(zcord.Message.new(content="hi"))
+
 
 # Bot.on will fire every time the event is fired
 bot.on(GatewayEvent.MESSAGE_CREATE, on_message)

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import logging
+
 import aiohttp
 import orjson
+
+log = logging.getLogger(__name__)
 
 
 class HTTPClient:
@@ -34,11 +38,16 @@ class HTTPClient:
             A tuple of the HTTP status code and the response JSON.
             Or a tuple of the HTTP status code and the error message.
         """
+        log.debug("%s %s", method, endpoint)
         async with self.session.request(
             method, self.BASE_URL + endpoint, json=json
         ) as resp:
             if resp.ok:
+                log.debug("%s %s: %d", method, endpoint, resp.status)
                 if resp.status == 204:
                     return resp.status, None
                 return resp.status, orjson.loads(await resp.read())
+            log.debug(
+                "%s %s: %d %s", method, endpoint, resp.status, resp.reason
+            )
             return resp.status, resp.reason
