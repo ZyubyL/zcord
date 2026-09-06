@@ -9,6 +9,7 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 ### Added:
   - Gateway connection:
     - Event dispatching, using `Bot.on(GatewayEvent, callback)` (or `Bot.once` for one-time handlers).
+      - `Bot.on/.once` can also be used as decorator.
   - Models:
     - `InstallParams`.
     - `InteractionResponse`.

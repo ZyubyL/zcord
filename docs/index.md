@@ -72,19 +72,19 @@ bot = zcord.Bot(
     ),
 )
 
+
 # Bot.once will only fire once on the first time the event is fired
-bot.once(
-    GatewayEvent.READY, lambda user: print(f"Logged in as {user.username}")
-)
+@bot.once(GatewayEvent.READY)
+def once_ready(user: zcord.User):
+    print(user.username)
 
 
-# You can also pass the handler function (for type hinting)
 async def on_message(message: zcord.Message):
     if message.content is not MISSING and message.content.lower() == "hello":
         await message.reply(zcord.Message.new(content="hi"))
 
 
-# Bot.on will fire every time the event is fired
+# You can also pass callback function to the method
 bot.on(GatewayEvent.MESSAGE_CREATE, on_message)
 
 # Start the bot
