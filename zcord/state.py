@@ -22,6 +22,7 @@ if TYPE_CHECKING:
         StickerPack,
         User,
     )
+    from zcord.models.application import _ApplicationUpdate
 
 
 log = logging.getLogger(__name__)
@@ -200,6 +201,11 @@ class ConnectionState:
 
     async def fetch_current_application(self) -> Application:
         return await REST.fetch_current_application(self._http)
+
+    async def edit_current_application(
+        self, application: _ApplicationUpdate
+    ) -> Application:
+        return await REST.edit_current_application(self._http, application)
 
     async def fetch_channel(self, channel_id: int | Snowflake) -> Channel:
         return await REST.fetch_channel(self._http, channel_id=channel_id)

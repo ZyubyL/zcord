@@ -2,7 +2,7 @@
 Discord API enums module.
 """
 
-from .application import EventWebhookStatus
+from .application import EventWebhookStatus, WebhookEventType
 from .channel import ChannelType
 from .component import ButtonStyle, ComponentType
 from .gateway import GatewayEvent
@@ -42,4 +42,5 @@ __all__ = [
     "StickerFormatType",
     "StickerType",
     "VerificationLevel",
+    "WebhookEventType",
 ]

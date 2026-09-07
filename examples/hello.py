@@ -15,7 +15,7 @@ from zcord import MISSING, bitfields, enums
 
 log = logging.getLogger(__name__)
 
-zcord.setup_logging(logging.DEBUG)
+zcord.setup_logging()
 
 bot = zcord.Bot(
     # Change the config.py.example to config.py and add your bot token

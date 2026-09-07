@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 from zcord import bitfields, enums
 from zcord.cdn import CDN
@@ -13,11 +13,18 @@ from zcord.models.snowflake import Snowflake
 from zcord.models.team import Team
 from zcord.models.user import User
 
+if TYPE_CHECKING:
+    from zcord.state import ConnectionState
+
 
 @dataclass(frozen=True, slots=True)
 class Application(Model):
     """
     Represent a Discord Application.
+
+    Notes:
+        This class' `set_*()` methods should only be used \
+        after calling `update()`
     """
 
     id: Snowflake
@@ -195,6 +202,8 @@ class Application(Model):
         "install_params": InstallParams,
     }
 
+    _state: ClassVar[ConnectionState | MISSING] = MISSING
+
     def icon_url(
         self,
         *,
@@ -215,3 +224,116 @@ class Application(Model):
             size=size,
             format=format,
         )
+
+    async def edit(
+        self,
+        *,
+        custom_install_url: str | MISSING = MISSING,
+        description: str | MISSING = MISSING,
+        role_connections_verification_url: str | MISSING = MISSING,
+        scopes: tuple[str, ...] | list[str] | MISSING = MISSING,
+        permissions: str | MISSING = MISSING,
+        integration_types_config: dict | MISSING = MISSING,
+        flags: bitfields.ApplicationFlags | MISSING = MISSING,
+        # icon: Any,
+        # cover_image: Any,
+        interactions_endpoint_url: str | MISSING = MISSING,
+        tags: tuple[str, ...] | list[str] | MISSING = MISSING,
+        event_webhooks_url: str | MISSING = MISSING,
+        event_webhooks_status: enums.EventWebhookStatus | MISSING = MISSING,
+        event_webhooks_types: tuple[enums.WebhookEventType, ...]
+        | list[enums.WebhookEventType]
+        | MISSING = MISSING,
+    ) -> Application:
+        """
+        Edit the application.
+
+        Params:
+            custom_install_url:
+                Default custom authorization URL for the app, if enabled
+            description:
+                Description of the app
+            role_connections_verification_url:
+                Role connection verification URL for the app
+            integration_types_config:
+                Default scopes and permissions for each supported installation \
+                context. Value for each key is an integration type \
+                configuration object.
+            flags:
+                App's public flags.
+            icon:
+                Icon for the app (not implemented).
+            cover_image:
+                Default rich presence invite cover image for the app \
+                (not implemented).
+            interactions_endpoint_url:
+                Interactions endpoint URL for the app.
+            tags:
+                List of tags describing the content and functionality \
+                of the app (max of 20 characters per tag). Max of 5 tags.
+            event_webhooks_url:
+                Event webhooks URL for the app to receive webhook events.
+            event_webhooks_status:
+                If webhook events are enabled for the app.
+            event_webhooks_types:
+                List of Webhook event types to subscribe to.
+            scopes:
+                Scopes of the application's default install.
+            permissions:
+                Permissions of the application's default install.
+
+        Notes:
+            - Only the specified parameters will be updated.
+            - `scopes` and `permissions` are either both specified \
+            or either bot emitted. Only specify one of them will results \
+            in it being ignored.
+        """
+        assert self._state is not MISSING
+        return await self._state.edit_current_application(
+            _ApplicationUpdate(
+                custom_install_url=custom_install_url,
+                description=description,
+                role_connections_verification_url=role_connections_verification_url,
+                install_params=InstallParams(
+                    scopes=(*scopes,), permissions=permissions
+                )
+                if scopes is not MISSING and permissions is not MISSING
+                else MISSING,
+                integration_types_config=integration_types_config,
+                flags=flags,
+                # icon=icon
+                # cover_image=cover_image
+                interactions_endpoint_url=interactions_endpoint_url,
+                tags=(*tags,) if tags is not MISSING else MISSING,
+                event_webhooks_url=event_webhooks_url,
+                event_webhooks_status=event_webhooks_status,
+                event_webhooks_types=(*event_webhooks_types,)
+                if event_webhooks_types is not MISSING
+                else MISSING,
+            )
+        )
+
+
+@dataclass
+class _ApplicationUpdate(Model):
+    """
+    Private used class for Application.update
+    """
+
+    # https://docs.discord.com/developers/resources/application#edit-current-application
+    # The main design here is for the rest of the flow not worrying
+    # about a billion params from the update method
+
+    custom_install_url: str | MISSING = MISSING
+    description: str | MISSING = MISSING
+    role_connections_verification_url: str | MISSING = MISSING
+    install_params: InstallParams | MISSING = MISSING
+    integration_types_config: dict | MISSING = MISSING
+    flags: bitfields.ApplicationFlags | MISSING = MISSING
+    icon: Any | MISSING = MISSING
+    cover_image: Any | MISSING = MISSING
+    interactions_endpoint_url: str | MISSING = MISSING
+    tags: tuple[str, ...] | MISSING = MISSING
+    event_webhooks_url: str | MISSING = MISSING
+    event_webhooks_status: enums.EventWebhookStatus | MISSING = MISSING
+    event_webhooks_types: tuple[enums.WebhookEventType, ...] | MISSING = MISSING

@@ -12,6 +12,7 @@ from zcord import enums
 from zcord._logging import setup_logging
 from zcord.errors import HTTPError
 from zcord.gateway import Gateway
+from zcord.models.application import Application
 from zcord.models.channel import Channel
 from zcord.models.guild import Guild
 from zcord.models.message import Message
@@ -22,7 +23,6 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from zcord import bitfields
-    from zcord.models.application import Application
     from zcord.models.base import Model
     from zcord.models.snowflake import Snowflake
 
@@ -72,6 +72,7 @@ class Bot:
             )
         Message._state = self._state
         Channel._state = self._state
+        Application._state = self._state
 
         self._events: dict[str, list[tuple[Callable[..., Any], bool]]] = {}
         self._tasks: set[asyncio.Task] = set()

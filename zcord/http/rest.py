@@ -18,6 +18,7 @@ from zcord.models._gateway import _GetGatewayBotResponse
 
 if TYPE_CHECKING:
     from zcord.http import HTTPClient
+    from zcord.models.application import _ApplicationUpdate
 
 
 def _build_query(**params) -> str:
@@ -422,6 +423,28 @@ class REST:
         """
         endpoint = "/applications/@me"
         _, resp = await http.request("GET", endpoint)
+        if isinstance(resp, dict):
+            return Application._from_payload(resp)
+        raise HTTPError(f"Failed to fetch current application: {resp}")
+
+    @staticmethod
+    async def edit_current_application(
+        http: HTTPClient, application: _ApplicationUpdate
+    ) -> Application:
+        """
+        Edit the current application info.
+
+        Returns:
+            The updated application.
+
+        Raises:
+            HTTPError:
+                The request failed.
+        """
+        endpoint = "/applications/@me"
+        _, resp = await http.request(
+            "PATCH", endpoint, json=application._to_payload()
+        )
         if isinstance(resp, dict):
             return Application._from_payload(resp)
         raise HTTPError(f"Failed to fetch current application: {resp}")
