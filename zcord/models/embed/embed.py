@@ -2,232 +2,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from datetime import datetime
-from typing import ClassVar
+from typing import ClassVar, overload
 
 from zcord import bitfields
 from zcord.missing import MISSING
 from zcord.models.base import Model
-
-
-@dataclass(frozen=True, slots=True)
-class EmbedFooter(Model):
-    """
-    Contain embed's footer info.
-    """
-
-    text: str | MISSING = MISSING
-    """
-    Footer text.
-    """
-
-    icon_url: str | MISSING = MISSING
-    """
-    URL of footer icon.
-    """
-
-    proxy_icon_url: str | MISSING = MISSING
-    """
-    A proxied URL of footer icon.
-    """
-
-    @classmethod
-    def new(
-        cls, *, text: str | MISSING = MISSING, icon_url: str | MISSING = MISSING
-    ) -> EmbedFooter:
-        """
-        Create a new embed footer.
-        """
-        return cls(text=text, icon_url=icon_url)
-
-
-@dataclass(frozen=True, slots=True)
-class EmbedImage(Model):
-    """
-    Contain embed's image info.
-    """
-
-    url: str
-    """
-    Source URL of the image.
-    """
-
-    proxy_url: str | MISSING = MISSING
-    """
-    A proxied URL of the image.
-    """
-
-    height: int | MISSING = MISSING
-    """
-    The image's height.
-    """
-
-    width: int | MISSING = MISSING
-    """
-    The image's width.
-    """
-
-    content_type: str | MISSING = MISSING
-    """
-    The image's media type.
-    """
-
-    placeholder: str | MISSING = MISSING
-    """
-    Thumbhash placeholder of the image.
-    """
-
-    placeholder_version: int | MISSING = MISSING
-    """
-    Version of the placeholder.
-    """
-
-    description: str | MISSING = MISSING
-    """
-    Alt text of the image.
-    """
-
-    flags: bitfields.EmbedMediaFlags | MISSING = MISSING
-    """
-    Embed media flags combined as a bitfield.
-    """
-
-    _transforms: ClassVar[dict] = {
-        "flags": bitfields.EmbedMediaFlags,
-    }
-
-
-@dataclass(frozen=True, slots=True)
-class EmbedVideo(Model):
-    """
-    Contain embed's video info.
-    """
-
-    url: str | MISSING = MISSING
-    """
-    Source URL of the video.
-    """
-
-    proxy_url: str | MISSING = MISSING
-    """
-    A proxied URL of the video.
-    """
-
-    height: int | MISSING = MISSING
-    """
-    The video's height.
-    """
-
-    width: int | MISSING = MISSING
-    """
-    The video's width.
-    """
-
-    content_type: str | MISSING = MISSING
-    """
-    The video's media type.
-    """
-
-    placeholder: str | MISSING = MISSING
-    """
-    Thumbhash placeholder of the video.
-    """
-
-    placeholder_version: int | MISSING = MISSING
-    """
-    Version of the placeholder.
-    """
-
-    description: str | MISSING = MISSING
-    """
-    Alt text of the video.
-    """
-
-    flags: bitfields.EmbedMediaFlags | MISSING = MISSING
-    """
-    Embed media flags combined as a bitfield.
-    """
-
-    _transforms: ClassVar[dict] = {
-        "flags": bitfields.EmbedMediaFlags,
-    }
-
-
-@dataclass(frozen=True, slots=True)
-class EmbedProvider(Model):
-    """
-    Contain embed's provider info.
-    """
-
-    name: str | MISSING = MISSING
-    """
-    Name of the provider.
-    """
-
-    url: str | MISSING = MISSING
-    """
-    URL of the provider.
-    """
-
-
-@dataclass(frozen=True, slots=True)
-class EmbedAuthor(Model):
-    """
-    Contain embed's author info.
-    """
-
-    name: str | MISSING = MISSING
-    """
-    The name of the author.
-    """
-
-    url: str | MISSING = MISSING
-    """
-    The URL of the author.
-    """
-
-    icon_url: str | MISSING = MISSING
-    """
-    The URL of the author icon.
-    """
-
-    proxy_icon_url: str | MISSING = MISSING
-    """
-    A proxied url of the author icon.
-    """
-
-    @classmethod
-    def new(
-        cls,
-        name: str | MISSING = MISSING,
-        url: str | MISSING = MISSING,
-        icon_url: str | MISSING = MISSING,
-    ) -> EmbedAuthor:
-        """
-        Create a new embed author.
-        """
-        return cls(name=name, url=url, icon_url=icon_url)
-
-
-@dataclass(frozen=True, slots=True)
-class EmbedField(Model):
-    """
-    Contain embed's field info.
-    """
-
-    name: str
-    """
-    The name of the field.
-    """
-
-    value: str
-    """
-    The value of the field.
-    """
-
-    inline: bool | MISSING = MISSING
-    """
-    Whether or not this field should display inline.
-    """
+from zcord.models.embed.embed_author import EmbedAuthor
+from zcord.models.embed.embed_field import EmbedField
+from zcord.models.embed.embed_footer import EmbedFooter
+from zcord.models.embed.embed_image import EmbedImage
+from zcord.models.embed.embed_provider import EmbedProvider
+from zcord.models.embed.embed_video import EmbedVideo
 
 
 @dataclass(frozen=True, slots=True)
@@ -386,8 +171,6 @@ class Embed(Model):
         """
         embed = (
             cls(
-                timestamp=timestamp,
-                fields=fields,
                 type="rich",
             )
             .set_url(url)
@@ -396,6 +179,8 @@ class Embed(Model):
             .set_color(color)
             .set_image(image_url)
             .set_thumbnail(thumbnail_url)
+            .set_timestamp(timestamp)
+            .set_fields(fields)
         )
         if footer is not MISSING:
             embed = embed.set_footer(text=footer.text, icon_url=footer.icon_url)
@@ -492,8 +277,19 @@ class Embed(Model):
             return replace(self, thumbnail=MISSING)
         return replace(self, thumbnail=EmbedImage(url=url))
 
+    @overload
+    def set_author(self, author: EmbedAuthor) -> Embed: ...
+    @overload
     def set_author(
         self,
+        *,
+        name: str,
+        url: str | MISSING = MISSING,
+        icon_url: str | MISSING = MISSING,
+    ) -> Embed: ...
+    def set_author(
+        self,
+        author: EmbedAuthor | MISSING = MISSING,
         *,
         name: str | MISSING = MISSING,
         url: str | MISSING = MISSING,
@@ -507,17 +303,43 @@ class Embed(Model):
                 Author name cannot exceed 256 characters.
 
         Notes:
-            Setting `name` to `MISSING` will remove the author.
+            Setting `author` and `name` to `MISSING` removes the author.
+            If `author` is `MISSING` and `name` is falsy it also removes \
+            the author.
         """
-        if name is MISSING or not name:
-            return replace(self, author=MISSING)
-        if len(name) > 256:
+        if author is MISSING:
+            if name is MISSING or not name:
+                return replace(self, author=MISSING)
+            author = EmbedAuthor(name=name, url=url, icon_url=icon_url)
+        if len(author.name) > 256:
             raise ValueError("Author name cannot exceed 256 characters.")
-        return replace(
-            self, author=EmbedAuthor(name=name, url=url, icon_url=icon_url)
-        )
+        return replace(self, author=author)
 
-    def add_field(self, *, name: str, value: str, inline: bool = True) -> Embed:
+    def set_fields(
+        self,
+        fields: tuple[EmbedField, ...] | list[EmbedField] | MISSING = MISSING,
+    ) -> Embed:
+        e = self.remove_fields()
+        if fields is MISSING:
+            return e
+        for f in fields:
+            e = e.add_field(field=f)
+        return e
+
+    @overload
+    def add_field(self, field: EmbedField) -> Embed: ...
+    @overload
+    def add_field(
+        self, *, name: str, value: str, inline: bool = True
+    ) -> Embed: ...
+    def add_field(
+        self,
+        field: EmbedField | MISSING = MISSING,
+        *,
+        name: str | MISSING = MISSING,
+        value: str | MISSING = MISSING,
+        inline: bool = True,
+    ) -> Embed:
         """
         Add a field to the embed.
 
@@ -536,13 +358,16 @@ class Embed(Model):
                 - Cannot add more than 25 fields to an embed.
 
         """
+        if field is MISSING:
+            assert name is not MISSING
+            assert value is not MISSING
+            field = EmbedField(name=name, value=value, inline=inline)
         if self.fields is not MISSING and len(self.fields) >= 25:
             raise ValueError("Cannot add more than 25 fields to an embed.")
-        if len(name) > 256:
+        if len(field.name) > 256:
             raise ValueError("Field name cannot exceed 256 characters.")
-        if len(value) > 1024:
+        if len(field.value) > 1024:
             raise ValueError("Field value cannot exceed 1024 characters.")
-        field = EmbedField(name=name, value=value, inline=inline)
         return replace(
             self,
             fields=(
