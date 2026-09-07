@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from importlib.metadata import version
 
 import aiohttp
 import orjson
@@ -19,7 +20,13 @@ class HTTPClient:
     def session(self) -> aiohttp.ClientSession:
         if self._session is None or self._session.closed:
             self._session = aiohttp.ClientSession(
-                headers={"Authorization": "Bot " + self._token}
+                headers={
+                    "Authorization": "Bot " + self._token,
+                    "User-Agent": (
+                        "DiscordBot (https://github.com/zyubyl/zcord,"
+                        f" {version('zcord')}"
+                    ),
+                }
             )
         return self._session
 
