@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from zcord import bitfields, enums, errors
+from zcord._builders.message_create import _MessageCreate
 from zcord.missing import MISSING
 from zcord.models.application import Application
 from zcord.models.attachment import Attachment
@@ -130,7 +131,7 @@ class Message(Model):
     The timestamp when this message was sent.
     """
 
-    tts: bool | MISSING = MISSING
+    tts: bool = False
     """
     Whether this message is a text-to-speech message.
     """
@@ -314,10 +315,12 @@ class Message(Model):
         cls,
         *,
         content: str | MISSING = MISSING,
+        tts: bool = False,
+        embeds: tuple[Embed, ...] | list[Embed] | MISSING = MISSING,
+        components: tuple[Component, ...] | list[Component] | MISSING = MISSING,
         attachments: tuple[Attachment, ...]
         | list[Attachment]
         | MISSING = MISSING,
-        embeds: tuple[Embed, ...] | list[Embed] | MISSING = MISSING,
         # webhook_id: Snowflake | MISSING = MISSING,
         message_reference: MessageReference | MISSING = MISSING,
         message_snapshots: tuple[MessageSnapshot, ...]
@@ -325,7 +328,6 @@ class Message(Model):
         | MISSING = MISSING,
         referenced_message: Message | None | MISSING = MISSING,
         # thread: Channel | MISSING = MISSING,
-        components: tuple[Component, ...] | list[Component] | MISSING = MISSING,
         # sticker_items: list[Sticker] | MISSING = MISSING,
         poll: Poll | MISSING = MISSING,
         # call: Any | MISSING = MISSING,
@@ -352,6 +354,7 @@ class Message(Model):
             .set_attachments(attachments)
             .set_poll(poll)
             .set_shared_client_theme(shared_client_theme)
+            .set_tts(tts=tts)
         )
 
     def _set_message_snapshots(
@@ -499,20 +502,50 @@ class Message(Model):
         """
         return replace(self, attachments=MISSING)
 
-    async def send(self, channel: int | Snowflake | Channel) -> Message:
+    def set_tts(self, tts: bool = False) -> Message:
+        """
+        Set whether the message is a text-to-speech message or not.
+        """
+        return replace(self, tts=tts)
+
+    async def send(
+        self,
+        channel: int | Snowflake | Channel,
+        *,
+        sticker_ids: tuple[int | Snowflake, ...]
+        | list[int | Snowflake]
+        | MISSING = MISSING,
+        flags: bitfields.MessageFlags | MISSING = MISSING,
+    ) -> Message:
         """
         Send the message to the specified channel.
 
+        Params:
+            sticker_ids:
+                List of max 3 stickers to send with this message.
+            flags:
+                Flags to set for this message.
+
+        Notes:
+            Only `SUPPRESS_EMBEDS`, `SUPPRESS_NOTIFICATIONS`, \
+            `IS_VOICE_MESSAGE`, `IS_COMPONENTS_V2` can be set.
+
         Raises:
+            ValueError:
+                - More than 3 stickers are passed.
+                - Cannot set these flags when sending message.
             ZcordError:
-                - Cannot send a message that already has an ID.
+                Cannot send a message that already has an ID.
         """
         if self.id is not MISSING:
             raise errors.ZcordError(
                 "Cannot send a message that already has an ID"
             )
+        params = _MessageCreate.new(sticker_ids=sticker_ids, flags=flags)
         assert self._state is not MISSING
-        return await self._state.send_message(channel_id=channel, message=self)
+        return await self._state.send_message(
+            channel_id=channel, message=self, params=params
+        )
 
     async def reply(self, message: Message) -> Message:
         """

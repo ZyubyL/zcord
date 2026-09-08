@@ -19,6 +19,7 @@ from zcord.models._gateway import _GetGatewayBotResponse
 if TYPE_CHECKING:
     from zcord.http import HTTPClient
     from zcord.models.application import _ApplicationUpdate
+    from zcord.models.message import _MessageCreate
 
 
 def _build_query(**params) -> str:
@@ -56,6 +57,7 @@ class REST:
         *,
         channel_id: int | Snowflake | Channel,
         message: Message,
+        params: _MessageCreate,
     ) -> Message:
         """
         Send a message to a channel.
@@ -63,7 +65,7 @@ class REST:
         _, resp = await http.request(
             "POST",
             f"/channels/{int(channel_id)}/messages",
-            json=message._to_payload(),
+            json=message._to_payload() | params._to_payload(),
         )
         if isinstance(resp, dict):
             return Message._from_payload(resp)

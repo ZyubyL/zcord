@@ -8,6 +8,7 @@ import config
 
 import zcord
 from zcord import MISSING, enums
+from zcord.bitfields import MessageFlags
 
 zcord.setup_logging()
 
@@ -66,7 +67,8 @@ async def main():
                     .set_style(enums.ButtonStyle.LINK)
                     .set_url("https://github.com/thqnhz/zcord")
                 )
-            )
+            ),
+            flags=MessageFlags.SUPPRESS_NOTIFICATIONS,
         )
 
 

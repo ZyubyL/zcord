@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, ClassVar
 
 from zcord import bitfields, enums, errors
+from zcord._builders.message_create import _MessageCreate
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.default_reaction import DefaultReaction
@@ -241,17 +242,46 @@ class Channel(Model):
         "member": ThreadMember,
     }
 
-    async def send(self, message: Message) -> Message:
+    async def send(
+        self,
+        message: Message,
+        *,
+        sticker_ids: tuple[int | Snowflake, ...]
+        | list[int | Snowflake]
+        | MISSING = MISSING,
+        flags: bitfields.MessageFlags | MISSING = MISSING,
+    ) -> Message:
         """
         Send a message to this channel.
+
+        Params:
+            sticker_ids:
+                List of max 3 stickers to send with this message.
+            flags:
+                Flags to set for this message.
+
+        Notes:
+            Only `SUPPRESS_EMBEDS`, `SUPPRESS_NOTIFICATIONS`, \
+            `IS_VOICE_MESSAGE`, `IS_COMPONENTS_V2` can be set.
+
+        Raises:
+            errors.ZcordError:
+                - Cannot send a message to a channel without an ID.
+                - Cannot send a message that already has an ID.
+            ValueError:
+                - More than 3 stickers are passed.
+                - Cannot set these flags when sending message.
         """
         if self.id is MISSING:
             raise errors.ZcordError(
-                "Cannot send a message to a channel without an ID"
+                "Cannot send a message to a channel without an ID."
             )
         if message.id is not MISSING:
             raise errors.ZcordError(
-                "Cannot send a message that already has an ID"
+                "Cannot send a message that already has an ID."
             )
+        params = _MessageCreate.new(sticker_ids=sticker_ids, flags=flags)
         assert self._state is not MISSING
-        return await self._state.send_message(channel_id=self, message=message)
+        return await self._state.send_message(
+            channel_id=self, message=message, params=params
+        )

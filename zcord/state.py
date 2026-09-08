@@ -10,6 +10,7 @@ from zcord.missing import MISSING
 from zcord.models import (
     Guild,
 )
+from zcord.models.message import _MessageCreate
 
 if TYPE_CHECKING:
     from zcord.gateway import Gateway
@@ -56,10 +57,14 @@ class ConnectionState:
             log.warning("Failed to update cache for event %s", event)
 
     async def send_message(
-        self, *, channel_id: int | Snowflake | Channel, message: Message
+        self,
+        *,
+        channel_id: int | Snowflake | Channel,
+        message: Message,
+        params: _MessageCreate,
     ) -> Message:
         return await REST.send_message(
-            self._http, channel_id=channel_id, message=message
+            self._http, channel_id=channel_id, message=message, params=params
         )
 
     async def fetch_guild(
