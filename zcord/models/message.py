@@ -14,7 +14,7 @@ from zcord.models.channel import Channel
 from zcord.models.component import Component
 from zcord.models.component.action_row import ActionRow
 from zcord.models.embed import Embed
-from zcord.models.interaction import InteractionMetadata
+from zcord.models.interaction.interaction_metadata import InteractionMetadata
 from zcord.models.poll import Poll
 from zcord.models.reaction import Reaction
 from zcord.models.role import Role, RoleSubscriptionData

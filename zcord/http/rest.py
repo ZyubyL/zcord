@@ -19,7 +19,9 @@ from zcord.models._gateway import _GetGatewayBotResponse
 if TYPE_CHECKING:
     from zcord.http import HTTPClient
     from zcord.models.application import _ApplicationUpdate
-    from zcord.models.interaction import _InteractionCallback
+    from zcord.models.interaction.interaction_response import (
+        _InteractionCallback,
+    )
     from zcord.models.message import _MessageCreate
 
 

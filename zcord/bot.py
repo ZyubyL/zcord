@@ -17,7 +17,7 @@ from zcord.models.application import Application, _ApplicationUpdate
 from zcord.models.channel import Channel
 from zcord.models.guild import Guild
 from zcord.models.install_params import InstallParams
-from zcord.models.interaction import Interaction
+from zcord.models.interaction.interaction import Interaction
 from zcord.models.message import Message
 from zcord.models.user import User
 from zcord.state import ConnectionState
