@@ -7,12 +7,18 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 ### Zcord repository has been moved to [zyubyl/zcord](https://github.com/zyubyl/zcord)
 
 ### Added:
+  - Endpoints:
+    - `Bot/REST.update_current_application()`.
+    - `REST.create_interaction_response()`.
+    - `REST.send_message()` now have `sticker_ids` and `flags` parameters as well. This expands to `Message/Channel.send()`
   - Gateway connection:
     - Event dispatching, using `Bot.on(GatewayEvent, callback)` (or `Bot.once` for one-time handlers).
       - `Bot.on/.once` can also be used as decorator.
   - Models:
     - `InstallParams`.
     - `InteractionResponse`.
+    - `InteractionData`.
+    - `Interaction.respond.send/edit/defer()` methods
   - Enums:
     - `EventWebhookStatus`.
     - `InteractionCallbackType`.
@@ -21,7 +27,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
     - `Intents`.
   - `PollMedia` text length checks.
   - `Bot.run` for auto setting up logging and starting the bot.
-  - Basic caching
+  - Basic caching.
+  - `py.typed` for PEP-561.
 
 ### Fixed:
   - `enums.InteractionContextType` not being exported.

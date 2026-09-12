@@ -11,12 +11,14 @@ classDiagram
 
     Component <|-- ActionRow
     Model <|-- Application
+    InteractionData <|-- ApplicationCommandInteractionData
     Model <|-- Attachment
     Model <|-- AvatarDecorationData
     Component <|-- Button
     Model <|-- Channel
     Model <|-- Collectibles
     Model <|-- Component
+    InteractionData <|-- ComponentInteractionData
     Model <|-- DefaultReaction
     Model <|-- DefaultValue
     Model <|-- Embed
@@ -30,9 +32,11 @@ classDiagram
     Model <|-- Guild
     Model <|-- InstallParams
     Model <|-- Interaction
+    Model <|-- InteractionData
     Model <|-- InteractionMetadata
     Model <|-- Member
     Model <|-- Message
+    InteractionData <|-- ModalSubmitInteractionData
     Model <|-- Nameplate
     Model <|-- Poll
     Model <|-- PollAnswer
