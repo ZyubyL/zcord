@@ -208,7 +208,7 @@ class REST:
         if isinstance(resp, dict):
             sticker_packs = resp.get("sticker_packs", [])
             return [StickerPack._from_payload(r) for r in sticker_packs]
-        raise HTTPError("Failed to fetch sticker packs: {resp}")
+        raise HTTPError(f"Failed to fetch sticker packs: {resp}")
 
     @staticmethod
     async def fetch_sticker_pack(
@@ -487,7 +487,7 @@ class REST:
         _, resp = await http.request("GET", endpoint)
         if isinstance(resp, dict):
             return User._from_payload(resp)
-        raise HTTPError(f"Failed to fetch user ID {user_id}")
+        raise HTTPError(f"Failed to fetch user ID {user_id}: {resp}")
 
     @staticmethod
     async def fetch_current_user(http: HTTPClient) -> User:
@@ -503,6 +503,7 @@ class REST:
         """
         endpoint = "/users/@me"
         code, resp = await http.request("GET", endpoint)
+        assert isinstance(resp, dict)
         # TODO: This is kinda temporary
         if code == 401:
             raise HTTPError("Invalid token has been passed")

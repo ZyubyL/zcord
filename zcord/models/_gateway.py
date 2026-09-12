@@ -6,7 +6,7 @@ from typing import ClassVar
 from zcord.models.base import Model
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class _SessionStartLimit(Model):
     total: int
     remaining: int
@@ -14,7 +14,7 @@ class _SessionStartLimit(Model):
     max_concurrency: int
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class _GetGatewayBotResponse(Model):
     url: str
     shards: int

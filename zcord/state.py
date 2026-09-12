@@ -10,7 +10,6 @@ from zcord.missing import MISSING
 from zcord.models import (
     Guild,
 )
-from zcord.models.message import _MessageCreate
 
 if TYPE_CHECKING:
     from zcord.gateway import Gateway
@@ -24,6 +23,7 @@ if TYPE_CHECKING:
         User,
     )
     from zcord.models.application import _ApplicationUpdate
+    from zcord.models.message import _MessageCreate
 
 
 log = logging.getLogger(__name__)

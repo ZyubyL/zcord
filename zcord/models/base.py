@@ -7,7 +7,7 @@ from typing import Any
 from zcord.missing import MISSING
 
 
-def _apply_transform(transform, value):
+def _apply_transform(transform: Any, value: Any) -> Any:
     if hasattr(transform, "_from_payload"):
         return transform._from_payload(value)
     return transform(value)
@@ -50,9 +50,10 @@ class Model:
     Base class for all Discord API Models.
     """
 
-    def __int__(self):
-        if hasattr(self, "id"):
+    def __int__(self) -> int:
+        if hasattr(self, "id") and isinstance(self.id, int):
             return self.id
+        raise TypeError(f"Cannot convert {type(self).__name__!r} to int")
 
     @classmethod
     def _from_payload(cls, payload):
