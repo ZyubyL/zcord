@@ -43,3 +43,10 @@ class GatewayEvent(Enum):
     """
     The connection to the websocket has been resumed.
     """
+
+    INTERACTION_CREATE = "INTERACTION_CREATE"
+    """
+    Someone triggered an interaction.
+
+    This event contains an [`Interaction`][zcord.Interaction] object.
+    """

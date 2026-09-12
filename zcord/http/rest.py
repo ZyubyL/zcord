@@ -19,6 +19,7 @@ from zcord.models._gateway import _GetGatewayBotResponse
 if TYPE_CHECKING:
     from zcord.http import HTTPClient
     from zcord.models.application import _ApplicationUpdate
+    from zcord.models.interaction import _InteractionCallback
     from zcord.models.message import _MessageCreate
 
 
@@ -508,3 +509,38 @@ class REST:
         if code == 401:
             raise HTTPError("Invalid token has been passed")
         return User._from_payload(resp)
+
+    @staticmethod
+    async def create_interaction_response(
+        http: HTTPClient,
+        *,
+        interaction_id: Snowflake,
+        interaction_token: str,
+        callback: _InteractionCallback,
+        with_response: bool = False,
+    ) -> Message | None:
+        """
+        Create a response to an interaction.
+
+        Raises:
+            HTTPError:
+                The request failed.
+        """
+        i_id = int(interaction_id)
+        i_token = interaction_token
+        endpoint = f"/interactions/{i_id}/{i_token}/callback"
+        if with_response:
+            endpoint += "?with_response=true"
+        code, resp = await http.request(
+            "POST", endpoint, json=callback._to_payload()
+        )
+        if code == 200 and isinstance(resp, dict):
+            resource = resp.get("resource", {})
+            msg = resource.get("message")
+            if isinstance(msg, dict):
+                return Message._from_payload(msg)
+        if code not in (200, 204):
+            raise HTTPError(
+                f"Failed to create interaction response: {code} {resp}"
+            )
+        return None

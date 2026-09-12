@@ -61,7 +61,7 @@ class Team(Model):
 
     owner_user_id: Snowflake
     """
-    The [`User`][] ID of the team's owner.
+    The [`User`][zcord.User] ID of the team's owner.
     """
 
     members: tuple[TeamMember, ...]

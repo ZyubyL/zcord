@@ -29,7 +29,15 @@ from .embed import (
 from .emoji import Emoji
 from .guild import Guild
 from .install_params import InstallParams
-from .interaction import Interaction, InteractionMetadata
+from .interaction import (
+    ApplicationCommandInteractionData,
+    ComponentInteractionData,
+    Interaction,
+    InteractionData,
+    InteractionMetadata,
+    InteractionResponse,
+    ModalSubmitInteractionData,
+)
 from .member import Member
 from .message import Message, MessageActivity, MessageReference, MessageSnapshot
 from .poll import Poll, PollAnswer, PollAnswerCount, PollMedia, PollResults
@@ -47,12 +55,14 @@ from .user import User
 __all__ = [
     "ActionRow",
     "Application",
+    "ApplicationCommandInteractionData",
     "Attachment",
     "AvatarDecorationData",
     "Button",
     "Channel",
     "Collectibles",
     "Component",
+    "ComponentInteractionData",
     "DefaultReaction",
     "DefaultValue",
     "Embed",
@@ -66,12 +76,15 @@ __all__ = [
     "Guild",
     "InstallParams",
     "Interaction",
+    "InteractionData",
     "InteractionMetadata",
+    "InteractionResponse",
     "Member",
     "Message",
     "MessageActivity",
     "MessageReference",
     "MessageSnapshot",
+    "ModalSubmitInteractionData",
     "Model",
     "Nameplate",
     "Poll",

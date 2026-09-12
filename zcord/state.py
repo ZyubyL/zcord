@@ -23,6 +23,7 @@ if TYPE_CHECKING:
         User,
     )
     from zcord.models.application import _ApplicationUpdate
+    from zcord.models.interaction import _InteractionCallback
     from zcord.models.message import _MessageCreate
 
 
@@ -220,3 +221,19 @@ class ConnectionState:
 
     async def fetch_current_user(self) -> User:
         return await REST.fetch_current_user(self._http)
+
+    async def create_interaction_response(
+        self,
+        *,
+        interaction_id: Snowflake,
+        interaction_token: str,
+        callback: _InteractionCallback,
+        with_response: bool = False,
+    ) -> Message | None:
+        return await REST.create_interaction_response(
+            self._http,
+            interaction_id=interaction_id,
+            interaction_token=interaction_token,
+            callback=callback,
+            with_response=with_response,
+        )

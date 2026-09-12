@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from zcord import enums
@@ -14,6 +14,7 @@ from zcord.models.user import User
 
 if TYPE_CHECKING:
     from zcord.models.message import Message
+    from zcord.state import ConnectionState
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,7 +40,7 @@ class InteractionMetadata(Model):
 
     authorizing_integration_owners: dict
     """
-    A dictionary for authorizing integeration owners.
+    A dictionary for authorizing integration owners.
     """
 
     original_response_message_id: Snowflake | MISSING = MISSING
@@ -83,6 +84,98 @@ InteractionMetadata._transforms["triggering_interaction_metadata"] = (
 )
 
 
+class InteractionData(Model):
+    """
+    Base class for interaction data payloads.
+    """
+
+    _registry: ClassVar[dict[enums.InteractionType, type[InteractionData]]] = {}
+
+
+@dataclass(frozen=True, slots=True)
+class ComponentInteractionData(InteractionData):
+    """
+    Data for a \
+    [`MESSAGE_COMPONENT`][zcord.enums.InteractionType.MESSAGE_COMPONENT] \
+    interaction.
+    """
+
+    custom_id: str
+    """
+    The custom ID of the component.
+    """
+
+    component_type: enums.ComponentType
+    """
+    The type of the component.
+    """
+
+    values: tuple[str, ...] | MISSING = MISSING
+    """
+    The values selected in a select menu component.
+    """
+
+    _transforms: ClassVar[dict] = {
+        "component_type": enums.ComponentType,
+    }
+
+
+@dataclass(frozen=True, slots=True)
+class ApplicationCommandInteractionData(InteractionData):
+    """
+    Data for an \
+    [`APPLICATION_COMMAND`][zcord.enums.InteractionType.APPLICATION_COMMAND] \
+    interaction.
+    """
+
+    id: Snowflake
+    """
+    The ID of the invoked command.
+    """
+
+    name: str
+    """
+    The name of the invoked command.
+    """
+
+    type: int
+    """
+    The type of the invoked command.
+    """
+
+    _transforms: ClassVar[dict] = {
+        "id": Snowflake,
+    }
+
+
+@dataclass(frozen=True, slots=True)
+class ModalSubmitInteractionData(InteractionData):
+    """
+    Data for a [`MODAL_SUBMIT`][zcord.enums.InteractionType.MODAL_SUBMIT] \
+    interaction.
+    """
+
+    custom_id: str
+    """
+    The custom ID of the modal.
+    """
+
+    components: tuple[Any, ...] = ()
+    """
+    The components submitted with the modal.
+    """
+
+
+_ACID = ApplicationCommandInteractionData
+
+InteractionData._registry = {
+    enums.InteractionType.MESSAGE_COMPONENT: ComponentInteractionData,
+    enums.InteractionType.APPLICATION_COMMAND: _ACID,
+    enums.InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE: _ACID,
+    enums.InteractionType.MODAL_SUBMIT: ModalSubmitInteractionData,
+}
+
+
 @dataclass(frozen=True, slots=True)
 class Interaction(Model):
     """
@@ -116,7 +209,7 @@ class Interaction(Model):
 
     authorizing_integration_owners: dict
     """
-    A dictionary for authorizing integeration owners.
+    A dictionary for authorizing integration owners.
     """
 
     attachment_size_limit: int
@@ -200,8 +293,118 @@ class Interaction(Model):
         "member": Member,
     }
 
+    _state: ClassVar[ConnectionState | MISSING] = MISSING
+
+    @classmethod
+    def _from_payload(cls, payload):
+        obj = Model._from_payload.__func__(cls, payload)
+        data = payload.get("data")
+        if data and isinstance(data, dict):
+            itype = payload.get("type")
+            data_cls = InteractionData._registry.get(itype)
+            if data_cls:
+                return replace(
+                    obj,
+                    data=data_cls._from_payload(data),
+                )
+        return obj
+
+    @property
+    def respond(self) -> InteractionResponse:
+        """
+        Get an interface for responding to this interaction.
+        """
+        assert self._state is not MISSING
+        return InteractionResponse(
+            state=self._state,
+            interaction_id=self.id,
+            interaction_token=self.token,
+        )
+
 
 @dataclass(frozen=True, slots=True)
-class InteractionResponse(Model):
+class _InteractionCallback(Model):
     type: enums.InteractionCallbackType
     data: Any | MISSING = MISSING
+
+
+class InteractionResponse:
+    """
+    Interface for responding to an \
+    [`Interaction`][zcord.Interaction].
+    """
+
+    def __init__(
+        self,
+        state: ConnectionState,
+        interaction_id: Snowflake,
+        interaction_token: str,
+    ) -> None:
+        self._state = state
+        self._interaction_id = interaction_id
+        self._interaction_token = interaction_token
+
+    async def send(self, message: Message) -> Message:
+        """
+        Respond to the interaction with a new message.
+
+        Returns:
+            The created message.
+
+        Raises:
+            errors.HTTPError:
+                The request failed.
+        """
+        msg = await self._state.create_interaction_response(
+            interaction_id=self._interaction_id,
+            interaction_token=self._interaction_token,
+            callback=_InteractionCallback(
+                type=enums.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+                data=message._to_payload(),
+            ),
+            with_response=True,
+        )
+        assert msg is not None
+        return msg
+
+    async def defer(self) -> None:
+        """
+        ACK the interaction without showing a loading state.
+
+        Use this to defer the response and edit the original \
+        message later.
+
+        Raises:
+            errors.HTTPError:
+                The request failed.
+        """
+        await self._state.create_interaction_response(
+            interaction_id=self._interaction_id,
+            interaction_token=self._interaction_token,
+            callback=_InteractionCallback(
+                type=enums.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
+            ),
+        )
+
+    async def edit(self, message: Message) -> Message:
+        """
+        Edit the message the component was attached to.
+
+        Returns:
+            The edited message.
+
+        Raises:
+            errors.HTTPError:
+                The request failed.
+        """
+        msg = await self._state.create_interaction_response(
+            interaction_id=self._interaction_id,
+            interaction_token=self._interaction_token,
+            callback=_InteractionCallback(
+                type=enums.InteractionCallbackType.UPDATE_MESSAGE,
+                data=message._to_payload(),
+            ),
+            with_response=True,
+        )
+        assert msg is not None
+        return msg

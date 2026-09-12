@@ -17,6 +17,7 @@ from zcord.models.application import Application, _ApplicationUpdate
 from zcord.models.channel import Channel
 from zcord.models.guild import Guild
 from zcord.models.install_params import InstallParams
+from zcord.models.interaction import Interaction
 from zcord.models.message import Message
 from zcord.models.user import User
 from zcord.state import ConnectionState
@@ -34,6 +35,7 @@ _EVENT_MODELS: dict[str, type[Model]] = {
     enums.GatewayEvent.READY.value: User,
     enums.GatewayEvent.GUILD_CREATE.value: Guild,
     enums.GatewayEvent.MESSAGE_CREATE.value: Message,
+    enums.GatewayEvent.INTERACTION_CREATE.value: Interaction,
 }
 
 _UPDATE_EVENTS: dict[str, tuple[type[Model], str]] = {
@@ -75,6 +77,7 @@ class Bot:
         Message._state = self._state
         Channel._state = self._state
         Application._state = self._state
+        Interaction._state = self._state
 
         self._events: dict[str, list[tuple[Callable[..., Any], bool]]] = {}
         self._tasks: set[asyncio.Task] = set()
