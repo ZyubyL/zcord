@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums, errors
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
 from zcord.models.component.button import Button
 from zcord.models.component.select_menu.base import SelectMenu
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,10 +34,7 @@ class ActionRow(Component):
     @classmethod
     def new(
         cls,
-        components: list[Button]
-        | tuple[Button, ...]
-        | SelectMenu
-        | MISSING = MISSING,
+        components: Sequence[Button] | SelectMenu | MISSING = MISSING,
     ) -> ActionRow:
         """
         Create a new action row component.
@@ -46,12 +46,10 @@ class ActionRow(Component):
         if isinstance(components, SelectMenu):
             row = row.set_select(components)
         else:
-            row = row.set_buttons(components)
+            row = row.set_buttons(*components)
         return row
 
-    def set_buttons(
-        self, buttons: tuple[Button, ...] | list[Button]
-    ) -> ActionRow:
+    def set_buttons(self, *buttons: Button) -> ActionRow:
         """
         Set the buttons of the action row.
 

@@ -15,6 +15,8 @@ from zcord.models.thread_metadata import ThreadMetadata
 from zcord.models.user import User
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from zcord.models.message import Message
     from zcord.state import ConnectionState
 
@@ -246,9 +248,7 @@ class Channel(Model):
         self,
         message: Message,
         *,
-        sticker_ids: tuple[int | Snowflake, ...]
-        | list[int | Snowflake]
-        | MISSING = MISSING,
+        sticker_ids: Sequence[Snowflake | int] | MISSING = MISSING,
         flags: bitfields.MessageFlags | MISSING = MISSING,
     ) -> Message:
         """

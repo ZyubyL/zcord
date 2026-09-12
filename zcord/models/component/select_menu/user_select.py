@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
 from zcord.models.component.select_menu.base import SelectMenu
 from zcord.models.component.select_menu.default_value import DefaultValue
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 @dataclass(frozen=True, slots=True)
@@ -47,9 +50,7 @@ class UserSelect(SelectMenu):
         *,
         custom_id: str | MISSING = MISSING,
         placeholder: str | MISSING = MISSING,
-        default_values: tuple[DefaultValue, ...]
-        | list[DefaultValue]
-        | MISSING = MISSING,
+        default_values: Sequence[DefaultValue] | MISSING = MISSING,
         min_values: int = 1,
         max_values: int = 1,
         required: bool = True,
@@ -83,9 +84,7 @@ class UserSelect(SelectMenu):
 
     def set_default_values(
         self,
-        default_values: tuple[DefaultValue, ...]
-        | list[DefaultValue]
-        | MISSING = MISSING,
+        default_values: Sequence[DefaultValue] | MISSING = MISSING,
     ) -> UserSelect:
         """
         Set the default values of the user select component.
@@ -99,11 +98,9 @@ class UserSelect(SelectMenu):
             return select
 
         default_values = [replace(dv, type="user") for dv in default_values]
-        return select.add_default_values(default_values)
+        return select.add_default_values(*default_values)
 
-    def add_default_values(
-        self, default_values: tuple[DefaultValue, ...] | list[DefaultValue]
-    ) -> UserSelect:
+    def add_default_values(self, *default_values: DefaultValue) -> UserSelect:
         """
         Add default values to the user select component.
 

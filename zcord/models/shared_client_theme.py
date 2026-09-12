@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.base import Model
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,7 +53,7 @@ class SharedClientTheme(Model):
     def new(
         cls,
         *,
-        colors: tuple[str, ...] | list[str] | MISSING = MISSING,
+        colors: Sequence[str] | MISSING = MISSING,
         gradient_angle: int | MISSING = MISSING,
         base_mix: int | MISSING = MISSING,
         base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET,
@@ -83,9 +86,7 @@ class SharedClientTheme(Model):
             else (color,),
         )
 
-    def add_colors(
-        self, colors: tuple[str, ...] | list[str]
-    ) -> SharedClientTheme:
+    def add_colors(self, *colors: str) -> SharedClientTheme:
         """
         Add multiple colors to the theme.
 
@@ -99,7 +100,7 @@ class SharedClientTheme(Model):
         return theme
 
     def set_colors(
-        self, colors: tuple[str, ...] | list[str] | MISSING = MISSING
+        self, colors: Sequence[str] | MISSING = MISSING
     ) -> SharedClientTheme:
         """
         Set the colors of the theme.

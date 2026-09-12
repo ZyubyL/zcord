@@ -24,6 +24,8 @@ from zcord.models.sticker import Sticker
 from zcord.models.user import User
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from zcord.state import ConnectionState
 
 
@@ -316,16 +318,12 @@ class Message(Model):
         *,
         content: str | MISSING = MISSING,
         tts: bool = False,
-        embeds: tuple[Embed, ...] | list[Embed] | MISSING = MISSING,
-        components: tuple[Component, ...] | list[Component] | MISSING = MISSING,
-        attachments: tuple[Attachment, ...]
-        | list[Attachment]
-        | MISSING = MISSING,
+        embeds: Sequence[Embed] | MISSING = MISSING,
+        components: Sequence[Component] | MISSING = MISSING,
+        attachments: Sequence[Attachment] | MISSING = MISSING,
         # webhook_id: Snowflake | MISSING = MISSING,
         message_reference: MessageReference | MISSING = MISSING,
-        message_snapshots: tuple[MessageSnapshot, ...]
-        | list[MessageSnapshot]
-        | MISSING = MISSING,
+        message_snapshots: Sequence[MessageSnapshot] | MISSING = MISSING,
         referenced_message: Message | None | MISSING = MISSING,
         # thread: Channel | MISSING = MISSING,
         # sticker_items: list[Sticker] | MISSING = MISSING,
@@ -359,12 +357,10 @@ class Message(Model):
 
     def _set_message_snapshots(
         self,
-        message_snapshots: tuple[MessageSnapshot, ...]
-        | list[MessageSnapshot]
-        | MISSING,
+        message_snapshots: Sequence[MessageSnapshot] | MISSING,
     ) -> Message:
         if message_snapshots is not MISSING:
-            return replace(self, message_snapshots=message_snapshots)
+            return replace(self, message_snapshots=(*message_snapshots,))
         return self
 
     def set_content(self, content: str | MISSING = MISSING) -> Message:
@@ -374,7 +370,7 @@ class Message(Model):
         return replace(self, content=content)
 
     def set_embeds(
-        self, embeds: tuple[Embed, ...] | list[Embed] | MISSING = MISSING
+        self, embeds: Sequence[Embed] | MISSING = MISSING
     ) -> Message:
         """
         Set the embeds of the message.
@@ -428,7 +424,7 @@ class Message(Model):
 
     def set_components(
         self,
-        components: tuple[Component, ...] | list[Component] | MISSING = MISSING,
+        components: Sequence[Component] | MISSING = MISSING,
     ) -> Message:
         """
         Set the components of the message.
@@ -472,9 +468,7 @@ class Message(Model):
 
     def set_attachments(
         self,
-        attachments: tuple[Attachment, ...]
-        | list[Attachment]
-        | MISSING = MISSING,
+        attachments: Sequence[Attachment] | MISSING = MISSING,
     ) -> Message:
         """
         Set the attachments of the message.
@@ -512,9 +506,7 @@ class Message(Model):
         self,
         channel: int | Snowflake | Channel,
         *,
-        sticker_ids: tuple[int | Snowflake, ...]
-        | list[int | Snowflake]
-        | MISSING = MISSING,
+        sticker_ids: Sequence[int | Snowflake] | MISSING = MISSING,
         flags: bitfields.MessageFlags | MISSING = MISSING,
     ) -> Message:
         """

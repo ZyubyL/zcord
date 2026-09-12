@@ -23,7 +23,7 @@ from zcord.models.user import User
 from zcord.state import ConnectionState
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Sequence
 
     from zcord import bitfields
     from zcord.models.base import Model
@@ -280,18 +280,17 @@ class Bot:
         custom_install_url: str | MISSING = MISSING,
         description: str | MISSING = MISSING,
         role_connections_verification_url: str | MISSING = MISSING,
-        scopes: tuple[str, ...] | list[str] | MISSING = MISSING,
+        scopes: Sequence[str] | MISSING = MISSING,
         permissions: str | MISSING = MISSING,
         integration_types_config: dict | MISSING = MISSING,
         flags: bitfields.ApplicationFlags | MISSING = MISSING,
         # icon: Any,
         # cover_image: Any,
         interactions_endpoint_url: str | MISSING = MISSING,
-        tags: tuple[str, ...] | list[str] | MISSING = MISSING,
+        tags: Sequence[str] | MISSING = MISSING,
         event_webhooks_url: str | MISSING = MISSING,
         event_webhooks_status: enums.EventWebhookStatus | MISSING = MISSING,
-        event_webhooks_types: tuple[enums.WebhookEventType, ...]
-        | list[enums.WebhookEventType]
+        event_webhooks_types: Sequence[enums.WebhookEventType]
         | MISSING = MISSING,
     ) -> Application:
         """

@@ -2,11 +2,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from datetime import datetime
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.emoji import Emoji
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 @dataclass(frozen=True, slots=True)
@@ -190,7 +193,7 @@ class Poll(Model):
         cls,
         *,
         question: str | MISSING = MISSING,
-        answers: tuple[PollAnswer, ...] | list[PollAnswer] | MISSING = MISSING,
+        answers: Sequence[PollAnswer] | MISSING = MISSING,
         duration: int = 24,
         allow_multiselect: bool = False,
     ) -> Poll:
@@ -223,7 +226,7 @@ class Poll(Model):
 
     def set_answers(
         self,
-        answers: tuple[PollAnswer, ...] | list[PollAnswer] | MISSING = MISSING,
+        answers: Sequence[PollAnswer] | MISSING = MISSING,
     ) -> Poll:
         """
         Set the answers of the poll.

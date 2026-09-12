@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.component.base import Component
 from zcord.models.component.select_menu.base import SelectMenu
 from zcord.models.component.select_menu.select_option import SelectOption
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,9 +49,7 @@ class StringSelect(SelectMenu):
         cls,
         *,
         custom_id: str | MISSING = MISSING,
-        options: tuple[SelectOption, ...]
-        | list[SelectOption]
-        | MISSING = MISSING,
+        options: Sequence[SelectOption] | MISSING = MISSING,
         placeholder: str | MISSING = MISSING,
         min_values: int = 1,
         max_values: int = 1,
@@ -75,9 +76,7 @@ class StringSelect(SelectMenu):
 
     def set_options(
         self,
-        options: tuple[SelectOption, ...]
-        | list[SelectOption]
-        | MISSING = MISSING,
+        options: Sequence[SelectOption] | MISSING = MISSING,
     ) -> StringSelect:
         """
         Set the options of the string select component.
@@ -90,11 +89,9 @@ class StringSelect(SelectMenu):
         if options is MISSING:
             return select
 
-        return select.add_options(options)
+        return select.add_options(*options)
 
-    def add_options(
-        self, options: tuple[SelectOption, ...] | list[SelectOption]
-    ) -> StringSelect:
+    def add_options(self, *options: SelectOption) -> StringSelect:
         """
         Add options to the string select component.
 

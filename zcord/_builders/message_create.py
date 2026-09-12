@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from zcord import bitfields
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 @dataclass
@@ -21,9 +25,7 @@ class _MessageCreate(Model):
     def new(
         cls,
         *,
-        sticker_ids: tuple[int | Snowflake, ...]
-        | list[int | Snowflake]
-        | MISSING = MISSING,
+        sticker_ids: Sequence[int | Snowflake] | MISSING = MISSING,
         flags: bitfields.MessageFlags | MISSING = MISSING,
     ) -> _MessageCreate:
         if not sticker_ids or sticker_ids is MISSING:

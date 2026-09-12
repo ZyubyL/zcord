@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from datetime import datetime
-from typing import ClassVar, overload
+from typing import TYPE_CHECKING, ClassVar, overload
 
 from zcord import bitfields
 from zcord.missing import MISSING
@@ -13,6 +13,9 @@ from zcord.models.embed.embed_footer import EmbedFooter
 from zcord.models.embed.embed_image import EmbedImage
 from zcord.models.embed.embed_provider import EmbedProvider
 from zcord.models.embed.embed_video import EmbedVideo
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 @dataclass(frozen=True, slots=True)
@@ -143,7 +146,7 @@ class Embed(Model):
         image_url: str | MISSING = MISSING,
         thumbnail_url: str | MISSING = MISSING,
         author: EmbedAuthor | MISSING = MISSING,
-        fields: tuple[EmbedField, ...] | MISSING = MISSING,
+        fields: Sequence[EmbedField] | MISSING = MISSING,
     ) -> Embed:
         """
         Create a new embed.
@@ -317,7 +320,7 @@ class Embed(Model):
 
     def set_fields(
         self,
-        fields: tuple[EmbedField, ...] | list[EmbedField] | MISSING = MISSING,
+        fields: Sequence[EmbedField] | MISSING = MISSING,
     ) -> Embed:
         e = self.remove_fields()
         if fields is MISSING:
