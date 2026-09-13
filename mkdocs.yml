@@ -25,6 +25,7 @@ theme:
     - navigation.tabs
     - navigation.instant
     - navigation.instant.prefetch
+    - navigation.instant.preview
     - navigation.instant.progress
     - navigation.top
     - navigation.tracking
@@ -81,6 +82,7 @@ plugins:
             annotations_path: source
             members_order: source
             docstring_style: google
+            docstring_section_style: spacy
 
 markdown_extensions:
   - toc:
