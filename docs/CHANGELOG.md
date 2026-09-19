@@ -2,7 +2,7 @@
 
 This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
-## 2026.0.5 - [Unreleased]
+## 2026.0.5 - 2026/09/20
 
 ### Zcord repository has been moved to [zyubyl/zcord](https://github.com/zyubyl/zcord)
 
@@ -41,6 +41,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 ### Changed:
   - Use `regex` instead of `re` to compile both patterns in `Emoji`.
 
+---
+
 ## 2026.0.4 - 2026/08/27
 
 ### Added:
@@ -67,6 +69,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
   - `Model`'s list attributes are now tuple, making it truly frozen.
     - Note: All the `set_*()s` methods still work with list.
 
+---
+
 ## 2026.0.3 - 2026/08/15
 
 ### Added:
@@ -92,6 +96,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
 ### Changed:
   - `ConnectionState.send_message()` now accept the whole `Message` object instead of individual fields.
+
+---
 
 ## 2026.0.2 - 2026/07/26
 
@@ -124,6 +130,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
   - Moved API interaction to `REST` class
   - Renamed `types` module to `models`
   - Moved all enums into a separate `enums` module
+
+---
 
 ## 2026.0.1.dev - 2026/06/23
 
