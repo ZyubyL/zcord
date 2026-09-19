@@ -34,9 +34,10 @@ speed = [
     "uvloop==0.22.1",
 ]
 docs = [
-    "mkdocs>=1.6.1",
-    "mkdocs-materialx>=10.1.8",
-    "mkdocstrings[python]>=1.0.4",
+    "mkdocs==1.6.1",
+    "mkdocs-materialx==10.2.0",
+    "mkdocstrings[python]==1.0.6",
+    "ruff==0.16.1",
 ]
 
 [tool.ruff]
@@ -77,9 +78,9 @@ build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [
-    "mkdocs>=1.6.1",
-    "mkdocs-materialx>=10.1.8",
-    "mkdocstrings[python]>=1.0.4",
+    "mkdocs==1.6.1",
+    "mkdocs-materialx==10.2.0",
+    "mkdocstrings[python]==1.0.6",
     "pytest==9.1.1",
     "ruff==0.16.1",
 ]
