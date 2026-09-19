@@ -34,7 +34,13 @@ jobs:
         with:
           packages-dir: dist/
 
+        # Get the content between the first 2 separators (---)
+      - name: Extract release notes
+        run: |
+          awk '/^[[:space:]]*---[[:space:]]*$/{n++; next} n==1' docs/CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+          [ -s "$RUNNER_TEMP/notes.md"] || { echo "No release notes"; exit 1; }
+
       - name: Create release
-        run: gh release create "${{ github.ref_name }}" --generate-notes dist/*
+        run: gh release create "${{ github.ref_name }}" --notes-file "$RUNNER_TEMP/notes.md" dist/*.tar.gz dist/*.whl  # Idk what the attestation files do but they're probably not needed for release
         env:
           GH_TOKEN: ${{ github.token }}
