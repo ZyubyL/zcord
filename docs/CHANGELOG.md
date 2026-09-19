@@ -2,6 +2,10 @@
 
 This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
+## 2026.0.6 - [Unreleased]
+
+---
+
 ## 2026.0.5 - 2026/09/20
 
 ### Zcord repository has been moved to [zyubyl/zcord](https://github.com/zyubyl/zcord)

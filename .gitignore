@@ -9,10 +9,7 @@ wheels/
 # Virtual environments
 .venv
 
-publish.sh
 uv.lock
 
 # Mkdocs plugins
 .cache
-
-skills-lock.json
