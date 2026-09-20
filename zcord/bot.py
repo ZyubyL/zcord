@@ -164,19 +164,19 @@ class Bot:
         Examples:
             There are 2 ways of registering events:
 
-            1. By passing the callback function
-            ```py
-            async def callback_func(...):
-                ...
+            === "By passing the callback function"
+                ```py
+                async def callback_func(...):
+                    ...
 
-            bot.on(GatewayEvent.READY, callback_func)
-            ```
-            2. Using decorator
-            ```py
-            @bot.on(GatewayEvent.READY)
-            async def callback_func(...):
-                ...
-            ```
+                bot.on(GatewayEvent.READY, callback_func)
+                ```
+            === "Using decorator"
+                ```py
+                @bot.on(GatewayEvent.READY)
+                async def callback_func(...):
+                    ...
+                ```
             Notes:
                 The callback function is not required to be asynchronous.
 

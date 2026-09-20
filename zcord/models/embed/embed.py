@@ -154,19 +154,18 @@ class Embed(Model):
         Examples:
             There are two ways to create an embed.
 
-            1. Using the parameters in the `.new()` method.
-            ```py
-            embed = Embed.new(title="Foo", description="bar")
-            ```
-
-            2. Chaining the `.set_*()` methods.
-            ```py
-            embed = (
-                Embed.new()
-                .set_title("Foo")
-                .set_description("bar")
-            )
-            ```
+            === "Using the parameters in the `.new()` method."
+                ```py
+                embed = Embed.new(title="Foo", description="bar")
+                ```
+            === "Chaining the `.set_*()` methods."
+                ```py
+                embed = (
+                    Embed.new()
+                    .set_title("Foo")
+                    .set_description("bar")
+                )
+                ```
 
         Notes:
             Although you can technically use the class constructor, it is \
