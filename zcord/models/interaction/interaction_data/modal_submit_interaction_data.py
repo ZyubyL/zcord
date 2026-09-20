@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING
 
 from zcord import enums
 from zcord.models.interaction.interaction_data.base import InteractionData
+
+if TYPE_CHECKING:
+    from zcord.models.component.base import Component
 
 
 @dataclass(frozen=True, slots=True)
@@ -19,7 +22,7 @@ class ModalSubmitInteractionData(InteractionData):
     The custom ID of the modal.
     """
 
-    components: tuple[Any, ...] = ()
+    components: tuple[Component, ...] = ()
     """
     The components submitted with the modal.
     """

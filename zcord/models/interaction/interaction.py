@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.missing import MISSING
@@ -60,7 +60,7 @@ class Interaction(Model):
     Attachment size limit in bytes.
     """
 
-    data: Any | MISSING = MISSING
+    data: InteractionData | MISSING = MISSING
     """
     Interaction data.
     """
