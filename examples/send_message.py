@@ -56,7 +56,7 @@ async def main():
             .set_shared_client_theme(
                 zcord.SharedClientTheme.new()
                 .add_color("11111b")
-                .add_colors(["181825", "1e1e2e"])
+                .add_colors("181825", "1e1e2e")
                 .set_gradient_angle(67)
                 .set_base_mix(69)
             )
