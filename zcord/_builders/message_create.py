@@ -9,7 +9,7 @@ from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from zcord.types import TupleOrList
 
 
 @dataclass
@@ -25,7 +25,7 @@ class _MessageCreate(Model):
     def new(
         cls,
         *,
-        sticker_ids: Sequence[int | Snowflake] | MISSING = MISSING,
+        sticker_ids: TupleOrList[int | Snowflake] | MISSING = MISSING,
         flags: bitfields.MessageFlags | MISSING = MISSING,
     ) -> _MessageCreate:
         if not sticker_ids or sticker_ids is MISSING:

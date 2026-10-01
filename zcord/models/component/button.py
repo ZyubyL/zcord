@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.missing import MISSING
+from zcord.models.base import set_field_value
 from zcord.models.component.base import Component
 from zcord.models.emoji import Emoji
 
@@ -113,7 +114,7 @@ class Button(Component):
         """
         if len(custom_id) > 100 or len(custom_id) < 1:
             raise ValueError("Custom ID must be 100 characters or less.")
-        return replace(self, custom_id=custom_id)
+        return set_field_value(self, "custom_id", custom_id)
 
     def set_style(
         self, style: enums.ButtonStyle = enums.ButtonStyle.SECONDARY
@@ -121,7 +122,7 @@ class Button(Component):
         """
         Set the style of the button.
         """
-        return replace(self, style=style)
+        return set_field_value(self, "style", style)
 
     def set_label(self, label: str | MISSING = MISSING) -> Button:
         """
@@ -133,15 +134,16 @@ class Button(Component):
         """
         if label is not MISSING and (len(label) > 80 or len(label) < 1):
             raise ValueError("Label must be 80 characters or less.")
-        return replace(self, label=label)
+        return set_field_value(self, "label", label)
 
     def set_emoji(self, emoji: Emoji | str | MISSING = MISSING) -> Button:
         """
         Set the emoji of the button.
         """
-        return replace(
+        return set_field_value(
             self,
-            emoji=emoji
+            "emoji",
+            emoji
             if isinstance(emoji, Emoji)
             else Emoji.new(emoji)
             if emoji is not MISSING
@@ -158,13 +160,13 @@ class Button(Component):
         """
         if url is not MISSING and len(url) > 512:
             raise ValueError("URL must be 512 characters or less.")
-        return replace(self, url=url)
+        return set_field_value(self, "url", url)
 
     def set_disabled(self, disabled: bool = False) -> Button:
         """
         Set the disabled state of the button.
         """
-        return replace(self, disabled=disabled)
+        return set_field_value(self, "disabled", disabled)
 
 
 Component._registry[enums.ComponentType.BUTTON] = Button

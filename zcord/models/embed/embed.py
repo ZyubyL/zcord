@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, ClassVar, overload
 
 from zcord import bitfields
 from zcord.missing import MISSING
-from zcord.models.base import Model
+from zcord.models.base import Model, add_field_value, set_field_value
 from zcord.models.embed.embed_author import EmbedAuthor
 from zcord.models.embed.embed_field import EmbedField
 from zcord.models.embed.embed_footer import EmbedFooter
@@ -15,7 +15,7 @@ from zcord.models.embed.embed_provider import EmbedProvider
 from zcord.models.embed.embed_video import EmbedVideo
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from zcord.types import TupleOrList
 
 
 @dataclass(frozen=True, slots=True)
@@ -146,7 +146,7 @@ class Embed(Model):
         image_url: str | MISSING = MISSING,
         thumbnail_url: str | MISSING = MISSING,
         author: EmbedAuthor | MISSING = MISSING,
-        fields: Sequence[EmbedField] | MISSING = MISSING,
+        fields: TupleOrList[EmbedField] | MISSING = MISSING,
     ) -> Embed:
         """
         Create a new embed.
@@ -204,7 +204,7 @@ class Embed(Model):
         """
         if title is not MISSING and len(title) > 256:
             raise ValueError("Title must be 256 characters or less.")
-        return replace(self, title=title)
+        return set_field_value(self, "title", title)
 
     def set_description(self, description: str | MISSING = MISSING) -> Embed:
         """
@@ -216,13 +216,13 @@ class Embed(Model):
         """
         if description is not MISSING and len(description) > 4096:
             raise ValueError("Description must be 4096 characters or less.")
-        return replace(self, description=description)
+        return set_field_value(self, "description", description)
 
     def set_url(self, url: str | MISSING = MISSING) -> Embed:
         """
         Set the URL of the embed.
         """
-        return replace(self, url=url)
+        return set_field_value(self, "url", url)
 
     def set_color(self, color: int | MISSING = MISSING) -> Embed:
         """
@@ -236,13 +236,13 @@ class Embed(Model):
             raise ValueError(
                 "Color must be an integer between 0x000000 and 0xFFFFFF."
             )
-        return replace(self, color=color)
+        return set_field_value(self, "color", color)
 
     def set_timestamp(self, timestamp: datetime | MISSING = MISSING) -> Embed:
         """
         Set the timestamp of the embed.
         """
-        return replace(self, timestamp=timestamp)
+        return set_field_value(self, "timestamp", timestamp)
 
     def set_footer(
         self,
@@ -258,26 +258,28 @@ class Embed(Model):
                 Footer text cannot exceed 2048 characters.
         """
         if text is MISSING:
-            return replace(self, footer=MISSING)
+            return set_field_value(self, "footer", MISSING)
         if len(text) > 2048:
             raise ValueError("Footer text cannot exceed 2048 characters.")
-        return replace(self, footer=EmbedFooter(text=text, icon_url=icon_url))
+        return set_field_value(
+            self, "footer", EmbedFooter(text=text, icon_url=icon_url)
+        )
 
     def set_image(self, url: str | MISSING = MISSING) -> Embed:
         """
         Set the image of the embed.
         """
         if url is MISSING:
-            return replace(self, image=MISSING)
-        return replace(self, image=EmbedImage(url=url))
+            return set_field_value(self, "image", MISSING)
+        return set_field_value(self, "image", EmbedImage(url=url))
 
     def set_thumbnail(self, url: str | MISSING = MISSING) -> Embed:
         """
         Set the thumbnail of the embed.
         """
         if url is MISSING:
-            return replace(self, thumbnail=MISSING)
-        return replace(self, thumbnail=EmbedImage(url=url))
+            return set_field_value(self, "thumbnail", MISSING)
+        return set_field_value(self, "thumbnail", EmbedImage(url=url))
 
     @overload
     def set_author(self, author: EmbedAuthor) -> Embed: ...
@@ -311,15 +313,15 @@ class Embed(Model):
         """
         if author is MISSING:
             if name is MISSING or not name:
-                return replace(self, author=MISSING)
+                return set_field_value(self, "author", MISSING)
             author = EmbedAuthor(name=name, url=url, icon_url=icon_url)
         if len(author.name) > 256:
             raise ValueError("Author name cannot exceed 256 characters.")
-        return replace(self, author=author)
+        return set_field_value(self, "author", author)
 
     def set_fields(
         self,
-        fields: Sequence[EmbedField] | MISSING = MISSING,
+        fields: TupleOrList[EmbedField] | MISSING = MISSING,
     ) -> Embed:
         e = self.remove_fields()
         if fields is MISSING:
@@ -370,18 +372,10 @@ class Embed(Model):
             raise ValueError("Field name cannot exceed 256 characters.")
         if len(field.value) > 1024:
             raise ValueError("Field value cannot exceed 1024 characters.")
-        return replace(
-            self,
-            fields=(
-                *self.fields,
-                field,
-            )
-            if self.fields is not MISSING
-            else (field,),
-        )
+        return add_field_value(self, "fields", field)
 
     def remove_fields(self) -> Embed:
         """
         Remove all fields from the embed.
         """
-        return replace(self, fields=MISSING)
+        return set_field_value(self, "fields", MISSING)

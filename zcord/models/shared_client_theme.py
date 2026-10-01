@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.missing import MISSING
-from zcord.models.base import Model
+from zcord.models.base import Model, add_field_value, set_field_value
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from zcord.types import TupleOrList
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,7 +53,7 @@ class SharedClientTheme(Model):
     def new(
         cls,
         *,
-        colors: Sequence[str] | MISSING = MISSING,
+        colors: TupleOrList[str] | MISSING = MISSING,
         gradient_angle: int | MISSING = MISSING,
         base_mix: int | MISSING = MISSING,
         base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET,
@@ -79,12 +79,7 @@ class SharedClientTheme(Model):
         """
         if self.colors is not MISSING and len(self.colors) >= 5:
             raise ValueError("Cannot add more than 5 colors to the theme.")
-        return replace(
-            self,
-            colors=(*self.colors, color)
-            if self.colors is not MISSING
-            else (color,),
-        )
+        return add_field_value(self, "colors", color)
 
     def add_colors(self, *colors: str) -> SharedClientTheme:
         """
@@ -100,7 +95,7 @@ class SharedClientTheme(Model):
         return theme
 
     def set_colors(
-        self, colors: Sequence[str] | MISSING = MISSING
+        self, colors: TupleOrList[str] | MISSING = MISSING
     ) -> SharedClientTheme:
         """
         Set the colors of the theme.
@@ -123,7 +118,7 @@ class SharedClientTheme(Model):
         """
         Clear all the colors of the theme.
         """
-        return replace(self, colors=MISSING)
+        return set_field_value(self, "colors", MISSING)
 
     def set_gradient_angle(
         self, angle: int | MISSING = MISSING
@@ -137,7 +132,7 @@ class SharedClientTheme(Model):
         """
         if angle is not MISSING and (angle < 0 or angle > 360):
             raise ValueError("gradient_angle must be between 0 and 360")
-        return replace(self, gradient_angle=angle)
+        return set_field_value(self, "gradient_angle", angle)
 
     def set_base_mix(
         self, base_mix: int | MISSING = MISSING
@@ -151,7 +146,7 @@ class SharedClientTheme(Model):
         """
         if base_mix is not MISSING and (base_mix < 0 or base_mix > 100):
             raise ValueError("base_mix must be between 0 and 100")
-        return replace(self, base_mix=base_mix)
+        return set_field_value(self, "base_mix", base_mix)
 
     def set_base_theme(
         self, base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET
@@ -159,4 +154,4 @@ class SharedClientTheme(Model):
         """
         Set the base theme of the theme.
         """
-        return replace(self, base_theme=base_theme)
+        return set_field_value(self, "base_theme", base_theme)

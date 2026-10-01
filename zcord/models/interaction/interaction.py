@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.missing import MISSING
-from zcord.models.base import Model
+from zcord.models.base import Model, set_field_value
 from zcord.models.channel import Channel
 from zcord.models.guild import Guild
 from zcord.models.interaction.interaction_data.base import InteractionData
@@ -146,9 +146,8 @@ class Interaction(Model):
             itype = payload.get("type")
             data_cls = InteractionData._registry.get(itype)
             if data_cls:
-                return replace(
-                    obj,
-                    data=data_cls._from_payload(data),
+                return set_field_value(
+                    obj, "data", data_cls._from_payload(data)
                 )
         return obj
 

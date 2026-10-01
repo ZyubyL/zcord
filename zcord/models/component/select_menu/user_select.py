@@ -5,12 +5,13 @@ from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.missing import MISSING
+from zcord.models.base import add_field_value, set_field_value
 from zcord.models.component.base import Component
 from zcord.models.component.select_menu.base import SelectMenu
 from zcord.models.component.select_menu.default_value import DefaultValue
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from zcord.types import TupleOrList
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,7 +51,7 @@ class UserSelect(SelectMenu):
         *,
         custom_id: str | MISSING = MISSING,
         placeholder: str | MISSING = MISSING,
-        default_values: Sequence[DefaultValue] | MISSING = MISSING,
+        default_values: TupleOrList[DefaultValue] | MISSING = MISSING,
         min_values: int = 1,
         max_values: int = 1,
         required: bool = True,
@@ -80,11 +81,11 @@ class UserSelect(SelectMenu):
             raise ValueError(
                 "Placeholder cannot be longer than 150 characters."
             )
-        return replace(self, placeholder=placeholder)
+        return set_field_value(self, "placeholder", placeholder)
 
     def set_default_values(
         self,
-        default_values: Sequence[DefaultValue] | MISSING = MISSING,
+        default_values: TupleOrList[DefaultValue] | MISSING = MISSING,
     ) -> UserSelect:
         """
         Set the default values of the user select component.
@@ -121,18 +122,13 @@ class UserSelect(SelectMenu):
             ValueError:
                 Default values cannot have more than 25 options.
         """
-        return replace(
-            self,
-            default_values=(*self.default_values, default_value)
-            if self.default_values is not MISSING
-            else (default_value,),
-        )
+        return add_field_value(self, "default_values", default_value)
 
     def clear_default_values(self) -> UserSelect:
         """
         Clear all default values from the user select component.
         """
-        return replace(self, default_values=MISSING)
+        return set_field_value(self, "default_values", MISSING)
 
 
 Component._registry[enums.ComponentType.USER_SELECT] = UserSelect

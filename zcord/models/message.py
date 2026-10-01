@@ -9,7 +9,7 @@ from zcord._builders.message_create import _MessageCreate
 from zcord.missing import MISSING
 from zcord.models.application import Application
 from zcord.models.attachment import Attachment
-from zcord.models.base import Model
+from zcord.models.base import Model, add_field_value, set_field_value
 from zcord.models.channel import Channel
 from zcord.models.component import Component
 from zcord.models.component.action_row import ActionRow
@@ -24,9 +24,8 @@ from zcord.models.sticker import Sticker
 from zcord.models.user import User
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
-
     from zcord.state import ConnectionState
+    from zcord.types import TupleOrList
 
 
 @dataclass(frozen=True, slots=True)
@@ -318,12 +317,12 @@ class Message(Model):
         *,
         content: str | MISSING = MISSING,
         tts: bool = False,
-        embeds: Sequence[Embed] | MISSING = MISSING,
-        components: Sequence[Component] | MISSING = MISSING,
-        attachments: Sequence[Attachment] | MISSING = MISSING,
+        embeds: TupleOrList[Embed] | MISSING = MISSING,
+        components: TupleOrList[Component] | MISSING = MISSING,
+        attachments: TupleOrList[Attachment] | MISSING = MISSING,
         # webhook_id: Snowflake | MISSING = MISSING,
         message_reference: MessageReference | MISSING = MISSING,
-        message_snapshots: Sequence[MessageSnapshot] | MISSING = MISSING,
+        message_snapshots: TupleOrList[MessageSnapshot] | MISSING = MISSING,
         referenced_message: Message | None | MISSING = MISSING,
         # thread: Channel | MISSING = MISSING,
         # sticker_items: list[Sticker] | MISSING = MISSING,
@@ -357,20 +356,20 @@ class Message(Model):
 
     def _set_message_snapshots(
         self,
-        message_snapshots: Sequence[MessageSnapshot] | MISSING,
+        message_snapshots: TupleOrList[MessageSnapshot] | MISSING,
     ) -> Message:
         if message_snapshots is not MISSING:
-            return replace(self, message_snapshots=(*message_snapshots,))
+            return set_field_value(self, "message_snapshots", message_snapshots)
         return self
 
     def set_content(self, content: str | MISSING = MISSING) -> Message:
         """
         Set the content of the message.
         """
-        return replace(self, content=content)
+        return set_field_value(self, "content", content)
 
     def set_embeds(
-        self, embeds: Sequence[Embed] | MISSING = MISSING
+        self, embeds: TupleOrList[Embed] | MISSING = MISSING
     ) -> Message:
         """
         Set the embeds of the message.
@@ -395,18 +394,13 @@ class Message(Model):
         """
         if self.embeds is not MISSING and len(self.embeds) >= 10:
             raise ValueError("Cannot add more than 10 embeds to a message.")
-        return replace(
-            self,
-            embeds=(*self.embeds, embed)
-            if self.embeds is not MISSING
-            else (embed,),
-        )
+        return add_field_value(self, "embeds", embed)
 
     def clear_embeds(self) -> Message:
         """
         Clear the embeds of the message.
         """
-        return replace(self, embeds=MISSING)
+        return set_field_value(self, "embeds", MISSING)
 
     def set_shared_client_theme(
         self, theme: SharedClientTheme | MISSING = MISSING
@@ -414,17 +408,17 @@ class Message(Model):
         """
         Add a shared client theme to the message.
         """
-        return replace(self, shared_client_theme=theme)
+        return set_field_value(self, "shared_client_theme", theme)
 
     def set_poll(self, poll: Poll | MISSING = MISSING) -> Message:
         """
         Add a poll to the message.
         """
-        return replace(self, poll=poll)
+        return set_field_value(self, "poll", poll)
 
     def set_components(
         self,
-        components: Sequence[Component] | MISSING = MISSING,
+        components: TupleOrList[Component] | MISSING = MISSING,
     ) -> Message:
         """
         Set the components of the message.
@@ -453,22 +447,17 @@ class Message(Model):
             raise ValueError("You can only add an ActionRow for now.")
         if self.components is not MISSING and len(self.components) >= 5:
             raise ValueError("You can only have 5 components for now.")
-        return replace(
-            self,
-            components=(*self.components, component)
-            if self.components is not MISSING
-            else (component,),
-        )
+        return add_field_value(self, "components", component)
 
     def clear_components(self) -> Message:
         """
         Clear all components from the message.
         """
-        return replace(self, components=MISSING)
+        return set_field_value(self, "components", MISSING)
 
     def set_attachments(
         self,
-        attachments: Sequence[Attachment] | MISSING = MISSING,
+        attachments: TupleOrList[Attachment] | MISSING = MISSING,
     ) -> Message:
         """
         Set the attachments of the message.
@@ -483,30 +472,25 @@ class Message(Model):
         """
         Add an attachment to the message.
         """
-        return replace(
-            self,
-            attachments=(*self.attachments, attachment)
-            if self.attachments is not MISSING
-            else (attachment,),
-        )
+        return add_field_value(self, "attachments", attachment)
 
     def clear_attachments(self) -> Message:
         """
         Clear the attachments of the message.
         """
-        return replace(self, attachments=MISSING)
+        return set_field_value(self, "attachments", MISSING)
 
     def set_tts(self, tts: bool = False) -> Message:
         """
         Set whether the message is a text-to-speech message or not.
         """
-        return replace(self, tts=tts)
+        return set_field_value(self, "tts", tts)
 
     async def send(
         self,
         channel: int | Snowflake | Channel,
         *,
-        sticker_ids: Sequence[int | Snowflake] | MISSING = MISSING,
+        sticker_ids: TupleOrList[int | Snowflake] | MISSING = MISSING,
         flags: bitfields.MessageFlags | MISSING = MISSING,
     ) -> Message:
         """

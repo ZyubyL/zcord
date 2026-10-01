@@ -19,11 +19,11 @@ Welcome to Zcord documentation page.
 
 -   :material-api:{ .lg .middle } __Usage__
 
-    [:octicons-arrow-right-24: See API references](api/zcord)
+    [:octicons-arrow-right-24: See API references](api/zcord.md)
 
 -   :material-update:{ .lg .middle } __News and update__
 
-    [:octicons-arrow-right-24: See Changelog](CHANGELOG)
+    [:octicons-arrow-right-24: See Changelog](CHANGELOG.md)
 
 </div>
 

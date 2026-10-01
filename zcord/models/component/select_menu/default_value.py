@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import ClassVar, Literal
 
 from zcord.missing import MISSING
-from zcord.models.base import Model
+from zcord.models.base import Model, set_field_value
 from zcord.models.snowflake import Snowflake
 
 
@@ -42,4 +42,4 @@ class DefaultValue(Model):
         return cls(id=id)
 
     def set_id(self, id: Snowflake) -> DefaultValue:
-        return replace(self, id=id)
+        return set_field_value(self, "id", id)

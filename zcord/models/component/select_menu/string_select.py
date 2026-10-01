@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.missing import MISSING
+from zcord.models.base import add_field_value, set_field_value
 from zcord.models.component.base import Component
 from zcord.models.component.select_menu.base import SelectMenu
 from zcord.models.component.select_menu.select_option import SelectOption
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from zcord.types import TupleOrList
 
 
 @dataclass(frozen=True, slots=True)
@@ -49,7 +50,7 @@ class StringSelect(SelectMenu):
         cls,
         *,
         custom_id: str | MISSING = MISSING,
-        options: Sequence[SelectOption] | MISSING = MISSING,
+        options: TupleOrList[SelectOption] | MISSING = MISSING,
         placeholder: str | MISSING = MISSING,
         min_values: int = 1,
         max_values: int = 1,
@@ -76,7 +77,7 @@ class StringSelect(SelectMenu):
 
     def set_options(
         self,
-        options: Sequence[SelectOption] | MISSING = MISSING,
+        options: TupleOrList[SelectOption] | MISSING = MISSING,
     ) -> StringSelect:
         """
         Set the options of the string select component.
@@ -116,18 +117,13 @@ class StringSelect(SelectMenu):
             raise ValueError(
                 "String select component cannot have more than 25 options."
             )
-        return replace(
-            self,
-            options=(*self.options, option)
-            if self.options is not MISSING
-            else (option,),
-        )
+        return add_field_value(self, "options", option)
 
     def clear_options(self) -> StringSelect:
         """
         Clear the options of the string select component.
         """
-        return replace(self, options=MISSING)
+        return set_field_value(self, "options", MISSING)
 
     def set_placeholder(
         self, placeholder: str | MISSING = MISSING
@@ -143,7 +139,7 @@ class StringSelect(SelectMenu):
             raise ValueError(
                 "Placeholder cannot be longer than 150 characters."
             )
-        return replace(self, placeholder=placeholder)
+        return set_field_value(self, "placeholder", placeholder)
 
 
 Component._registry[enums.ComponentType.STRING_SELECT] = StringSelect

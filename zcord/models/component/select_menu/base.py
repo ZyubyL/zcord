@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import Self
 
 from zcord.missing import MISSING
+from zcord.models.base import set_field_value
 from zcord.models.component.base import Component
 
 
@@ -30,7 +31,7 @@ class SelectMenu(Component):
         """
         if len(custom_id) > 100 or len(custom_id) < 1:
             raise ValueError("Custom ID cannot be longer than 100 characters.")
-        return replace(self, custom_id=custom_id)
+        return set_field_value(self, "custom_id", custom_id)
 
     def set_min_values(self, min_values: int) -> Self:
         """
@@ -42,7 +43,7 @@ class SelectMenu(Component):
         """
         if min_values < 1 or min_values > 25:
             raise ValueError("Select menu min_values must be between 1 and 25.")
-        return replace(self, min_values=min_values)
+        return set_field_value(self, "min_values", min_values)
 
     def set_max_values(self, max_values: int) -> Self:
         """
@@ -54,16 +55,16 @@ class SelectMenu(Component):
         """
         if max_values < 1 or max_values > 25:
             raise ValueError("Select menu max_values must be between 1 and 25.")
-        return replace(self, max_values=max_values)
+        return set_field_value(self, "max_values", max_values)
 
     def set_required(self, required: bool) -> Self:
         """
         Set whether this select component is required.
         """
-        return replace(self, required=required)
+        return set_field_value(self, "required", required)
 
     def set_disabled(self, disabled: bool) -> Self:
         """
         Set whether this select component is disabled.
         """
-        return replace(self, disabled=disabled)
+        return set_field_value(self, "disabled", disabled)

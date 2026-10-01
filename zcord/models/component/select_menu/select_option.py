@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import ClassVar
 
 from zcord.missing import MISSING
-from zcord.models.base import Model
+from zcord.models.base import Model, set_field_value
 from zcord.models.emoji import Emoji
 
 
@@ -83,7 +83,7 @@ class SelectOption(Model):
         """
         if label is not MISSING and (len(label) > 100 or len(label) < 1):
             raise ValueError("Label must be between 1 and 100 characters.")
-        return replace(self, label=label)
+        return set_field_value(self, "label", label)
 
     def set_value(self, value: str | MISSING = MISSING) -> SelectOption:
         """
@@ -95,7 +95,7 @@ class SelectOption(Model):
         """
         if value is not MISSING and (len(value) > 100 or len(value) < 1):
             raise ValueError("Value must be between 1 and 100 characters.")
-        return replace(self, value=value)
+        return set_field_value(self, "value", value)
 
     def set_description(
         self, description: str | MISSING = MISSING
@@ -111,16 +111,16 @@ class SelectOption(Model):
             raise ValueError(
                 "Description must be between 1 and 100 characters."
             )
-        return replace(self, description=description)
+        return set_field_value(self, "description", description)
 
     def set_emoji(self, emoji: Emoji | MISSING = MISSING) -> SelectOption:
         """
         Set the emoji of the select option.
         """
-        return replace(self, emoji=emoji)
+        return set_field_value(self, "emoji", emoji)
 
     def set_default(self, default: bool) -> SelectOption:
         """
         Set whether showing this option as selected by default.
         """
-        return replace(self, default=default)
+        return set_field_value(self, "default", default)

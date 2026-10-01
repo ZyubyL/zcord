@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, ClassVar
 
 from zcord.missing import MISSING
-from zcord.models.base import Model
+from zcord.models.base import Model, add_field_value, set_field_value
 from zcord.models.emoji import Emoji
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from zcord.types import TupleOrList
 
 
 @dataclass(frozen=True, slots=True)
@@ -193,7 +193,7 @@ class Poll(Model):
         cls,
         *,
         question: str | MISSING = MISSING,
-        answers: Sequence[PollAnswer] | MISSING = MISSING,
+        answers: TupleOrList[PollAnswer] | MISSING = MISSING,
         duration: int = 24,
         allow_multiselect: bool = False,
     ) -> Poll:
@@ -220,13 +220,13 @@ class Poll(Model):
         """
         Set the question of the poll.
         """
-        return replace(
-            self, question=PollMedia(text=question, _is_question=True)
+        return set_field_value(
+            self, "question", PollMedia(text=question, _is_question=True)
         )
 
     def set_answers(
         self,
-        answers: Sequence[PollAnswer] | MISSING = MISSING,
+        answers: TupleOrList[PollAnswer] | MISSING = MISSING,
     ) -> Poll:
         """
         Set the answers of the poll.
@@ -269,18 +269,13 @@ class Poll(Model):
                     else MISSING,
                 )
             )
-        return replace(
-            self,
-            answers=(*self.answers, answer)
-            if self.answers is not MISSING
-            else (answer,),
-        )
+        return add_field_value(self, "answers", answer)
 
     def clear_answers(self) -> Poll:
         """
         Clear all answers from the poll.
         """
-        return replace(self, answers=MISSING)
+        return set_field_value(self, "answers", MISSING)
 
     def set_duration(self, hours: int = 24) -> Poll:
         """
@@ -292,10 +287,10 @@ class Poll(Model):
         """
         if hours < 1 or hours > 32 * 24:
             raise ValueError("Duration must be between 1 and 768 hours")
-        return replace(self, _duration=hours)
+        return set_field_value(self, "_duration", hours)
 
     def set_multiselect(self, allow_multiselect: bool = True) -> Poll:
         """
         Allow multiple answers to be selected.
         """
-        return replace(self, allow_multiselect=allow_multiselect)
+        return set_field_value(self, "allow_multiselect", allow_multiselect)

@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums, errors
 from zcord.missing import MISSING
+from zcord.models.base import add_field_value, set_field_value
 from zcord.models.component.base import Component
 from zcord.models.component.button import Button
 from zcord.models.component.select_menu.base import SelectMenu
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from zcord.types import TupleOrList
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,7 +35,7 @@ class ActionRow(Component):
     @classmethod
     def new(
         cls,
-        components: Sequence[Button] | SelectMenu | MISSING = MISSING,
+        components: TupleOrList[Button] | SelectMenu | MISSING = MISSING,
     ) -> ActionRow:
         """
         Create a new action row component.
@@ -71,14 +72,14 @@ class ActionRow(Component):
                 Cannot add more components to this action row.
         """
         if self.components is MISSING or not self.components:
-            return replace(self, components=(button,))
+            return set_field_value(self, "components", (button,))
         if isinstance(self.components[0], SelectMenu) or (
             isinstance(self.components[0], Button) and len(self.components) >= 5
         ):
             raise errors.ZcordError(
                 "Cannot add more components to this action row"
             )
-        return replace(self, components=(*self.components, button))
+        return add_field_value(self, "components", button)
 
     def set_select(self, select: SelectMenu) -> ActionRow:
         """
@@ -87,7 +88,7 @@ class ActionRow(Component):
         Notes:
             This will replace any existing select menu or buttons.
         """
-        return replace(self, components=(select,))
+        return set_field_value(self, "components", (select,))
 
 
 Component._registry[enums.ComponentType.ACTION_ROW] = ActionRow
