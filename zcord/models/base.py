@@ -52,7 +52,7 @@ def add_field_value(cls, field_name: str, value: Any) -> Any:
         Value is not a sequence type
     """
     field = getattr(cls, field_name)
-    if isinstance(field, (tuple, list)):
+    if isinstance(field, tuple):
         replace = {field_name: (*field, value)}
     elif field is MISSING:
         replace = {field_name: (value,)}
@@ -64,7 +64,7 @@ def add_field_value(cls, field_name: str, value: Any) -> Any:
 def set_field_value(cls, field_name: str, value: Any) -> Any:
     """Wrapper for all the set_* methods"""
     field = getattr(cls, field_name)
-    if isinstance(field, (tuple, list)):
+    if isinstance(field, tuple):
         if isinstance(value, (tuple, list)):
             replace = {field_name: (*value,)}
         else:
