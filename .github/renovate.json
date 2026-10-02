@@ -18,6 +18,7 @@
         },
         {
             "matchManagers": ["github-actions"],
+            "pinDigests": true,
             "groupName": "GitHub Actions"
         }
     ]
