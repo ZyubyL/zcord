@@ -68,7 +68,7 @@ class Emoji(Model):
     }
 
     REGEX: ClassVar[re.Pattern] = regex.compile(
-        r"^<?(?:(?P<animated>a):)?(?P<name>[^:]+):(?P<id>\d+)>?$"
+        r"^<?(?P<animated>a?):(?P<name>\w{2,32}):(?P<id>\d{18,22})>?$"
     )
 
     _EMOJI_REGEX: ClassVar[re.Pattern] = regex.compile(r"\X")
@@ -108,6 +108,10 @@ class Emoji(Model):
         """
         Create a new emoji object.
 
+        Raises:
+            ValueError:
+                The emoji is invalid.
+
         Examples:
             ```py
             # 1. Unicode emoji
@@ -127,7 +131,7 @@ class Emoji(Model):
             return cls(
                 name=match["name"],
                 id=Snowflake(match["id"]),
-                animated=match["animated"] is not None,
+                animated=match["animated"] == "a",
             )
 
         if cls.is_unicode(emoji):
