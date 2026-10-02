@@ -45,33 +45,35 @@ def from_payload(cls, payload: dict | MISSING, **transforms) -> Any:
     return cls(**kwargs)
 
 
-def add_field_value(cls, field_name: str, value: Any) -> Any:
-    """Wrapper to all the add_* methods
+def add_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
+    """Wrapper for all the add_* methods
 
     Notes:
         Value is not a sequence type
     """
-    field = getattr(cls, field_name)
+    field = getattr(self, field_name)
     if isinstance(field, tuple):
         replace = {field_name: (*field, value)}
     elif field is MISSING:
         replace = {field_name: (value,)}
     else:
         replace = {field_name: (field, value)}
-    return dataclasses.replace(cls, **replace)
+    return dataclasses.replace(self, **replace)  # type: ignore
 
 
-def set_field_value(cls, field_name: str, value: Any) -> Any:
+def set_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
     """Wrapper for all the set_* methods"""
-    field = getattr(cls, field_name)
+    field = getattr(self, field_name)
     if isinstance(field, tuple):
         if isinstance(value, (tuple, list)):
             replace = {field_name: (*value,)}
+        elif value is MISSING:
+            replace = {field_name: value}
         else:
             replace = {field_name: (value,)}
     else:
         replace = {field_name: value}
-    return dataclasses.replace(cls, **replace)
+    return dataclasses.replace(self, **replace)  # type: ignore
 
 
 class Model:
