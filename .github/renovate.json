@@ -17,6 +17,10 @@
             "rangeStrategy": "pin"
         },
         {
+            "matchManagers": ["pyenv"],
+            "enabled": false
+        },
+        {
             "matchManagers": ["github-actions"],
             "pinDigests": true,
             "groupName": "GitHub Actions"
