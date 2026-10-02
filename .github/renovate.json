@@ -1,0 +1,24 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": ["config:recommended"],
+    "dependencyDashboard": true,
+    "labels": ["dependencies"],
+    "packageRules": [
+        {
+            "matchManagers": ["pep621"],
+            "matchDepTypes": ["dependencies"],
+            "groupName": "Runtime dependencies",
+            "rangeStrategy": "pin"
+        },
+        {
+            "matchManagers": ["pep621"],
+            "matchDepTypes": ["optionalDependencies", "dependency-groups"],
+            "groupName": "Development dependencies",
+            "rangeStrategy": "pin"
+        },
+        {
+            "matchManagers": ["github-actions"],
+            "groupName": "GitHub Actions"
+        }
+    ]
+}

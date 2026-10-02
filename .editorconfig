@@ -3,8 +3,8 @@ root = true
 [*]
 indent_style = space
 
-[*.{py, toml}]
+[*.{py,toml,json{,5}}]
 indent_size = 4
 
-[*.{yml, yaml}]
+[*.{y{,a}ml}]
 indent_size = 2
