@@ -33,12 +33,6 @@ Documentation = "https://zcord.readthedocs.io"
 speed = [
     "uvloop==0.22.1",
 ]
-docs = [
-    "mkdocs==1.6.1",
-    "mkdocs-materialx==10.2.0",
-    "mkdocstrings[python]==1.0.6",
-    "ruff==0.16.1",
-]
 
 [tool.ruff]
 target-version = "py312"
