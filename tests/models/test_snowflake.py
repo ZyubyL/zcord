@@ -21,3 +21,8 @@ DISCORD_EPOCH_DATETIME = datetime.fromtimestamp(DISCORD_EPOCH / 1000, tz=UTC)
 )
 def test_to_datetime(value, expected):
     assert Snowflake(value).to_datetime() == expected
+
+
+def test_to_datetime_negative():
+    with pytest.raises(ValueError):
+        Snowflake(-1)
