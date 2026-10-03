@@ -1,12 +1,11 @@
-<p align="center">
-    <img src="docs/assets/zcord_original.png" width="128px" alt="Zcord" />
-    <h1>Zcord - Minimalistic Discord API wrapper</h1>
-</p>
-
-![GitHub License](https://img.shields.io/github/license/zyubyl/zcord?label=License&style=for-the-badge)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zyubyl/zcord/test.yml?label=Tests&style=for-the-badge)
-![PyPI version](https://img.shields.io/pypi/v/zcord?label=PyPI&color=blue&style=for-the-badge)
-![Python versions](https://img.shields.io/pypi/pyversions/zcord?label=Python%20Version&color=blue&style=for-the-badge)
+<div align="center">
+    <img src="docs/assets/zcord_social_preview.png" width="640px" alt="Zcord - Discord API wrapper for Python" />
+    <br />
+    <img src="https://img.shields.io/github/license/zyubyl/zcord?label=License&style=for-the-badge" alt="MIT LICENSE" />
+    <img src="https://img.shields.io/github/actions/workflow/status/zyubyl/zcord/test.yml?label=Tests&style=for-the-badge" alt="Tests" />
+    <img src="https://img.shields.io/pypi/v/zcord?label=PyPI&color=blue&style=for-the-badge" alt="PyPI" />
+    <img src="https://img.shields.io/pypi/pyversions/zcord?label=Python%20Version&color=blue&style=for-the-badge" alt="Supported python versions" />
+</div>
 
 ---
 
