@@ -3,8 +3,8 @@ name: PyPI Publish
 on:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+"  # 2026.1.0
-      - "[0-9]+.[0-9]+.[0-9]+.*"  # 2026.1.0.alpha1
+      - "[0-9]+.[0-9]+.[0-9]+" # 2026.1.0
+      - "[0-9]+.[0-9]+.[0-9]+.*" # 2026.1.0.alpha1
 
 permissions:
   contents: read
@@ -29,6 +29,11 @@ jobs:
       - name: Build package
         run: uv build
 
+      - name: Validate package
+        run: |
+          uvx twine check dist/*
+          uv run --isolated --no-project --with dist/*.whl python -c "import zcord; print(zcord.__version__)"
+
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
         with:
@@ -41,6 +46,6 @@ jobs:
           [ -s "$RUNNER_TEMP/notes.md"] || { echo "No release notes"; exit 1; }
 
       - name: Create release
-        run: gh release create "${{ github.ref_name }}" --notes-file "$RUNNER_TEMP/notes.md" dist/*.tar.gz dist/*.whl  # Idk what the attestation files do but they're probably not needed for release
+        run: gh release create "${{ github.ref_name }}" --notes-file "$RUNNER_TEMP/notes.md" dist/*.tar.gz dist/*.whl # Idk what the attestation files do but they're probably not needed for release
         env:
           GH_TOKEN: ${{ github.token }}
