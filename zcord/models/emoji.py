@@ -113,19 +113,19 @@ class Emoji(Model):
                 The emoji is invalid.
 
         Examples:
-            ```py
-            # 1. Unicode emoji
-            Emoji.new("\N{ROLLING ON THE FLOOR LAUGHING}")
+            === "Unicode emoji"
+                ```py
+                Emoji.new("\N{BROKEN HEART}")  # With emoji name
+                Emoji.new("\\U0001f940")  # With unicode codepoint
+                ```
+            === "Custom emoji"
+                ```py
+                Emoji.new("<:custom:1234567>") # Static
+                Emoji.new("<a:custom_animated:1234567>") # Animated
+                ```
 
-            # 2. Custom static emoji
-            Emoji.new("<:custom:1234567>")
-            # 3. Custom animated emoji
-            Emoji.new("<a:custom:1234567>")
-
-            # NOTE: The '<>' can be omitted
-            Emoji.new(":custom:1234567")
-
-            ```
+        Notes:
+            The angled markers (`<>`) can be omitted.
         """
         if match := cls.REGEX.fullmatch(emoji):
             return cls(
