@@ -3,10 +3,10 @@
     <h1>Zcord - Minimalistic Discord API wrapper</h1>
 </p>
 
-![license](https://img.shields.io/badge/license-MIT-green?style=flat)
-![Tests](https://github.com/zyubyl/zcord/actions/workflows/test.yml/badge.svg)
-![PyPI version](https://img.shields.io/pypi/v/zcord)
-![Python versions](https://img.shields.io/pypi/pyversions/zcord)
+![GitHub License](https://img.shields.io/github/license/zyubyl/zcord?label=License&style=for-the-badge)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zyubyl/zcord/test.yml?label=Tests&style=for-the-badge)
+![PyPI version](https://img.shields.io/pypi/v/zcord?label=PyPI&color=blue&style=for-the-badge)
+![Python versions](https://img.shields.io/pypi/pyversions/zcord?label=Python%20Version&color=blue&style=for-the-badge)
 
 ---
 
