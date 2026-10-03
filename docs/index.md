@@ -7,21 +7,22 @@ Welcome to Zcord documentation page.
     ***The project is still in development!***
 
 ## TL;DR
+
 <div class="grid cards" markdown>
 
--   :simple-python:{ .lg .middle } __Python 3.12+__
+- :simple-python:{ .lg .middle } **Python 3.12+**
 
     [:octicons-arrow-right-24: Go to install](#installation)
 
--   :fontawesome-solid-exclamation-circle:{ .lg .middle } __Gateway and HTTP-only (WIP)__
+- :fontawesome-solid-exclamation-circle:{ .lg .middle } **Gateway and HTTP-only (WIP)**
 
     [:octicons-arrow-right-24: See examples](#example)
 
--   :material-api:{ .lg .middle } __Usage__
+- :material-api:{ .lg .middle } **Usage**
 
     [:octicons-arrow-right-24: See API references](api/zcord.md)
 
--   :material-update:{ .lg .middle } __News and update__
+- :material-update:{ .lg .middle } **News and update**
 
     [:octicons-arrow-right-24: See Changelog](CHANGELOG.md)
 
@@ -49,13 +50,13 @@ Detailed examples are available in the [examples directory](https://github.com/z
 
     ``` py title="http_bot.py"
     import zcord
-    
+
     bot = zcord.Bot(
         "your token here",
         intents=None,  # You don't need a websocket for this
     )
-    
-    
+
+
     async def main():
         async with bot:
             await (
@@ -68,11 +69,11 @@ Detailed examples are available in the [examples directory](https://github.com/z
                 )
                 .send(1234567)  # replace with your channel ID
             )
-    
-    
+
+
     if __name__ == "__main__":
         import asyncio
-    
+
         asyncio.run(main())
     ```
 
@@ -82,7 +83,7 @@ Detailed examples are available in the [examples directory](https://github.com/z
     import zcord
     from zcord import bitfields
     from zcord.enums import GatewayEvent
-    
+
     bot = zcord.Bot(
         "your token here",
         intents=(
@@ -93,22 +94,22 @@ Detailed examples are available in the [examples directory](https://github.com/z
             # ^ Use the OR operator `|` to combine the bitfields
         ),
     )
-    
-    
+
+
     # Bot.once will only fire once on the first time the event is fired
     @bot.once(GatewayEvent.READY)
     def once_ready(user: zcord.User):
         print(user.username)
-    
-    
+
+
     async def on_message(message: zcord.Message):
         if message.content is not MISSING and message.content.lower() == "hello":
             await message.reply(zcord.Message.new(content="hi"))
-    
-    
+
+
     # You can also pass callback function to the method
     bot.on(GatewayEvent.MESSAGE_CREATE, on_message)
-    
+
     # Start the bot
     bot.run()
     ```
@@ -121,6 +122,7 @@ Zcord is split into submodules:
 - [`zcord.errors`](api/errors.md) - Contains error from the library.
 - [`zcord.bitfields`](api/bitfields.md) - Contains bitfield flag types.
 - [`zcord.enums`](api/enums.md) - Contains enum types.
+- [`zcord.types`](api/types.md) - Contains zcord's type aliases.
 
 ## Changelog
 

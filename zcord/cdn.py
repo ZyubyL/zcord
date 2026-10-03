@@ -1,18 +1,37 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from zcord.types import AnimatedFormat, ImageFormat
+
+__all__ = ["CDN"]
+
 _BASE_URL = "https://cdn.discordapp.com"
+_MIN_SIZE = 16
+_MAX_SIZE = 4096
+_FORMATS = frozenset({"png", "jpg", "jpeg", "webp", "gif"})
 
 
-def _check_animated(hash: str) -> bool:
-    return hash.startswith("a_")
-
-
-def _pick_best_format(format: str | None, hash: str) -> str:
-    if format is None:
-        return "gif" if _check_animated(hash) else "png"
-    return format
+def _build(path: str, hash: str, size: int, format: str | None) -> str:
+    if not _MIN_SIZE <= size <= _MAX_SIZE or size & (size - 1):
+        raise ValueError(
+            f"Size must be a power of 2 between {_MIN_SIZE} and {_MAX_SIZE},"
+            f" got {size}"
+        )
+    if format is not None and format not in _FORMATS:
+        raise ValueError(f"Unsupported format: {format!r}")
+    format = format or ("gif" if hash.startswith("a_") else "png")
+    return f"{_BASE_URL}/{path}/{hash}.{format}?size={size}"
 
 
 class CDN:
-    MAX_SIZE = 4096
+    MIN_SIZE = _MIN_SIZE
+    """
+    The minimum size of a CDN image.
+    """
+
+    MAX_SIZE = _MAX_SIZE
     """
     The maximum size of a CDN image.
     """
@@ -23,10 +42,9 @@ class CDN:
         app_id: int,
         hash: str,
         size: int,
-        format: str | None,
+        format: ImageFormat | None,
     ) -> str:
-        format = _pick_best_format(format, hash)
-        return f"{_BASE_URL}/app-icons/{app_id}/{hash}.{format}?size={size}"
+        return _build(f"/app-icons/{app_id}", hash, size, format)
 
     @staticmethod
     def user_avatar(
@@ -34,10 +52,9 @@ class CDN:
         user_id: int,
         hash: str,
         size: int,
-        format: str | None,
+        format: AnimatedFormat | None,
     ) -> str:
-        format = _pick_best_format(format, hash)
-        return f"{_BASE_URL}/avatars/{user_id}/{hash}.{format}?size={size}"
+        return _build(f"/avatars/{user_id}", hash, size, format)
 
     @staticmethod
     def user_banner(
@@ -47,8 +64,7 @@ class CDN:
         size: int,
         format: str | None,
     ) -> str:
-        format = _pick_best_format(format, hash)
-        return f"{_BASE_URL}/banners/{user_id}/{hash}.{format}?size={size}"
+        return _build(f"/banners/{user_id}", hash, size, format)
 
     @staticmethod
     def avatar_decoration(
@@ -56,17 +72,16 @@ class CDN:
         hash: str,
         size: int,
     ) -> str:
-        return f"{_BASE_URL}/avatar-decoration-presets/{hash}.png?size={size}"
+        return _build("/avatar-decoration-presets", hash, size, "png")
 
     @staticmethod
     def emoji(
         *,
         hash: str,
         size: int,
-        format: str | None,
+        format: AnimatedFormat | None,
     ) -> str:
-        format = _pick_best_format(format, hash)
-        return f"{_BASE_URL}/emojis/{hash}.{format}?size={size}"
+        return _build("/emojis", hash, size, format)
 
     @staticmethod
     def badge(
@@ -74,12 +89,9 @@ class CDN:
         guild_id: int,
         hash: str,
         size: int,
-        format: str | None,
+        format: ImageFormat | None,
     ) -> str:
-        format = _pick_best_format(format, hash)
-        return f"""
-            {_BASE_URL}/guild-tag-badges/{guild_id}/{hash}.{format}?size={size}
-        """.strip()
+        return _build(f"/guild-tag-badges/{guild_id}", hash, size, format)
 
     @staticmethod
     def guild_icon(
@@ -87,10 +99,9 @@ class CDN:
         guild_id: int,
         hash: str,
         size: int,
-        format: str | None,
+        format: AnimatedFormat | None,
     ) -> str:
-        format = _pick_best_format(format, hash)
-        return f"{_BASE_URL}/icons/{guild_id}/{hash}.{format}?size={size}"
+        return _build(f"/icons/{guild_id}", hash, size, format)
 
     @staticmethod
     def guild_banner(
@@ -98,10 +109,9 @@ class CDN:
         guild_id: int,
         hash: str,
         size: int,
-        format: str | None,
+        format: AnimatedFormat | None,
     ) -> str:
-        format = _pick_best_format(format, hash)
-        return f"{_BASE_URL}/banners/{guild_id}/{hash}.{format}?size={size}"
+        return _build(f"/banners/{guild_id}", hash, size, format)
 
     @staticmethod
     def team_icon(
@@ -109,7 +119,6 @@ class CDN:
         team_id: int,
         hash: str,
         size: int,
-        format: str | None,
+        format: ImageFormat | None,
     ) -> str:
-        format = _pick_best_format(format, hash)
-        return f"{_BASE_URL}/team-icons/{team_id}/{hash}.{format}?size={size}"
+        return _build(f"/team-icons/{team_id}", hash, size, format)

@@ -11,7 +11,7 @@ from zcord.models.component.select_menu.base import SelectMenu
 from zcord.models.component.select_menu.select_option import SelectOption
 
 if TYPE_CHECKING:
-    from zcord.types import TupleOrList
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,7 +50,7 @@ class StringSelect(SelectMenu):
         cls,
         *,
         custom_id: str | MISSING = MISSING,
-        options: TupleOrList[SelectOption] | MISSING = MISSING,
+        options: types.TupleOrList[SelectOption] | MISSING = MISSING,
         placeholder: str | MISSING = MISSING,
         min_values: int = 1,
         max_values: int = 1,
@@ -77,7 +77,7 @@ class StringSelect(SelectMenu):
 
     def set_options(
         self,
-        options: TupleOrList[SelectOption] | MISSING = MISSING,
+        options: types.TupleOrList[SelectOption] | MISSING = MISSING,
     ) -> StringSelect:
         """
         Set the options of the string select component.

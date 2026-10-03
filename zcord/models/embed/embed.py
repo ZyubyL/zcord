@@ -15,7 +15,7 @@ from zcord.models.embed.embed_provider import EmbedProvider
 from zcord.models.embed.embed_video import EmbedVideo
 
 if TYPE_CHECKING:
-    from zcord.types import TupleOrList
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -146,7 +146,7 @@ class Embed(Model):
         image_url: str | MISSING = MISSING,
         thumbnail_url: str | MISSING = MISSING,
         author: EmbedAuthor | MISSING = MISSING,
-        fields: TupleOrList[EmbedField] | MISSING = MISSING,
+        fields: types.TupleOrList[EmbedField] | MISSING = MISSING,
     ) -> Embed:
         """
         Create a new embed.
@@ -321,7 +321,7 @@ class Embed(Model):
 
     def set_fields(
         self,
-        fields: TupleOrList[EmbedField] | MISSING = MISSING,
+        fields: types.TupleOrList[EmbedField] | MISSING = MISSING,
     ) -> Embed:
         e = self.remove_fields()
         if fields is MISSING:

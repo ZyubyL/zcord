@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from zcord import bitfields, enums
 from zcord.cdn import CDN
@@ -11,6 +11,9 @@ from zcord.models.emoji import Emoji
 from zcord.models.role import Role
 from zcord.models.snowflake import Snowflake
 from zcord.models.sticker import Sticker
+
+if TYPE_CHECKING:
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -261,13 +264,10 @@ class Guild(Model):
     def icon_url(
         self,
         size: int = CDN.MAX_SIZE,
-        format: Literal["png", "jpg", "jpeg", "webp", "gif"] | None = None,
+        format: types.AnimatedFormat | None = None,
     ) -> str | None:
         """
         The URL of the guild's icon.
-
-        Notes:
-            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if self.icon_hash is None or self.icon_hash is MISSING:
             return None
@@ -281,13 +281,10 @@ class Guild(Model):
     def banner_url(
         self,
         size: int = CDN.MAX_SIZE,
-        format: Literal["png", "jpg", "jpeg", "webp", "gif"] | None = None,
+        format: types.AnimatedFormat | None = None,
     ) -> str | None:
         """
         The URL of the guild's icon.
-
-        Notes:
-            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if self.banner is None:
             return None

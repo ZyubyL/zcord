@@ -24,8 +24,8 @@ from zcord.models.sticker import Sticker
 from zcord.models.user import User
 
 if TYPE_CHECKING:
+    from zcord import types
     from zcord.state import ConnectionState
-    from zcord.types import TupleOrList
 
 
 @dataclass(frozen=True, slots=True)
@@ -317,12 +317,13 @@ class Message(Model):
         *,
         content: str | MISSING = MISSING,
         tts: bool = False,
-        embeds: TupleOrList[Embed] | MISSING = MISSING,
-        components: TupleOrList[Component] | MISSING = MISSING,
-        attachments: TupleOrList[Attachment] | MISSING = MISSING,
+        embeds: types.TupleOrList[Embed] | MISSING = MISSING,
+        components: types.TupleOrList[Component] | MISSING = MISSING,
+        attachments: types.TupleOrList[Attachment] | MISSING = MISSING,
         # webhook_id: Snowflake | MISSING = MISSING,
         message_reference: MessageReference | MISSING = MISSING,
-        message_snapshots: TupleOrList[MessageSnapshot] | MISSING = MISSING,
+        message_snapshots: types.TupleOrList[MessageSnapshot]
+        | MISSING = MISSING,
         referenced_message: Message | None | MISSING = MISSING,
         # thread: Channel | MISSING = MISSING,
         # sticker_items: list[Sticker] | MISSING = MISSING,
@@ -356,7 +357,7 @@ class Message(Model):
 
     def _set_message_snapshots(
         self,
-        message_snapshots: TupleOrList[MessageSnapshot] | MISSING,
+        message_snapshots: types.TupleOrList[MessageSnapshot] | MISSING,
     ) -> Message:
         if message_snapshots is not MISSING:
             return set_field_value(self, "message_snapshots", message_snapshots)
@@ -369,7 +370,7 @@ class Message(Model):
         return set_field_value(self, "content", content)
 
     def set_embeds(
-        self, embeds: TupleOrList[Embed] | MISSING = MISSING
+        self, embeds: types.TupleOrList[Embed] | MISSING = MISSING
     ) -> Message:
         """
         Set the embeds of the message.
@@ -418,7 +419,7 @@ class Message(Model):
 
     def set_components(
         self,
-        components: TupleOrList[Component] | MISSING = MISSING,
+        components: types.TupleOrList[Component] | MISSING = MISSING,
     ) -> Message:
         """
         Set the components of the message.
@@ -457,7 +458,7 @@ class Message(Model):
 
     def set_attachments(
         self,
-        attachments: TupleOrList[Attachment] | MISSING = MISSING,
+        attachments: types.TupleOrList[Attachment] | MISSING = MISSING,
     ) -> Message:
         """
         Set the attachments of the message.
@@ -490,7 +491,7 @@ class Message(Model):
         self,
         channel: int | Snowflake | Channel,
         *,
-        sticker_ids: TupleOrList[int | Snowflake] | MISSING = MISSING,
+        sticker_ids: types.TupleOrList[int | Snowflake] | MISSING = MISSING,
         flags: bitfields.MessageFlags | MISSING = MISSING,
     ) -> Message:
         """

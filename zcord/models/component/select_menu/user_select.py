@@ -11,7 +11,7 @@ from zcord.models.component.select_menu.base import SelectMenu
 from zcord.models.component.select_menu.default_value import DefaultValue
 
 if TYPE_CHECKING:
-    from zcord.types import TupleOrList
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,7 +51,7 @@ class UserSelect(SelectMenu):
         *,
         custom_id: str | MISSING = MISSING,
         placeholder: str | MISSING = MISSING,
-        default_values: TupleOrList[DefaultValue] | MISSING = MISSING,
+        default_values: types.TupleOrList[DefaultValue] | MISSING = MISSING,
         min_values: int = 1,
         max_values: int = 1,
         required: bool = True,
@@ -85,7 +85,7 @@ class UserSelect(SelectMenu):
 
     def set_default_values(
         self,
-        default_values: TupleOrList[DefaultValue] | MISSING = MISSING,
+        default_values: types.TupleOrList[DefaultValue] | MISSING = MISSING,
     ) -> UserSelect:
         """
         Set the default values of the user select component.

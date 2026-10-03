@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Literal
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord import bitfields
 from zcord.cdn import CDN
@@ -11,6 +11,9 @@ from zcord.models.base import Model
 from zcord.models.collectibles import Collectibles
 from zcord.models.primary_guild import PrimaryGuild
 from zcord.models.snowflake import Snowflake
+
+if TYPE_CHECKING:
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -128,13 +131,10 @@ class User(Model):
     def avatar_url(
         self,
         size: int = CDN.MAX_SIZE,
-        format: Literal["png", "jpg", "jpeg", "webp", "gif"] | None = None,
+        format: types.AnimatedFormat | None = None,
     ) -> str | None:
         """
         The URL of the user's avatar.
-
-        Notes:
-            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if self.avatar is None:
             return None
@@ -148,13 +148,10 @@ class User(Model):
     def banner_url(
         self,
         size: int = CDN.MAX_SIZE,
-        format: Literal["png", "jpg", "jpeg", "webp", "gif"] | None = None,
+        format: types.AnimatedFormat | None = None,
     ) -> str | None:
         """
         The URL of the user's banner.
-
-        Notes:
-            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if self.banner is None or self.banner is MISSING:
             return None
@@ -168,9 +165,6 @@ class User(Model):
     def avatar_decoration_url(self, size: int = CDN.MAX_SIZE) -> str | None:
         """
         The URL of the user's avatar decoration.
-
-        Notes:
-            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if (
             self.avatar_decoration_data is None

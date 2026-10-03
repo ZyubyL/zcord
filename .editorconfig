@@ -3,7 +3,7 @@ root = true
 [*]
 indent_style = space
 
-[*.{py,toml,json{,5}}]
+[*.{py,toml,json{,5},md}]
 indent_size = 4
 
 [*.{y{,a}ml}]

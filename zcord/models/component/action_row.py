@@ -11,7 +11,7 @@ from zcord.models.component.button import Button
 from zcord.models.component.select_menu.base import SelectMenu
 
 if TYPE_CHECKING:
-    from zcord.types import TupleOrList
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -35,7 +35,7 @@ class ActionRow(Component):
     @classmethod
     def new(
         cls,
-        components: TupleOrList[Button] | SelectMenu | MISSING = MISSING,
+        components: types.TupleOrList[Button] | SelectMenu | MISSING = MISSING,
     ) -> ActionRow:
         """
         Create a new action row component.

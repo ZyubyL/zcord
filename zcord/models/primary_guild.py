@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Literal
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord.cdn import CDN
 from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
+
+if TYPE_CHECKING:
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,13 +46,10 @@ class PrimaryGuild(Model):
     def badge_url(
         self,
         size: int = CDN.MAX_SIZE,
-        format: Literal["png", "jpg", "jpeg", "webp"] | None = None,
+        format: types.ImageFormat | None = None,
     ) -> str | None:
         """
         The URL of the user's primary guild's badge.
-
-        Notes:
-            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if self.identity_guild_id is None or self.badge is None:
             return None

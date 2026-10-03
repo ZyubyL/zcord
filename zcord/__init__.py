@@ -62,7 +62,6 @@ from .models import (
     User,
     UserSelect,
 )
-from .types import TupleOrList
 
 __version__ = version("zcord")
 """
@@ -125,7 +124,6 @@ __all__ = [
     "TeamMember",
     "ThreadMember",
     "ThreadMetadata",
-    "TupleOrList",
     "User",
     "UserSelect",
     "setup_logging",

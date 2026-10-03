@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Literal
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord import enums
 from zcord.cdn import CDN
 from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
+
+if TYPE_CHECKING:
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,7 +87,7 @@ class Team(Model):
         self,
         *,
         size: int = CDN.MAX_SIZE,
-        format: Literal["png", "jpg", "jpeg", "webp"] | None = None,
+        format: types.ImageFormat | None = None,
     ) -> str | None:
         """
         The team's icon URL.

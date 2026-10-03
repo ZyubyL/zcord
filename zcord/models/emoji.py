@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar, Literal
+from typing import TYPE_CHECKING, ClassVar
 
 import regex
 
@@ -13,6 +13,8 @@ from zcord.models.user import User
 
 if TYPE_CHECKING:
     import re
+
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,13 +89,10 @@ class Emoji(Model):
     def url(
         self,
         size: int = CDN.MAX_SIZE,
-        format: Literal["png", "jpg", "jpeg", "webp", "gif"] | None = None,
+        format: types.AnimatedFormat | None = None,
     ) -> str | None:
         """
         The URL of the emoji.
-
-        Notes:
-            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if self.id is None:
             return None

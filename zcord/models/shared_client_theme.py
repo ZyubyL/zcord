@@ -8,7 +8,7 @@ from zcord.missing import MISSING
 from zcord.models.base import Model, add_field_value, set_field_value
 
 if TYPE_CHECKING:
-    from zcord.types import TupleOrList
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,7 +53,7 @@ class SharedClientTheme(Model):
     def new(
         cls,
         *,
-        colors: TupleOrList[str] | MISSING = MISSING,
+        colors: types.TupleOrList[str] | MISSING = MISSING,
         gradient_angle: int | MISSING = MISSING,
         base_mix: int | MISSING = MISSING,
         base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET,
@@ -95,7 +95,7 @@ class SharedClientTheme(Model):
         return theme
 
     def set_colors(
-        self, colors: TupleOrList[str] | MISSING = MISSING
+        self, colors: types.TupleOrList[str] | MISSING = MISSING
     ) -> SharedClientTheme:
         """
         Set the colors of the theme.

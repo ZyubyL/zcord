@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from zcord import bitfields, enums
 from zcord.cdn import CDN
@@ -14,6 +14,7 @@ from zcord.models.team import Team
 from zcord.models.user import User
 
 if TYPE_CHECKING:
+    from zcord import types
     from zcord.state import ConnectionState
 
 
@@ -208,13 +209,10 @@ class Application(Model):
         self,
         *,
         size: int = CDN.MAX_SIZE,
-        format: Literal["png", "jpg", "jpeg", "webp"] | None = None,
+        format: types.ImageFormat | None = None,
     ) -> str | None:
         """
         The application icon URL if available.
-
-        Notes:
-            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if not self.icon:
             return None
@@ -229,13 +227,10 @@ class Application(Model):
         self,
         *,
         size: int = CDN.MAX_SIZE,
-        format: Literal["png", "jpg", "jpeg", "webp"] | None = None,
+        format: types.ImageFormat | None = None,
     ) -> str | None:
         """
         The application default rich presence invite cover image.
-
-        Notes:
-            `size` needs to be a power of 2 between `16` and `4096`.
         """
         if self.cover_image is MISSING:
             return None

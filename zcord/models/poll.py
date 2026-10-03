@@ -9,7 +9,7 @@ from zcord.models.base import Model, add_field_value, set_field_value
 from zcord.models.emoji import Emoji
 
 if TYPE_CHECKING:
-    from zcord.types import TupleOrList
+    from zcord import types
 
 
 @dataclass(frozen=True, slots=True)
@@ -193,7 +193,7 @@ class Poll(Model):
         cls,
         *,
         question: str | MISSING = MISSING,
-        answers: TupleOrList[PollAnswer] | MISSING = MISSING,
+        answers: types.TupleOrList[PollAnswer] | MISSING = MISSING,
         duration: int = 24,
         allow_multiselect: bool = False,
     ) -> Poll:
@@ -226,7 +226,7 @@ class Poll(Model):
 
     def set_answers(
         self,
-        answers: TupleOrList[PollAnswer] | MISSING = MISSING,
+        answers: types.TupleOrList[PollAnswer] | MISSING = MISSING,
     ) -> Poll:
         """
         Set the answers of the poll.
