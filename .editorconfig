@@ -6,5 +6,5 @@ indent_style = space
 [*.{py,toml,json{,5},md}]
 indent_size = 4
 
-[*.{y{,a}ml}]
+[{*.{y{,a}ml},CHANGELOG.md}]
 indent_size = 2

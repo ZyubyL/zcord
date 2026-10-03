@@ -15,129 +15,138 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 ### Zcord repository has been moved to [zyubyl/zcord](https://github.com/zyubyl/zcord)
 
 ### Added:
-  - Endpoints:
-    - `Bot/REST.update_current_application()`.
-    - `REST.create_interaction_response()`.
-    - `REST.send_message()` now have `sticker_ids` and `flags` parameters as well. This expands to `Message/Channel.send()`
-  - Gateway connection:
-    - Event dispatching, using `Bot.on(GatewayEvent, callback)` (or `Bot.once` for one-time handlers).
-      - `Bot.on/.once` can also be used as decorator.
-  - Models:
-    - `InstallParams`.
-    - `InteractionResponse`.
-    - `InteractionData`.
-    - `Interaction.respond.send/edit/defer()` methods
-  - Enums:
-    - `EventWebhookStatus`.
-    - `InteractionCallbackType`.
-    - `GatewayEvent`.
-  - Bitfields:
-    - `Intents`.
-  - `PollMedia` text length checks.
-  - `Bot.run` for auto setting up logging and starting the bot.
-  - Basic caching.
-  - `py.typed` for PEP-561.
+
+- Endpoints:
+  - `Bot/REST.update_current_application()`.
+  - `REST.create_interaction_response()`.
+  - `REST.send_message()` now have `sticker_ids` and `flags` parameters as well. This expands to `Message/Channel.send()`
+- Gateway connection:
+  - Event dispatching, using `Bot.on(GatewayEvent, callback)` (or `Bot.once` for one-time handlers).
+    - `Bot.on/.once` can also be used as decorator.
+- Models:
+  - `InstallParams`.
+  - `InteractionResponse`.
+  - `InteractionData`.
+  - `Interaction.respond.send/edit/defer()` methods
+- Enums:
+  - `EventWebhookStatus`.
+  - `InteractionCallbackType`.
+  - `GatewayEvent`.
+- Bitfields:
+  - `Intents`.
+- `PollMedia` text length checks.
+- `Bot.run` for auto setting up logging and starting the bot.
+- Basic caching.
+- `py.typed` for PEP-561.
 
 ### Fixed:
-  - `enums.InteractionContextType` not being exported.
-  - `enums.EventWebhookStatus` is empty.
-  - Missing `frozen=True, slots=True` on `DefaultReaction` and `Emoji`.
-  - Typo in `Guild.premium_subscription_count`.
-  - `TeamMember` did not derive from `Model`.
-  - Missing leading underscore in `ThreadMetadata._transform`
+
+- `enums.InteractionContextType` not being exported.
+- `enums.EventWebhookStatus` is empty.
+- Missing `frozen=True, slots=True` on `DefaultReaction` and `Emoji`.
+- Typo in `Guild.premium_subscription_count`.
+- `TeamMember` did not derive from `Model`.
+- Missing leading underscore in `ThreadMetadata._transform`
 
 ### Changed:
-  - Use `regex` instead of `re` to compile both patterns in `Emoji`.
+
+- Use `regex` instead of `re` to compile both patterns in `Emoji`.
 
 ---
 
 ## 2026.0.4 - 2026/08/27
 
 ### Added:
-  - Models:
-    - `PrimaryGuild`.
-    - `Collectibles`.
-    - `Team`, `TeamMember`.
-    - `DefaultReaction`.
-    - `ThreadMetadata`, `ThreadMember`.
-    - `Member`.
-  - Enums:
-    - `MemberStatus`.
-  - Bitfields:
-    - `MemberFlags`.
-  - Documentation:
-    - Mermaid class diagram script.
-    - Class diagram page.
-    - Split `API Reference` into separate section for each submodule.
-    - Enable show object full path, so the class headings will show as `zcord.User` instead of just `User`.
-      - Same for all the submodules, e.g. `zcord.enums.ChannelType`, `zcord.errors.HTTPError`.
+
+- Models:
+  - `PrimaryGuild`.
+  - `Collectibles`.
+  - `Team`, `TeamMember`.
+  - `DefaultReaction`.
+  - `ThreadMetadata`, `ThreadMember`.
+  - `Member`.
+- Enums:
+  - `MemberStatus`.
+- Bitfields:
+  - `MemberFlags`.
+- Documentation:
+  - Mermaid class diagram script.
+  - Class diagram page.
+  - Split `API Reference` into separate section for each submodule.
+  - Enable show object full path, so the class headings will show as `zcord.User` instead of just `User`.
+    - Same for all the submodules, e.g. `zcord.enums.ChannelType`, `zcord.errors.HTTPError`.
 
 ### Changed:
-  - Renamed `ZcordModel` to `Model`.
-  - `Model`'s list attributes are now tuple, making it truly frozen.
-    - Note: All the `set_*()s` methods still work with list.
+
+- Renamed `ZcordModel` to `Model`.
+- `Model`'s list attributes are now tuple, making it truly frozen.
+  - Note: All the `set_*()s` methods still work with list.
 
 ---
 
 ## 2026.0.3 - 2026/08/15
 
 ### Added:
-  - Models:
-    - Persistent `ConnectionState` for `Message` and `Channel`.
-      - You can now do `Message.send()` or `Channel.send()` instead of accessing private bot property `bot._state.send_message()`.
-    - `SharedClientTheme`, `BaseThemeType` enums and shared client theme builder.
-    - `Emoji` object
-    - `Component`s
-      - `Button`
-      - `ActionRow`
-      - `StringSelect`
-      - `UserSelect`
-  - `Poll` builder.
-  - `CDN` utility class.
-    - `ZcordModel.*_url` properties.
-  - New `Bot.fetch_*()` methods:
-    - `Bot.fetch_current_application()` -> `Application`
-    - `Bot.fetch_channel()` -> `Channel`
-    - `Bot.fetch_guild()` -> `Guild`
-    - `Bot.fetch_message()` -> `Message`
-    - `Bot.fetch_user()` -> `User`
+
+- Models:
+  - Persistent `ConnectionState` for `Message` and `Channel`.
+    - You can now do `Message.send()` or `Channel.send()` instead of accessing private bot property `bot._state.send_message()`.
+  - `SharedClientTheme`, `BaseThemeType` enums and shared client theme builder.
+  - `Emoji` object
+  - `Component`s
+    - `Button`
+    - `ActionRow`
+    - `StringSelect`
+    - `UserSelect`
+- `Poll` builder.
+- `CDN` utility class.
+  - `ZcordModel.*_url` properties.
+- New `Bot.fetch_*()` methods:
+  - `Bot.fetch_current_application()` -> `Application`
+  - `Bot.fetch_channel()` -> `Channel`
+  - `Bot.fetch_guild()` -> `Guild`
+  - `Bot.fetch_message()` -> `Message`
+  - `Bot.fetch_user()` -> `User`
 
 ### Changed:
-  - `ConnectionState.send_message()` now accept the whole `Message` object instead of individual fields.
+
+- `ConnectionState.send_message()` now accept the whole `Message` object instead of individual fields.
 
 ---
 
 ## 2026.0.2 - 2026/07/26
 
 ### Added:
-  - Models:
-    - `Guild`
-    - `Embed`
-      - `.new()` to create a new embed.
-      - `.set_*()` to set embed fields.
-    - `Attachment`
-    - `Reaction`
-    - `Interaction`
-    - `InteractionMetadata`
-    - `Sticker`
-    - `StickerPack`
-    - `Poll`
-  - `ConnectionState` for high level API calls
-    - `send_message` to send a message with channel ID
-    - `fetch_guild` to get guild info
-    - `fetch_channel_messages`, `fetch_channel_message` to fetch channel message(s)
-    - `fetch_sticker_pack(s)` to fetch sticker pack(s)
-    - `fetch/edit_guild_sticker` to fetch/edit guild sticker (WIP)
-    - `delete_guild_sticker` to delete guild sticker
-    - `fetch_answer_voters` to fetch answer voters
-    - `end_poll` to end a poll
-  - AI usage policy.
-  - `ZcordModel._to_payload()` to convert objects to json payload.
+
+- Models:
+  - `Guild`
+  - `Embed`
+    - `.new()` to create a new embed.
+    - `.set_*()` to set embed fields.
+  - `Attachment`
+  - `Reaction`
+  - `Interaction`
+  - `InteractionMetadata`
+  - `Sticker`
+  - `StickerPack`
+  - `Poll`
+- `ConnectionState` for high level API calls
+  - `send_message` to send a message with channel ID
+  - `fetch_guild` to get guild info
+  - `fetch_channel_messages`, `fetch_channel_message` to fetch channel message(s)
+  - `fetch_sticker_pack(s)` to fetch sticker pack(s)
+  - `fetch/edit_guild_sticker` to fetch/edit guild sticker (WIP)
+  - `delete_guild_sticker` to delete guild sticker
+  - `fetch_answer_voters` to fetch answer voters
+  - `end_poll` to end a poll
+- AI usage policy.
+- `ZcordModel._to_payload()` to convert objects to json payload.
 
 ### Changed:
-  - Moved API interaction to `REST` class
-  - Renamed `types` module to `models`
-  - Moved all enums into a separate `enums` module
+
+- Moved API interaction to `REST` class
+- Renamed `types` module to `models`
+- Moved all enums into a separate `enums` module
 
 ---
 
@@ -146,7 +155,8 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 The start of the project
 
 ### Added:
-  - `Message`, `Channel`, `Role`, `User` classes
-  - `HTTPClient`, `Bot` classes
-  - `HTTPClient/Bot.send_message` (content only)
-  - Documentation page at https://zcord.readthedocs.io
+
+- `Message`, `Channel`, `Role`, `User` classes
+- `HTTPClient`, `Bot` classes
+- `HTTPClient/Bot.send_message` (content only)
+- Documentation page at https://zcord.readthedocs.io
