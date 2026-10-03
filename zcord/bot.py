@@ -23,11 +23,12 @@ from zcord.models.user import User
 from zcord.state import ConnectionState
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Callable
 
     from zcord import bitfields
     from zcord.models.base import Model
     from zcord.models.snowflake import Snowflake
+    from zcord.types import TupleOrList
 
 log = logging.getLogger(__name__)
 
@@ -280,17 +281,17 @@ class Bot:
         custom_install_url: str | MISSING = MISSING,
         description: str | MISSING = MISSING,
         role_connections_verification_url: str | MISSING = MISSING,
-        scopes: Sequence[str] | MISSING = MISSING,
+        scopes: TupleOrList[str] | MISSING = MISSING,
         permissions: str | MISSING = MISSING,
         integration_types_config: dict | MISSING = MISSING,
         flags: bitfields.ApplicationFlags | MISSING = MISSING,
         # icon: Any,
         # cover_image: Any,
         interactions_endpoint_url: str | MISSING = MISSING,
-        tags: Sequence[str] | MISSING = MISSING,
+        tags: TupleOrList[str] | MISSING = MISSING,
         event_webhooks_url: str | MISSING = MISSING,
         event_webhooks_status: enums.EventWebhookStatus | MISSING = MISSING,
-        event_webhooks_types: Sequence[enums.WebhookEventType]
+        event_webhooks_types: TupleOrList[enums.WebhookEventType]
         | MISSING = MISSING,
     ) -> Application:
         """

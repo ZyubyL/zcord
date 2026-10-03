@@ -52,6 +52,7 @@ async def main():
                     icon_url=bot_user.avatar_url() or MISSING,
                 )
                 .set_image(bot_user.banner_url() or MISSING)
+                .add_field(name="test", value="test")
             )
             .set_shared_client_theme(
                 zcord.SharedClientTheme.new()
