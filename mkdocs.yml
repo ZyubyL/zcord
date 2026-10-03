@@ -119,5 +119,6 @@ nav:
     - enums: api/enums.md
     - bitfields: api/bitfields.md
     - errors: api/errors.md
+    - types: api/types.md
   - Changelog: CHANGELOG.md
   - Class Diagram: class_diagram.md
