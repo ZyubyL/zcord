@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import Literal
 
 __all__ = [
+    "AnimatedFormat",
+    "ImageFormat",
     "TupleOrList",
 ]
 
