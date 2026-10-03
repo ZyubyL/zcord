@@ -4,6 +4,10 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
 ## 2026.0.6 - [Unreleased]
 
+### Added:
+
+- `Emoji.__repr__()` and `Emoji.__str__()`.
+
 ---
 
 ## 2026.0.5 - 2026/09/20

@@ -29,6 +29,7 @@ def test_default_emoji(input, exploded):
     assert Emoji.is_unicode(input)
     e = Emoji.new(input)
     assert e.name == input
+    assert str(e) == repr(e) == input
     assert e._to_payload() == {"id": None, "name": input}
 
 
@@ -55,7 +56,7 @@ def test_default_emoji(input, exploded):
     ],
 )
 def test_custom_emoji(animated, name, id, exploded):
-    emoji = f"{'a' if animated else ''}:{name}:{id}"
+    emoji = f"<{'a' if animated else ''}:{name}:{id}>"
     if exploded:
         with pytest.raises(ValueError):
             Emoji.new(emoji)
@@ -65,4 +66,5 @@ def test_custom_emoji(animated, name, id, exploded):
     assert e.animated == animated
     assert e.name == name
     assert e.id == id
+    assert str(e) == repr(e) == emoji
     assert e._to_payload() == {"id": id, "name": name, "animated": animated}

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, ClassVar
 import regex
 
 from zcord.cdn import CDN
+from zcord.errors import ZcordError
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
@@ -74,6 +75,19 @@ class Emoji(Model):
     )
 
     _EMOJI_REGEX: ClassVar[re.Pattern] = regex.compile(r"\X")
+
+    def __str__(self) -> str:
+        # Name is a required field
+        if self.name is not None:
+            if self.id is None:
+                return self.name
+            else:
+                prefix = "a" if self.animated else ""
+                return f"<{prefix}:{self.name}:{self.id}>"
+        raise ZcordError("Invalid emoji")
+
+    def __repr__(self) -> str:
+        return str(self)
 
     @classmethod
     def is_unicode(cls, emoji: str) -> bool:
