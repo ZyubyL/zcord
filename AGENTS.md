@@ -26,4 +26,5 @@
 
 ## AI Usage Policy
 
-AI may only **suggest** changes. All code written/reviewed by human.
+Agent may only be used to review the codebase for issues and giving suggested changes.
+All code is written by human.
