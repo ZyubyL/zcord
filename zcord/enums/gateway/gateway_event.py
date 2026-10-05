@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 
-class GatewayEvent(Enum):
+class GatewayEvent(StrEnum):
     """
     Represent the event name sent from the gateway.
     """
