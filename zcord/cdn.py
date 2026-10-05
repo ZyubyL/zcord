@@ -22,7 +22,7 @@ def _build(path: str, hash: str, size: int, format: str | None) -> str:
     if format is not None and format not in _FORMATS:
         raise ValueError(f"Unsupported format: {format!r}")
     format = format or ("gif" if hash.startswith("a_") else "png")
-    return f"{_BASE_URL}/{path}/{hash}.{format}?size={size}"
+    return f"{_BASE_URL}{path}/{hash}.{format}?size={size}"
 
 
 class CDN:
