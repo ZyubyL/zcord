@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Literal
+from typing import ClassVar, Literal, overload
 
 from zcord import bitfields
 from zcord.missing import MISSING
@@ -60,7 +60,15 @@ class RoleColors(Model):
         return cls()
 
     @classmethod
-    def _from_payload(cls, payload: dict | None) -> RoleColors:
+    @overload
+    def _from_payload(cls, payload) -> RoleColors: ...
+    @classmethod
+    @overload
+    def _from_payload(cls, payload: MISSING) -> MISSING:
+        """Since the payload is either a `dict` or `None`, this never run"""
+
+    @classmethod
+    def _from_payload(cls, payload) -> RoleColors | MISSING:
         if payload is None:
             return cls.default()
         return cls(

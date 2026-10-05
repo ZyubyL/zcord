@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, Self, overload
 
 from zcord import enums
 from zcord.missing import MISSING
@@ -139,8 +139,16 @@ class Interaction(Model):
     _state: ClassVar[ConnectionState | MISSING] = MISSING
 
     @classmethod
-    def _from_payload(cls, payload):
-        obj = Model._from_payload.__func__(cls, payload)
+    @overload
+    def _from_payload(cls, payload: dict) -> Self: ...
+    @classmethod
+    @overload
+    def _from_payload(cls, payload: MISSING) -> MISSING: ...
+    @classmethod
+    def _from_payload(cls, payload: dict | MISSING) -> Self | MISSING:
+        if payload is MISSING:
+            return MISSING
+        obj = super()._from_payload(payload)
         data = payload.get("data")
         if data and isinstance(data, dict):
             itype = payload.get("type")
