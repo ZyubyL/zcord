@@ -269,11 +269,11 @@ class Guild(Model):
         """
         The URL of the guild's icon.
         """
-        if self.icon_hash is None or self.icon_hash is MISSING:
+        if self.icon is None or self.icon is MISSING:
             return None
         return CDN.guild_icon(
             guild_id=self.id,
-            hash=self.icon_hash,
+            hash=self.icon,
             size=size,
             format=format,
         )
