@@ -68,25 +68,22 @@ async def test_beats_on_interval():
     assert gateway.delays == [INTERVAL * JITTER, INTERVAL, INTERVAL]
 
 
+async def noop(delay: float = 0.0) -> None: ...
+
+
 async def test_missingn_ack_watchdog():
     timed_out: list[bool] = []
     done = asyncio.Event()
-
-    async def send() -> None:
-        await asyncio.sleep(0)
-
-    async def sleep(delay: float) -> None:
-        await asyncio.sleep(0)
 
     async def on_timeout() -> None:
         timed_out.append(True)
         done.set()
 
     heartbeat = Heartbeat(
-        send=send,
+        send=noop,
         on_timeout=on_timeout,
         rng=lambda: NO_JITTER,
-        sleep=sleep,
+        sleep=noop,
         timeout=ExpiredTimeout(),
     )
     await heartbeat.start(INTERVAL)
