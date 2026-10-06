@@ -148,7 +148,7 @@ class Interaction(Model):
     def _from_payload(cls, payload: dict | MISSING) -> Self | MISSING:
         if payload is MISSING:
             return MISSING
-        obj = super()._from_payload(payload)
+        obj = Model._from_payload.__func__(cls, payload)
         data = payload.get("data")
         if data and isinstance(data, dict):
             itype = payload.get("type")
