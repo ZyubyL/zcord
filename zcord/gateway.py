@@ -233,6 +233,8 @@ class Gateway:
     VERSION: Final = 10
     ENCODING: Final = "json"
     COMPRESSION: Final = "zlib-stream"
+    DEFAULT_WS_URL: Final = "wss://gateway.discord.gg/"
+    """Fallback URL for websocket to use"""
 
     def __init__(
         self,
@@ -241,11 +243,31 @@ class Gateway:
         token: str,
         intents: bitfields.Intents,
         dispatch: Callable[..., Any] | None = None,
+        ws_connect: Callable[[str], AbstractAsyncContextManager[Any]]
+        | None = None,
+        backoff: Backoff | None = None,
     ) -> None:
+        """
+        Params:
+            http:
+                HTTP client for REST call and websocket.
+            token:
+                The bot token.
+            intents:
+                The gateway intents for identify payload.
+            dispatch:
+                Call when dispatch events.
+            ws_connect:
+                Injected function to open the websocket.
+            backoff:
+                Reconnection backoff policy.
+        """
         self._http = http
         self._token = token
         self._intents = intents
         self._dispatch = dispatch
+        self._ws_connect = ws_connect
+        self._backoff = backoff or Backoff()
 
         self._session: aiohttp.ClientWebSocketResponse | None = None
         self._gateway_response: _GetGatewayBotResponse | None = None
@@ -256,8 +278,6 @@ class Gateway:
 
         self._stream = ZlibStream()
 
-        self._backoff = Backoff()
-
         self._heartbeat = Heartbeat(
             send=self._send_heartbeat,
             on_timeout=self._on_heartbeat_timeout,
@@ -266,21 +286,30 @@ class Gateway:
         self._closed = False
 
     @property
-    def ws_url(self) -> str | None:
+    def ws_url(self) -> str:
         if self._resume_url is not None:
             url = self._resume_url
         elif self._gateway_response is not None:
             url = self._gateway_response.url
         else:
-            url = None
-        if url is None:
-            return None
+            url = self.DEFAULT_WS_URL
         params = {
             "v": self.VERSION,
             "encoding": self.ENCODING,
             "compress": self.COMPRESSION,
         }
         return f"{url}?{urllib.parse.urlencode(params)}"
+
+    @property
+    def _needs_gateway_bot(self) -> bool:
+        """
+        Whether the bot needs to `GET /gateway/bot`.
+        """
+        return (
+            self._ws_connect is None
+            and self._gateway_response is None
+            and self._resume_url is None
+        )
 
     async def _handle_connection(
         self, ws: aiohttp.ClientWebSocketResponse
@@ -421,17 +450,15 @@ class Gateway:
             self._gateway_response = await REST._get_gateway_bot(self._http)
 
     async def connect(self) -> None:
-        if self.ws_url is None:
+        if self._needs_gateway_bot:
             await self._get_gateway_bot()
-
-        # There's no way after trying to get the ws url it's still None
-        if self.ws_url is None:
-            raise RuntimeError("Cannot get websocket url")
 
         log.debug("Websocket URL: %s", self.ws_url)
         self._stream.reset()
+        ws_connect = self._ws_connect or self._http.session.ws_connect
+
         try:
-            async with self._http.session.ws_connect(self.ws_url) as ws:
+            async with ws_connect(self.ws_url) as ws:
                 self._backoff.record_connect_success()
                 self._session = ws
                 await self._handle_connection(ws)
