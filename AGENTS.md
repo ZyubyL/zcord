@@ -11,6 +11,7 @@
 - Use `uv` for tooling, `ruff` for linting and `mkdocs` for documentation
 - Google style docstring
 - `zcord.ConnectionState` manages cache, manage `zcord.gateway.Gateway`, call to `zcord.http.REST` for http requests
+- Super minimal, reproducible, testable functions, even when it will only be called once
 
 ## Don'ts
 
