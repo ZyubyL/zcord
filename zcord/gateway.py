@@ -87,11 +87,71 @@ class ZlibStream:
         self._inflator = zlib.decompressobj()
 
 
+class Backoff:
+    """Reconnection backoff logic"""
+
+    DELAY_STEP: Final = 1.0
+    DELAY_CAP: Final = 60.0
+    MAX_CONNECT_FAILURES: Final = 5
+    """How many times until the gateway just accept defeat"""
+
+    def __init__(self, *, rng: Callable[[], float] = random.random) -> None:
+        """
+        Params:
+            rng:
+                Source of the random jitter added to the reconnect delay.
+        """
+        self._rng = rng
+        self._delay = 0.0
+        self._connect_failures = 0
+
+    @property
+    def reconnect_delay(self) -> float:
+        """
+        The delay before trying to reconnect (including jitter).
+        """
+        return self._delay + self._rng()
+
+    @property
+    def connect_failures(self) -> int:
+        """
+        Number of consecutive connection failures.
+        """
+        return self._connect_failures
+
+    def record_connect_failure(self) -> bool:
+        """
+        Register a failed connection attempt.
+
+        Returns:
+            Whether the failure streak reached `MAX_CONNECT_FAILURES`.
+        """
+        self._connect_failures += 1
+        return self._connect_failures >= self.MAX_CONNECT_FAILURES
+
+    def record_connect_success(self) -> None:
+        """
+        If the gateway successfully connected. Clear the failure streak.
+        """
+        self._connect_failures = 0
+
+    def increase_delay(self) -> None:
+        """
+        Increase the delay to reconnect, capped at `DELAY_CAP`.
+        """
+        self._delay = min(self._delay + self.DELAY_STEP, self.DELAY_CAP)
+
+    def reset_delay(self) -> None:
+        """
+        Clear the reconnect delay when the gateway is sucessfully connected.
+        """
+        self._delay = 0.0
+
+
 class Gateway:
     VERSION: Final = 10
     ENCODING: Final = "json"
     COMPRESSION: Final = "zlib-stream"
-    MAX_CONNECT_FAILURES: Final = 5
 
     def __init__(
         self,
@@ -119,8 +179,7 @@ class Gateway:
 
         self._gateway_response: _GetGatewayBotResponse | None = None
 
-        self._backoff = 0.0  # Reconnect backoff
-        self._connect_failures = 0
+        self._backoff = Backoff()
         self._closed = False
 
     @property
@@ -298,7 +357,7 @@ class Gateway:
             self._dispatch(name, data)
 
     def _on_ready(self, data: dict) -> None:
-        self._backoff = 0.0
+        self._backoff.reset_delay()
         self._resume_url = data["resume_gateway_url"]
         self._session_id = data["session_id"]
         log.info(
@@ -327,45 +386,37 @@ class Gateway:
         self._stream.reset()
         try:
             async with self._http.session.ws_connect(self.ws_url) as ws:
-                self._connect_failures = 0
+                self._backoff.record_connect_success()
                 self._session = ws
                 await self._handle_connection(ws)
         except (aiohttp.ClientError, OSError) as e:
-            self._connect_failures += 1
-            if self._connect_failures >= self.MAX_CONNECT_FAILURES:
+            if self._backoff.record_connect_failure():
                 log.error(
                     "Failed to connect to gateway %d times in a row: %s",
-                    self._connect_failures,
+                    self._backoff.connect_failures,
                     e,
                 )
                 raise e
             log.warning(
                 "Failed to connect to gateway (%d/%d): %s",
-                self._connect_failures,
-                self.MAX_CONNECT_FAILURES,
+                self._backoff.connect_failures,
+                Backoff.MAX_CONNECT_FAILURES,
                 e,
             )
         finally:
             self._session = None
 
-    @property
-    def reconnect_delay(self) -> float:
-        return self._backoff + random.random()
-
     async def try_reconnect(self) -> None:
         if self._closed:
             return
-        delay = self.reconnect_delay
+        delay = self._backoff.reconnect_delay
         log.info("Reconnecting in %.2f seconds...", delay)
         self._reconnect_event.clear()
         try:
             async with asyncio.timeout(delay):
                 await self._reconnect_event.wait()
         except TimeoutError:
-            self._increase_backoff()
-
-    def _increase_backoff(self) -> None:
-        self._backoff = min(self._backoff + 1.0, 60.0)
+            self._backoff.increase_delay()
 
     async def run(self) -> None:
         """
