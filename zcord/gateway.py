@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-import contextlib
 import logging
 import random
 import sys
-from typing import TYPE_CHECKING, Any
+import urllib.parse
+import zlib
+from typing import TYPE_CHECKING, Any, Final
 
 import aiohttp
 import orjson
@@ -23,9 +24,74 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 
+class ZlibStream:
+    """zlib-stream handler"""
+
+    SUFFIX: Final = b"\x00\x00\xff\xff"
+
+    _buffer: bytearray
+    _inflator: zlib._Decompress
+
+    def __init__(self) -> None:
+        self.reset()
+
+    @property
+    def suffix_index(self) -> int:
+        """
+        Get the index of the suffix string in the buffer.
+
+        Returns:
+            Non-negative index, or `-1` if not found.
+        """
+        return self._buffer.find(self.SUFFIX)
+
+    @property
+    def end_index(self) -> int | None:
+        """
+        The end index of the buffer after added the suffix.
+
+        Returns:
+            `None` if the `suffix_index` was not found.
+        """
+        if self.suffix_index < 0:
+            return None
+        return self.suffix_index + len(self.SUFFIX)
+
+    def feed(self, chunk: bytes) -> list[bytes]:
+        """
+        Accumulate chunk into the buffer.
+
+        Returns:
+            All complete inflated messages found in the buffer.
+        """
+        self._buffer.extend(chunk)
+        messages: list[bytes] = []
+        while (end := self.end_index) is not None:
+            compressed_msg = self._buffer[:end]
+            del self._buffer[:end]
+            messages.append(self._decompress_message(compressed_msg))
+        return messages
+
+    def _decompress_message(self, compressed_msg: bytearray) -> bytes:
+        """
+        Returns:
+            The inflated message.
+        """
+        return self._inflator.decompress(compressed_msg)
+
+    def reset(self) -> None:
+        """
+        Reset inflator for new connection.
+        """
+        self._buffer = bytearray()
+        self._inflator = zlib.decompressobj()
+
+
 class Gateway:
-    VERSION = 10
-    ENCODING = "json"
+    VERSION: Final = 10
+    ENCODING: Final = "json"
+    COMPRESSION: Final = "zlib-stream"
+    MAX_CONNECT_FAILURES: Final = 5
 
     def __init__(
         self,
@@ -41,6 +107,7 @@ class Gateway:
         self._dispatch = dispatch
 
         self._session: aiohttp.ClientWebSocketResponse | None = None
+        self._stream = ZlibStream()
         self._sequence: int | None = None
         self._heartbeat_interval: float = 0
         self._heartbeat_task: asyncio.Task[None] | None = None
@@ -53,6 +120,7 @@ class Gateway:
         self._gateway_response: _GetGatewayBotResponse | None = None
 
         self._backoff = 0.0  # Reconnect backoff
+        self._connect_failures = 0
         self._closed = False
 
     @property
@@ -65,7 +133,12 @@ class Gateway:
             url = None
         if url is None:
             return None
-        return f"{url}?v={self.VERSION}&encoding={self.ENCODING}"
+        params = {
+            "v": self.VERSION,
+            "encoding": self.ENCODING,
+            "compress": self.COMPRESSION,
+        }
+        return f"{url}?{urllib.parse.urlencode(params)}"
 
     async def _handle_connection(
         self, ws: aiohttp.ClientWebSocketResponse
@@ -77,10 +150,11 @@ class Gateway:
             ):
                 break
 
-            if msg.type != aiohttp.WSMsgType.TEXT:
-                continue
-
-            await self._handle_ws_msg(msg)
+            if msg.type is aiohttp.WSMsgType.BINARY:
+                for message in self._stream.feed(msg.data):
+                    await self._handle_ws_msg(message)
+            elif msg.type is aiohttp.WSMsgType.TEXT:
+                await self._handle_ws_msg(msg.data)
 
         self._heartbeat_timeout.clear()
         await self._handle_ws_close_msg(ws.close_code)
@@ -101,8 +175,8 @@ class Gateway:
         if s is not None:
             self._sequence = s
 
-    async def _handle_ws_msg(self, msg: aiohttp.WSMessage) -> None:
-        payload = orjson.loads(msg.data)
+    async def _handle_ws_msg(self, data: str | bytes) -> None:
+        payload = orjson.loads(data)
         op = payload["op"]
         d = payload.get("d")
         s = payload.get("s")
@@ -192,9 +266,8 @@ class Gateway:
         await self._send_heartbeat()
 
     async def _wait_for_heartbeat_ack(self) -> None:
-        await asyncio.wait_for(
-            self._heartbeat_ack.wait(), timeout=self._heartbeat_interval
-        )
+        async with asyncio.timeout(self._heartbeat_interval):
+            await self._heartbeat_ack.wait()
         self._heartbeat_ack.clear()
 
     async def _heartbeat_loop(self) -> None:
@@ -251,15 +324,27 @@ class Gateway:
             raise RuntimeError("Cannot get websocket url")
 
         log.debug("Websocket URL: %s", self.ws_url)
+        self._stream.reset()
         try:
-            async with (
-                aiohttp.ClientSession() as session,
-                session.ws_connect(self.ws_url) as ws,
-            ):
+            async with self._http.session.ws_connect(self.ws_url) as ws:
+                self._connect_failures = 0
                 self._session = ws
                 await self._handle_connection(ws)
         except (aiohttp.ClientError, OSError) as e:
-            log.warning("Failed to connect to gateway: %s", e)
+            self._connect_failures += 1
+            if self._connect_failures >= self.MAX_CONNECT_FAILURES:
+                log.error(
+                    "Failed to connect to gateway %d times in a row: %s",
+                    self._connect_failures,
+                    e,
+                )
+                raise e
+            log.warning(
+                "Failed to connect to gateway (%d/%d): %s",
+                self._connect_failures,
+                self.MAX_CONNECT_FAILURES,
+                e,
+            )
         finally:
             self._session = None
 
@@ -270,13 +355,14 @@ class Gateway:
     async def try_reconnect(self) -> None:
         if self._closed:
             return
-        log.info("Reconnecting in %.2f seconds...", self.reconnect_delay)
+        delay = self.reconnect_delay
+        log.info("Reconnecting in %.2f seconds...", delay)
         self._reconnect_event.clear()
-        with contextlib.suppress(TimeoutError):
-            await asyncio.wait_for(
-                self._reconnect_event.wait(), timeout=self.reconnect_delay
-            )
-        self._increase_backoff()
+        try:
+            async with asyncio.timeout(delay):
+                await self._reconnect_event.wait()
+        except TimeoutError:
+            self._increase_backoff()
 
     def _increase_backoff(self) -> None:
         self._backoff = min(self._backoff + 1.0, 60.0)
