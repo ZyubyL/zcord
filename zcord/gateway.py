@@ -16,7 +16,8 @@ from zcord.enums.gateway import GatewayCloseCode, GatewayOpcode
 from zcord.http.rest import REST
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Awaitable, Callable
+    from contextlib import AbstractAsyncContextManager
 
     from zcord.http import HTTPClient
     from zcord.models._gateway import _GetGatewayBotResponse
@@ -148,6 +149,86 @@ class Backoff:
         self._delay = 0.0
 
 
+class Heartbeat:
+    """Keep a gateway session alive"""
+
+    def __init__(
+        self,
+        *,
+        send: Callable[[], Awaitable[None]],
+        on_timeout: Callable[[], Awaitable[None]],
+        rng: Callable[[], float] = random.random,
+        sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
+        timeout: Callable[
+            [float], AbstractAsyncContextManager[Any]
+        ] = asyncio.timeout,
+    ) -> None:
+        """
+        Params:
+            send:
+                Call to send one heartbeat payload.
+            on_timeout:
+                What to call when the gateway missed an ACK deadline.
+            rng:
+                Source of the random jitter for the first beat.
+            sleep:
+                Source of the sleep in between heartbeats.
+            timeout:
+                Timeout context manager factory.
+        """
+        self._send = send
+        self._on_timeout = on_timeout
+        self._rng = rng
+        self._sleep = sleep
+        self._timeout = timeout
+
+        self._interval = 0.0
+        self._task: asyncio.Task[None] | None = None
+        self._ack = asyncio.Event()
+
+    async def start(self, interval: float) -> None:
+        """
+        Start the heartbeat task at interval (in seconds).
+        """
+        await self.stop()
+        self._interval = interval
+        self._task = asyncio.create_task(self._run())
+
+    async def stop(self) -> None:
+        """
+        Cancel the heartbeat task and wait for it to finish.
+        """
+        if self._task is None:
+            return
+        self._task.cancel()
+        await asyncio.gather(self._task, return_exceptions=True)
+        self._task = None
+
+    def ack(self) -> None:
+        """
+        Record a heartbeat ACK returned from the gateway.
+        """
+        self._ack.set()
+
+    async def _run(self) -> None:
+        await self._sleep(self._interval * self._rng())
+        await self._send()
+        while True:
+            try:
+                await self._wait_for_ack()
+            except TimeoutError:
+                log.warning("Heartbeat timed out")
+                await self._on_timeout()
+                return
+            await self._sleep(self._interval)
+            await self._send()
+
+    async def _wait_for_ack(self) -> None:
+        async with self._timeout(self._interval):
+            await self._ack.wait()
+        self._ack.clear()
+
+
 class Gateway:
     VERSION: Final = 10
     ENCODING: Final = "json"
@@ -167,19 +248,21 @@ class Gateway:
         self._dispatch = dispatch
 
         self._session: aiohttp.ClientWebSocketResponse | None = None
-        self._stream = ZlibStream()
+        self._gateway_response: _GetGatewayBotResponse | None = None
         self._sequence: int | None = None
-        self._heartbeat_interval: float = 0
-        self._heartbeat_task: asyncio.Task[None] | None = None
-        self._heartbeat_ack = asyncio.Event()
-        self._heartbeat_timeout = asyncio.Event()
         self._resume_url: str | None = None
         self._session_id: str | None = None
         self._reconnect_event = asyncio.Event()
 
-        self._gateway_response: _GetGatewayBotResponse | None = None
+        self._stream = ZlibStream()
 
         self._backoff = Backoff()
+
+        self._heartbeat = Heartbeat(
+            send=self._send_heartbeat,
+            on_timeout=self._on_heartbeat_timeout,
+        )
+
         self._closed = False
 
     @property
@@ -215,7 +298,6 @@ class Gateway:
             elif msg.type is aiohttp.WSMsgType.TEXT:
                 await self._handle_ws_msg(msg.data)
 
-        self._heartbeat_timeout.clear()
         await self._handle_ws_close_msg(ws.close_code)
 
     async def _handle_ws_close_msg(self, close_code: int | None) -> None:
@@ -246,7 +328,7 @@ class Gateway:
                 await self._on_hello(d)
             case GatewayOpcode.HEARTBEAT_ACK:
                 log.debug("Heartbeat ACK received")
-                self._heartbeat_ack.set()
+                self._heartbeat.ack()
             case GatewayOpcode.HEARTBEAT:
                 await self._send_heartbeat()
             case GatewayOpcode.DISPATCH:
@@ -264,12 +346,9 @@ class Gateway:
                 log.debug("Unhandled opcode: %s", op)
 
     async def _on_hello(self, d: dict) -> None:
-        self._heartbeat_interval = d["heartbeat_interval"] / 1000
-        log.debug(
-            "Hello received, heartbeat interval: %s",
-            self._heartbeat_interval,
-        )
-        self._cancel_heartbeat_task(renew=True)
+        interval = d["heartbeat_interval"] / 1000
+        log.debug("Hello received, heartbeat interval: %s", interval)
+        await self._heartbeat.start(interval)
         if self._session_id is not None:
             await self._send_resume()
             return
@@ -280,12 +359,6 @@ class Gateway:
         self._resume_url = None
         self._sequence = None
         self._gateway_response = None
-
-    def _cancel_heartbeat_task(self, renew: bool = False) -> None:
-        if self._heartbeat_task:
-            self._heartbeat_task.cancel()
-        if renew:
-            self._heartbeat_task = asyncio.create_task(self._heartbeat_loop())
 
     async def _send_resume(self) -> None:
         log.debug("Sending resume...")
@@ -316,33 +389,6 @@ class Gateway:
                 },
             }
         )
-
-    async def _first_heartbeat(self) -> None:
-        jitter = random.random()
-        await asyncio.sleep(self._heartbeat_interval * jitter)
-        if self._closed:
-            return
-        await self._send_heartbeat()
-
-    async def _wait_for_heartbeat_ack(self) -> None:
-        async with asyncio.timeout(self._heartbeat_interval):
-            await self._heartbeat_ack.wait()
-        self._heartbeat_ack.clear()
-
-    async def _heartbeat_loop(self) -> None:
-        await self._first_heartbeat()
-
-        while not self._closed:
-            try:
-                await self._wait_for_heartbeat_ack()
-            except TimeoutError:
-                log.warning("Heart beat timed out")
-                self._heartbeat_timeout.set()
-                await self._close_session(message=b"heartbeat timeout")
-                return
-
-            await asyncio.sleep(self._heartbeat_interval)
-            await self._send_heartbeat()
 
     async def _send_heartbeat(self) -> None:
         log.debug("Sending heartbeat...")
@@ -427,6 +473,9 @@ class Gateway:
 
             await self.try_reconnect()
 
+    async def _on_heartbeat_timeout(self) -> None:
+        await self._close_session(message=b"heartbeat timeout")
+
     async def _close_session(
         self,
         *,
@@ -444,8 +493,7 @@ class Gateway:
         message: bytes = b"",
     ) -> None:
         log.debug("Gateway disconnected (code=%s)", code)
-        self._heartbeat_timeout.clear()
-        self._cancel_heartbeat_task()
+        await self._heartbeat.stop()
         await self._close_session(code=code, message=message)
 
     async def close(self) -> None:
