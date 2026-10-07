@@ -1,5 +1,6 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "schedule": ["every friday"],
     "extends": ["config:recommended"],
     "dependencyDashboard": true,
     "labels": ["dependencies"],
