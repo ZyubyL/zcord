@@ -14,13 +14,23 @@ def _apply_transform(transform: Any, value: Any) -> Any:
 
 
 def add_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
-    """Wrapper for all the add_* methods
+    """
+    Wrapper for all the add_* methods
 
     Notes:
         Value is not a sequence type
     """
+    if isinstance(value, (tuple, list)):
+        raise ValueError(
+            "Cannot add a sequence value, use a loop to add individual one"
+        )
     field = getattr(self, field_name)
+
     if isinstance(field, tuple):
+        if value is MISSING:
+            raise ValueError(
+                "Cannot add `MISSING` to fields, did you mean to use set?"
+            )
         replace = {field_name: (*field, value)}
     elif field is MISSING:
         replace = {field_name: (value,)}
@@ -32,6 +42,7 @@ def add_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
 def set_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
     """Wrapper for all the set_* methods"""
     field = getattr(self, field_name)
+
     if isinstance(field, tuple):
         if isinstance(value, (tuple, list)):
             replace = {field_name: (*value,)}
@@ -40,7 +51,10 @@ def set_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
         else:
             replace = {field_name: (value,)}
     else:
-        replace = {field_name: value}
+        if isinstance(value, (list, tuple)):
+            replace = {field_name: (*value,)}
+        else:
+            replace = {field_name: value}
     return dataclasses.replace(self, **replace)  # type: ignore
 
 

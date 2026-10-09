@@ -57,4 +57,5 @@ class HTTPClient:
             log.debug(
                 "%s %s: %d %s", method, endpoint, resp.status, resp.reason
             )
+            log.debug("Response: %s", await resp.read())
             return resp.status, resp.reason
