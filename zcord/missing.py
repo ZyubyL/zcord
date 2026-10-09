@@ -1,8 +1,13 @@
 from __future__ import annotations
 
-from typing_extensions import Sentinel
+import sys
 
-MISSING = Sentinel("MISSING")
+if sys.version_info >= (3, 15):
+    from builtins import sentinel
+else:
+    from typing_extensions import sentinel
+
+MISSING = sentinel("MISSING")
 """
 A special marker indicating that a value was not provided.
 
