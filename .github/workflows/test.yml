@@ -18,14 +18,14 @@ jobs:
       contents: read
       pull-requests: read
     outputs:
-      relevant: ${{ step.filter.outputs.relevant }}
+      relevant: ${{ steps.filter.outputs.relevant }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
         id: filter
         with:
-          filter: |
+          filters: |
             relevant:
               - "tests/**"
               - "zcord/**"
@@ -76,14 +76,14 @@ jobs:
           LINT: ${{ needs.lint.result }}
           TEST: ${{ needs.test.result }}
         run: |
-          if [[ "CHANGES" != "success" ]]; then
+          if [[ "$CHANGES" != "success" ]]; then
             exit 1
           fi
 
-          if [[ "LINT" != "success" ]]; then
+          if [[ "$LINT" != "success" ]]; then
             exit 1
           fi
 
-          if [[ "TEST" != "success" ]]; then
+          if [[ "$TEST" != "success" ]]; then
             exit 1
           fi
