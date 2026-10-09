@@ -5,24 +5,36 @@ permissions:
 
 on:
   push:
-    paths:
-      - "tests/**"
-      - "zcord/**"
-      - ".github/workflows/test.yml"
-      - "pyproject.toml"
   pull_request:
-    paths:
-      - "tests/**"
-      - "zcord/**"
-      - ".github/workflows/test.yml"
-      - "pyproject.toml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      relevant: ${{ step.filter.outputs.relevant }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
+        id: filter
+        with:
+          filter: |
+            relevant:
+              - "tests/**"
+              - "zcord/**"
+              - ".github/workflows/test.yml"
+              - "pyproject.toml"
+
   lint:
+    needs: changes
+    if: needs.changes.outputs.relevant == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -32,8 +44,10 @@ jobs:
       - run: |
           uv sync --group dev
           uv run ruff check .
-        
+
   test:
+    needs: changes
+    if: needs.changes.outputs.relevant == 'true'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -50,3 +64,26 @@ jobs:
         run: |
           uv sync --group dev
           uv run --frozen pytest
+
+  ci:
+    if: always()
+    needs: [changes, lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check CI result
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          LINT: ${{ needs.lint.result }}
+          TEST: ${{ needs.test.result }}
+        run: |
+          if [[ "CHANGES" != "success" ]]; then
+            exit 1
+          fi
+
+          if [[ "LINT" != "success" ]]; then
+            exit 1
+          fi
+
+          if [[ "TEST" != "success" ]]; then
+            exit 1
+          fi
