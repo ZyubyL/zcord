@@ -29,6 +29,8 @@ if TYPE_CHECKING:
     from zcord.models.base import Model
     from zcord.models.snowflake import Snowflake
 
+__all__ = ["Bot"]
+
 log = logging.getLogger(__name__)
 
 _EVENT_MODELS: dict[str, type[Model]] = {
@@ -43,10 +45,56 @@ _UPDATE_EVENTS: dict[str, tuple[type[Model], str]] = {
 }
 
 
+class EventDispatcher:
+    """Route events to registered listeners"""
+
+    def __init__(self) -> None:
+        self._listeners: dict[str, list[tuple[Callable[..., Any], bool]]] = {}
+        self._tasks: set[asyncio.Task] = set()
+
+    def register(
+        self, event: str, callback: Callable[..., Any], *, once: bool
+    ) -> None:
+        """
+        Register a listener for the event.
+
+        Params:
+            once:
+                Whether to remove the listener after its first fire.
+        """
+        self._listeners.setdefault(event, []).append((callback, once))
+
+    def dispatch(self, event: str, args: tuple[Any, ...]) -> None:
+        """
+        Fire all listeners for the event with the given arguments.
+
+        Notes:
+            Listener failures are non-blocking and is logged with traceback.
+        """
+        listeners = self._listeners.get(event, [])
+        self._listeners[event] = [
+            listener for listener in listeners if not listener[1]
+        ]  # keep persisten ones
+
+        for callback, _ in listeners:
+            try:
+                maybe_coro = callback(*args)
+            except Exception:
+                log.exception("Failed to dispatch event %s", event)
+                continue
+            if asyncio.iscoroutine(maybe_coro):
+                task = asyncio.create_task(maybe_coro)
+                self._tasks.add(task)
+                task.add_done_callback(self._task_done)
+
+    def _task_done(self, task: asyncio.Task) -> None:
+        self._tasks.discard(task)
+        if not task.cancelled() and (e := task.exception()) is not None:
+            log.error("Failed to dispatch event", exc_info=e)
+
+
 class Bot:
-    """
-    Represent the bot client
-    """
+    """Represent the bot client"""
 
     def __init__(
         self, token: str, *, intents: bitfields.Intents | None
@@ -79,8 +127,7 @@ class Bot:
         Application._state = self._state
         Interaction._state = self._state
 
-        self._events: dict[str, list[tuple[Callable[..., Any], bool]]] = {}
-        self._tasks: set[asyncio.Task] = set()
+        self._dispatcher = EventDispatcher()
 
     async def __aenter__(self) -> Bot:
         return self
@@ -220,34 +267,17 @@ class Bot:
         one_time: bool,
     ) -> Callable[..., Any] | None:
         def _decorator(cb: Callable[..., Any]) -> Callable[..., Any]:
-            self._events.setdefault(str(event), []).append((cb, one_time))
+            self._dispatcher.register(str(event), cb, once=one_time)
             return cb
 
         if callback is None:  # Acts as a decorator
             return _decorator
         _decorator(callback)
 
-    def _dispatch(self, event: str, *args: Any) -> None:
-        """
-        Dispatch an event to all registered listeners.
-        """
-        listeners = self._events.get(event, [])
-        self._events[event] = [
-            callback for callback in listeners if not callback[1]
-        ]  # keep persistent listeners
-        for callback, _ in listeners:
-            try:
-                maybe_coro = callback(*self._build_dispatch_args(event, args))
-            except Exception:
-                log.exception("Failed to dispatch event %s", event)
-                continue
-            if asyncio.iscoroutine(maybe_coro):
-                task = asyncio.create_task(maybe_coro)
-                self._tasks.add(task)
-                task.add_done_callback(self._tasks.discard)
-
-        if args:
-            self._state._update_cache(event, args[0])
+    def _dispatch(self, event: str, data: Any) -> None:
+        args = self._build_dispatch_args(event, (data,))
+        self._dispatcher.dispatch(event, args)
+        self._state._update_cache(event, data)
 
     def _build_dispatch_args(
         self, event: str, args: tuple[Any, ...]
