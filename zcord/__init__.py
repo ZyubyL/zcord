@@ -1,8 +1,7 @@
 """Zcord - Minimalistic discord API wrapper."""
 
-from importlib.metadata import version
-
 from ._logging import setup_logging
+from ._version import __version__
 from .bot import Bot
 from .missing import MISSING
 from .models import (
@@ -63,11 +62,6 @@ from .models import (
     UserSelect,
 )
 
-__version__ = version("zcord")
-"""
-Zcord version
-"""
-
 __all__ = [
     "MISSING",
     "ActionRow",
@@ -126,5 +120,6 @@ __all__ = [
     "ThreadMetadata",
     "User",
     "UserSelect",
+    "__version__",
     "setup_logging",
 ]

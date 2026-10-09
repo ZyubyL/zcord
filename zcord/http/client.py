@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import logging
-from importlib.metadata import version
 
 import aiohttp
 import orjson
+
+from zcord._version import __version__
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class HTTPClient:
                     "Authorization": "Bot " + self._token,
                     "User-Agent": (
                         "DiscordBot (https://github.com/zyubyl/zcord,"
-                        f" {version('zcord')}"
+                        f" {__version__}"
                     ),
                 }
             )

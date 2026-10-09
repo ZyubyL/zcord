@@ -3,13 +3,13 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import logging
-from importlib.metadata import version
 from typing import TYPE_CHECKING, Any, overload
 
 import aiohttp
 
 from zcord import enums
 from zcord._logging import setup_logging
+from zcord._version import __version__
 from zcord.errors import HTTPError
 from zcord.gateway import Gateway
 from zcord.missing import MISSING
@@ -98,7 +98,7 @@ class Bot:
         """
         Start the bot loop.
         """
-        log.debug("zcord version %s", version("zcord"))
+        log.debug("zcord version %s", __version__)
         log.debug("aiohttp version %s", aiohttp.__version__)
         done = asyncio.Event()
 
