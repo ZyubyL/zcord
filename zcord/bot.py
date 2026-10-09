@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import logging
-from typing import TYPE_CHECKING, Any, overload
+from typing import TYPE_CHECKING, Any, Final, overload
 
 import aiohttp
 
@@ -33,16 +33,47 @@ __all__ = ["Bot"]
 
 log = logging.getLogger(__name__)
 
-_EVENT_MODELS: dict[str, type[Model]] = {
-    enums.GatewayEvent.READY.value: User,
-    enums.GatewayEvent.GUILD_CREATE.value: Guild,
-    enums.GatewayEvent.MESSAGE_CREATE.value: Message,
-    enums.GatewayEvent.INTERACTION_CREATE.value: Interaction,
-}
 
-_UPDATE_EVENTS: dict[str, tuple[type[Model], str]] = {
-    enums.GatewayEvent.GUILD_UPDATE.value: (Guild, "_guilds")
-}
+class EventConverter:
+    """Convert gateway event payloads to typed listener args"""
+
+    _CREATE_MODELS: Final[dict[str, type[Model]]] = {
+        enums.GatewayEvent.READY.value: User,
+        enums.GatewayEvent.GUILD_CREATE.value: Guild,
+        enums.GatewayEvent.MESSAGE_CREATE.value: Message,
+        enums.GatewayEvent.INTERACTION_CREATE.value: Interaction,
+    }
+
+    _UPDATE_MODELS: Final[dict[str, tuple[type[Model], str]]] = {
+        enums.GatewayEvent.GUILD_UPDATE.value: (Guild, "_guilds")
+    }
+
+    def __init__(self, state: ConnectionState) -> None:
+        self._state = state
+
+    def convert(self, event: str, data: Any) -> tuple[Any, ...]:
+        """
+        Build the listener args for a gateway event.
+
+        Returns:
+            - `(old, new)` for update events.
+            - `(model,)` for converted events.
+            - `(data,)` for fall through events with no registered model.
+
+        Notes:
+            `old` could be [`None`][] if the object is not cached.
+            `READY` payload is unwrapped to `user`.
+        """
+        if data and event in self._UPDATE_MODELS:
+            model, cache_attr = self._UPDATE_MODELS[event]
+            old = getattr(self._state, cache_attr, {}).get(int(data["id"]))
+            return old, model._from_payload(data)
+        if data and event in self._CREATE_MODELS:
+            payload = (
+                data["user"] if event == str(enums.GatewayEvent.READY) else data
+            )
+            return (self._CREATE_MODELS[event]._from_payload(payload),)
+        return (data,)
 
 
 class EventDispatcher:
@@ -127,6 +158,7 @@ class Bot:
         Application._state = self._state
         Interaction._state = self._state
 
+        self._converter = EventConverter(self._state)
         self._dispatcher = EventDispatcher()
 
     async def __aenter__(self) -> Bot:
@@ -275,28 +307,9 @@ class Bot:
         _decorator(callback)
 
     def _dispatch(self, event: str, data: Any) -> None:
-        args = self._build_dispatch_args(event, (data,))
+        args = self._converter.convert(event, data)
         self._dispatcher.dispatch(event, args)
         self._state._update_cache(event, data)
-
-    def _build_dispatch_args(
-        self, event: str, args: tuple[Any, ...]
-    ) -> tuple[Any, ...]:
-        data = args[0] if args else None
-        # Update event will have 2 args: old and new
-        if data and event in _UPDATE_EVENTS:
-            model, cache_attr = _UPDATE_EVENTS[event]
-            obj_id = int(data["id"])
-            old = getattr(self._state, cache_attr, {}).get(obj_id)
-            new = model._from_payload(data)
-            return old, new
-        # Some other events will have 1 arg: the object
-        if data and event in _EVENT_MODELS:
-            model_data = (
-                data["user"] if event == str(enums.GatewayEvent.READY) else data
-            )
-            return (_EVENT_MODELS[event]._from_payload(model_data),)
-        return args
 
     async def fetch_current_application(self) -> Application:
         """
