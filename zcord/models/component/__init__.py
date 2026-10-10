@@ -3,6 +3,7 @@ from .base import Component
 from .button import Button
 from .select_menu import (
     DefaultValue,
+    RoleSelect,
     SelectMenu,
     SelectOption,
     StringSelect,
@@ -14,6 +15,7 @@ __all__ = [
     "Button",
     "Component",
     "DefaultValue",
+    "RoleSelect",
     "SelectMenu",
     "SelectOption",
     "StringSelect",
