@@ -81,10 +81,11 @@ jobs:
             exit 1
           fi
 
-          if [[ "$LINT" != "success" ]]; then
+          # Skipped lint/test means no relevant changes, fall through
+          if [[ "$LINT" != "success" && "$LINT" != "skipped" ]]; then
             exit 1
           fi
 
-          if [[ "$TEST" != "success" ]]; then
+          if [[ "$TEST" != "success" && "$TEST" != "skipped" ]]; then
             exit 1
           fi
