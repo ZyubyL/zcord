@@ -58,7 +58,7 @@ class RoleSelect(SelectMenu):
         self, placeholder: str | MISSING = MISSING
     ) -> RoleSelect:
         """
-        Set the placeholder of the user select component.
+        Set the placeholder of the role select component.
 
         Raises:
             ValueError:
@@ -75,7 +75,7 @@ class RoleSelect(SelectMenu):
         default_values: types.TupleOrList[DefaultValue] | MISSING = MISSING,
     ) -> RoleSelect:
         """
-        Set the default values of the user select component.
+        Set the default values of the role select component.
 
         Raises:
             ValueError:
@@ -90,7 +90,7 @@ class RoleSelect(SelectMenu):
 
     def add_default_values(self, *default_values: DefaultValue) -> RoleSelect:
         """
-        Add default values to the user select component.
+        Add default values to the role select component.
 
         Raises:
             ValueError:
@@ -103,7 +103,7 @@ class RoleSelect(SelectMenu):
 
     def add_default_value(self, default_value: DefaultValue) -> RoleSelect:
         """
-        Add a default value to the user select component.
+        Add a default value to the role select component.
 
         Raises:
             ValueError:
@@ -113,7 +113,7 @@ class RoleSelect(SelectMenu):
 
     def clear_default_values(self) -> RoleSelect:
         """
-        Clear all default values from the user select component.
+        Clear all default values from the role select component.
         """
         return set_field_value(self, "default_values", MISSING)
 

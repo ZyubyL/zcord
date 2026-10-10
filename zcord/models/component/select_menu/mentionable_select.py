@@ -13,7 +13,7 @@ from zcord.models.component.select_menu.default_value import DefaultValue
 
 @dataclass(frozen=True, slots=True)
 class MentionableSelect(SelectMenu):
-    """A role select menu component"""
+    """A mentionable select menu component"""
 
     type: enums.ComponentType = enums.ComponentType.MENTIONABLE_SELECT
 
@@ -58,7 +58,7 @@ class MentionableSelect(SelectMenu):
         self, placeholder: str | MISSING = MISSING
     ) -> MentionableSelect:
         """
-        Set the placeholder of the user select component.
+        Set the placeholder of the mentionable select component.
 
         Raises:
             ValueError:
@@ -75,7 +75,7 @@ class MentionableSelect(SelectMenu):
         default_values: types.TupleOrList[DefaultValue] | MISSING = MISSING,
     ) -> MentionableSelect:
         """
-        Set the default values of the user select component.
+        Set the default values of the mentionable select component.
 
         Raises:
             ValueError:
@@ -92,7 +92,7 @@ class MentionableSelect(SelectMenu):
         self, *default_values: DefaultValue
     ) -> MentionableSelect:
         """
-        Add default values to the user select component.
+        Add default values to the mentionable select component.
 
         Raises:
             ValueError:
@@ -107,7 +107,7 @@ class MentionableSelect(SelectMenu):
         self, default_value: DefaultValue
     ) -> MentionableSelect:
         """
-        Add a default value to the user select component.
+        Add a default value to the mentionable select component.
 
         Raises:
             ValueError:
@@ -117,7 +117,7 @@ class MentionableSelect(SelectMenu):
 
     def clear_default_values(self) -> MentionableSelect:
         """
-        Clear all default values from the user select component.
+        Clear all default values from the mentionable select component.
         """
         return set_field_value(self, "default_values", MISSING)
 
