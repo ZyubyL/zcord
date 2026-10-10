@@ -44,6 +44,7 @@ jobs:
       - run: |
           uv sync --group dev
           uv run ruff check .
+          uv run ty check
 
   test:
     needs: changes
