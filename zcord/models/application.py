@@ -242,7 +242,7 @@ class Application(Model):
         )
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class _ApplicationUpdate(Model):
     """
     Private used class for Application.update

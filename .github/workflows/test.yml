@@ -42,8 +42,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: |
-          uv sync --group dev
-          uv run ruff check .
+          uv sync --extra speed --dev
+          uv run ruff check zcord
+          uv run ty check zcord
 
   test:
     needs: changes
