@@ -35,11 +35,6 @@ class StringSelect(SelectMenu):
     A list of select options.
     """
 
-    placeholder: str | MISSING = MISSING
-    """
-    The placeholder text of the select menu.
-    """
-
     _transforms: ClassVar[dict] = {
         "type": enums.ComponentType,
         "options": SelectOption,
@@ -124,22 +119,6 @@ class StringSelect(SelectMenu):
         Clear the options of the string select component.
         """
         return set_field_value(self, "options", MISSING)
-
-    def set_placeholder(
-        self, placeholder: str | MISSING = MISSING
-    ) -> StringSelect:
-        """
-        Set the placeholder of the string select component.
-
-        Raises:
-            ValueError:
-                Placeholder cannot be longer than 150 characters.
-        """
-        if placeholder is not MISSING and len(placeholder) > 150:
-            raise ValueError(
-                "Placeholder cannot be longer than 150 characters."
-            )
-        return set_field_value(self, "placeholder", placeholder)
 
 
 Component._registry[enums.ComponentType.STRING_SELECT] = StringSelect

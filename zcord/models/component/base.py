@@ -16,7 +16,6 @@ class Component(Model):
 
     _registry: ClassVar[dict[enums.ComponentType, type[Component]]] = {}
 
-    type: enums.ComponentType
     id: str | MISSING = MISSING
 
     @classmethod
@@ -38,3 +37,7 @@ class Component(Model):
             component_cls,
             payload,
         )
+
+    def _check_before(self) -> None:
+        if hasattr(self, "custom_id") and self.custom_id is MISSING:
+            raise ValueError("custom_id must be set")
