@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import ClassVar, overload
 
 from zcord import enums
@@ -7,6 +8,7 @@ from zcord.missing import MISSING
 from zcord.models.base import Model
 
 
+@dataclass(frozen=True, slots=True)
 class Component(Model):
     """
     Generic component model.
