@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from zcord import types
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class _MessageCreate(Model):
     """
     Private class for sending message.

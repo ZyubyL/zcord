@@ -43,7 +43,7 @@ class InteractionResponse:
             interaction_token=self._interaction_token,
             callback=_InteractionCallback(
                 type=enums.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-                data=message._to_payload(),  # ty: ignore[invalid-argument-type]
+                data=message,
             ),
             with_response=True,
         )
@@ -85,7 +85,7 @@ class InteractionResponse:
             interaction_token=self._interaction_token,
             callback=_InteractionCallback(
                 type=enums.InteractionCallbackType.UPDATE_MESSAGE,
-                data=message._to_payload(),  # ty: ignore[invalid-argument-type]
+                data=message,
             ),
             with_response=True,
         )

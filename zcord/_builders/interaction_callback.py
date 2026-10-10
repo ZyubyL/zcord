@@ -9,9 +9,10 @@ from zcord.models.base import Model
 if TYPE_CHECKING:
     from zcord import enums
     from zcord.models.interaction.interaction_data import InteractionData
+    from zcord.models.message import Message
 
 
 @dataclass(frozen=True, slots=True)
 class _InteractionCallback(Model):
     type: enums.InteractionCallbackType
-    data: InteractionData | MISSING = MISSING
+    data: InteractionData | Message | MISSING = MISSING
