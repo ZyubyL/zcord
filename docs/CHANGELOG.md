@@ -6,7 +6,14 @@ This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
 ### Added:
 
+- Python `3.15` support.
+- Rate limit handler.
+- `zlib-stream` compression.
 - `Emoji.__repr__()` and `Emoji.__str__()`.
+
+### Removed
+
+- `typing_extensions` dependency for Python 3.15.
 
 ---
 
