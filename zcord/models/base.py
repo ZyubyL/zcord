@@ -36,7 +36,7 @@ def add_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
         replace = {field_name: (value,)}
     else:
         replace = {field_name: (field, value)}
-    return dataclasses.replace(self, **replace)  # type: ignore
+    return dataclasses.replace(self, **replace)
 
 
 def set_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
@@ -55,9 +55,10 @@ def set_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
             replace = {field_name: (*value,)}
         else:
             replace = {field_name: value}
-    return dataclasses.replace(self, **replace)  # type: ignore
+    return dataclasses.replace(self, **replace)
 
 
+@dataclasses.dataclass(frozen=True, slots=True)
 class Model:
     """
     Base class for all Discord API Models.
@@ -81,7 +82,7 @@ class Model:
         if payload is MISSING:
             return MISSING
         kwargs = {}
-        for f in dataclasses.fields(cls):  # ty: ignore[invalid-argument-type]
+        for f in dataclasses.fields(cls):
             # Skipping private fields
             if f.name.startswith("_"):
                 continue
@@ -117,7 +118,7 @@ class Model:
     def _to_payload(self) -> dict:
         self._check_before()
         payload = {}
-        for f in dataclasses.fields(self):  # type: ignore
+        for f in dataclasses.fields(self):
             # Same as from_payload, we will skip private fields
             if f.name.startswith("_"):
                 continue
