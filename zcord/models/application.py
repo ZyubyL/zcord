@@ -22,10 +22,6 @@ if TYPE_CHECKING:
 class Application(Model):
     """
     Represent a Discord Application.
-
-    Notes:
-        This class' `set_*()` methods should only be used \
-        after calling `update()`
     """
 
     id: Snowflake
