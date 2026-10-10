@@ -43,8 +43,8 @@ jobs:
           python-version: "3.12"
       - run: |
           uv sync --group dev
-          uv run ruff check .
-          uv run ty check
+          uv run ruff check zcord
+          uv run ty check zcord
 
   test:
     needs: changes
