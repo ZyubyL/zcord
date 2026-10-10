@@ -87,7 +87,8 @@ class ActionRow(Component):
 
         Raises:
             TypeError:
-                A bare [`SelectMenu`][] or [`AutoPopulatedSelect`][] \
+                A bare [`SelectMenu`][zcord.SelectMenu] or \
+                [`AutoPopulatedSelect`][zcord.AutoPopulatedSelect] \
                 has been passed.
 
         Notes:
