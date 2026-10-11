@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, ClassVar, TypedDict, overload
+from typing import Any, ClassVar, overload
 
 from zcord import bitfields, enums, types
 from zcord.missing import MISSING
@@ -11,12 +11,14 @@ from zcord.models.emoji import Emoji
 from zcord.models.snowflake import Snowflake
 
 
-class ActivityTimestamp(TypedDict):
-    start: datetime | MISSING
-    end: datetime | MISSING
+@dataclass(frozen=True, slots=True)
+class ActivityTimestamp(Model):
+    start: datetime | MISSING = MISSING
+    end: datetime | MISSING = MISSING
 
 
-class ActivityButton(TypedDict):
+@dataclass(frozen=True, slots=True)
+class ActivityButton(Model):
     label: str
     url: str
 
