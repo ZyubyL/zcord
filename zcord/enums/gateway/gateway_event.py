@@ -33,6 +33,13 @@ class GatewayEvent(StrEnum):
     This event contains a [`Message`][zcord.Message] object.
     """
 
+    MESSAGE_UPDATE = "MESSAGE_UPDATE"
+    """The message has been updated.
+
+    This event contains the old and an updated [`Message`][zcord.Message] \
+    objects.
+    """
+
     RESUMED = "RESUMED"
     """The connection to the websocket has been resumed."""
 
