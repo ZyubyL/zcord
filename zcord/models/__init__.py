@@ -1,5 +1,6 @@
 """Discord API models."""
 
+from .activity import Activity, ActivityButton, ActivityTimestamp
 from .application import Application
 from .attachment import Attachment
 from .avatar_decoration_data import AvatarDecorationData
@@ -45,7 +46,7 @@ from .interaction import (
 from .member import Member
 from .message import Message, MessageActivity, MessageReference, MessageSnapshot
 from .poll import Poll, PollAnswer, PollAnswerCount, PollMedia, PollResults
-from .presence import Activity, PresenceUpdate
+from .presence import PresenceUpdate
 from .primary_guild import PrimaryGuild
 from .reaction import Reaction, ReactionCountDetails
 from .role import Role, RoleColors, RoleSubscriptionData, RoleTags
@@ -60,6 +61,8 @@ from .user import User
 __all__ = [
     "ActionRow",
     "Activity",
+    "ActivityButton",
+    "ActivityTimestamp",
     "Application",
     "ApplicationCommandInteractionData",
     "Attachment",
