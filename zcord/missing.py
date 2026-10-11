@@ -8,8 +8,7 @@ else:
     from typing_extensions import sentinel
 
 MISSING = sentinel("MISSING")
-"""
-A special marker indicating that a value was not provided.
+"""A special marker indicating that a value was not provided.
 
 Notes:
     Unlike [`None`][], `MISSING` means the parameter **was omitted entirely**.

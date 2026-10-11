@@ -16,16 +16,12 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class ActionRow(Component):
-    """
-    Represent an action row that holds max to 5 buttons or a select menu.
-    """
+    """Represent an action row that holds max to 5 buttons or a select menu."""
 
     type: enums.ComponentType = enums.ComponentType.ACTION_ROW
 
     components: tuple[Button | SelectMenu, ...] | MISSING = MISSING
-    """
-    A list of components inside the action row.
-    """
+    """A list of components inside the action row."""
 
     _transforms: ClassVar[dict] = {
         "type": enums.ComponentType,
@@ -37,9 +33,7 @@ class ActionRow(Component):
         cls,
         components: types.TupleOrList[Button] | SelectMenu | MISSING = MISSING,
     ) -> ActionRow:
-        """
-        Create a new action row component.
-        """
+        """Create a new action row component."""
         if components is MISSING:
             return cls()
 
@@ -51,8 +45,7 @@ class ActionRow(Component):
         return row
 
     def set_buttons(self, *buttons: Button) -> ActionRow:
-        """
-        Set the buttons of the action row.
+        """Set the buttons of the action row.
 
         Raises:
             errors.ZcordError:
@@ -64,8 +57,7 @@ class ActionRow(Component):
         return row
 
     def add_button(self, button: Button) -> ActionRow:
-        """
-        Add a button to the action row.
+        """Add a button to the action row.
 
         Raises:
             errors.ZcordError:
@@ -82,8 +74,7 @@ class ActionRow(Component):
         return add_field_value(self, "components", button)
 
     def set_select(self, select: SelectMenu) -> ActionRow:
-        """
-        Set the select menu of the action row.
+        """Set the select menu of the action row.
 
         Raises:
             TypeError:

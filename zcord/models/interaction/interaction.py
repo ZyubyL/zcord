@@ -21,105 +21,66 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Interaction(Model):
-    """
-    Represent a Discord interaction.
-    """
+    """Represent a Discord interaction."""
 
     id: Snowflake
-    """
-    The ID of the interaction.
-    """
+    """The ID of the interaction."""
 
     application_id: Snowflake
-    """
-    The ID of the application this interaction is for.
-    """
+    """The ID of the application this interaction is for."""
 
     type: enums.InteractionType
-    """
-    The type of interaction.
-    """
+    """The type of interaction."""
 
     token: str
-    """
-    Continuation token for responding to the interaction.
-    """
+    """Continuation token for responding to the interaction."""
 
     entitlements: list
-    """
-    List of entitlements for monetized apps.
-    """
+    """List of entitlements for monetized apps."""
 
     authorizing_integration_owners: dict
-    """
-    A dictionary for authorizing integration owners.
-    """
+    """A dictionary for authorizing integration owners."""
 
     attachment_size_limit: int
-    """
-    Attachment size limit in bytes.
-    """
+    """Attachment size limit in bytes."""
 
     data: InteractionData | MISSING = MISSING
-    """
-    Interaction data.
-    """
+    """Interaction data."""
 
     guild: Guild | MISSING = MISSING
-    """
-    The guild this interaction was sent from.
-    """
+    """The guild this interaction was sent from."""
 
     guild_id: Snowflake | MISSING = MISSING
-    """
-    The guild ID this interaction was sent from.
-    """
+    """The guild ID this interaction was sent from."""
 
     channel: Channel | MISSING = MISSING
-    """
-    The channel this interaction was sent from.
-    """
+    """The channel this interaction was sent from."""
 
     channel_id: Snowflake | MISSING = MISSING
-    """
-    The channel ID this interaction was sent from.
-    """
+    """The channel ID this interaction was sent from."""
 
     member: Member | MISSING = MISSING
-    """
-    The guild member who invoked the interaction.
-    """
+    """The guild member who invoked the interaction."""
 
     user: User | MISSING = MISSING
-    """
-    The user who invoked the interaction.
-    """
+    """The user who invoked the interaction."""
 
     message: Message | MISSING = MISSING
-    """
-    The message attached to this interaction.
-    """
+    """The message attached to this interaction."""
 
     app_permissions: str | MISSING = MISSING
-    """
-    Bitwise set of permissions the app has in the source location of \
+    """Bitwise set of permissions the app has in the source location of \
     the interaction.
     """
 
     locale: str | MISSING = MISSING
-    """
-    Selected language of the invoking user.
-    """
+    """Selected language of the invoking user."""
 
     guild_locale: str | MISSING = MISSING
-    """
-    The guild's preferred locale.
-    """
+    """The guild's preferred locale."""
 
     context: enums.InteractionContextType | MISSING = MISSING
-    """
-    The context where the interaction was triggered from.
-    """
+    """The context where the interaction was triggered from."""
 
     from zcord.models.message import Message
 
@@ -161,9 +122,7 @@ class Interaction(Model):
 
     @property
     def respond(self) -> InteractionResponse:
-        """
-        Get an interface for responding to this interaction.
-        """
+        """Get an interface for responding to this interaction."""
         assert self._state is not MISSING
         return InteractionResponse(
             state=self._state,

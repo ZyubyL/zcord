@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from zcord import bitfields, enums
-from zcord.cdn import CDN
+from zcord import bitfields, cdn, enums
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.emoji import Emoji
@@ -18,228 +17,144 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Guild(Model):
-    """
-    Represent a Discord server.
-    """
+    """Represent a Discord server."""
 
     id: Snowflake
-    """
-    The ID of the guild.
-    """
+    """The ID of the guild."""
 
     name: str
-    """
-    The name of the guild.
+    """The name of the guild.
 
-    **Notes**: 2-100 characters excluding leading and trailing whitespaces.
+    Notes:
+        2-100 characters excluding leading and trailing whitespaces.
     """
 
     icon: str | None
-    """
-    The icon hash of the guild.
-    """
+    """The icon hash of the guild."""
 
     splash: str | None
-    """
-    The splash hash of the guild.
-    """
+    """The splash hash of the guild."""
 
     discovery_splash: str | None
-    """
-    The discovery splash hash of the guild with "DISCOVERABLE" feature.
-    """
+    """The discovery splash hash of the guild with "DISCOVERABLE" feature."""
 
     owner_id: Snowflake
-    """
-    The ID of the owner.
-    """
+    """The ID of the owner."""
 
     afk_channel_id: Snowflake | None
-    """
-    The ID of the AFK channel.
-    """
+    """The ID of the AFK channel."""
 
     afk_timeout: int
-    """
-    AFK timeout, in seconds.
-    """
+    """AFK timeout, in seconds."""
 
     verification_level: enums.VerificationLevel
-    """
-    Verification level of the guild.
-    """
+    """Verification level of the guild."""
 
     default_message_notifications: enums.MessageNotificationLevel
-    """
-    Default message notification level.
-    """
+    """Default message notification level."""
 
     explicit_content_filter: enums.ExplicitContentFilterLevel
-    """
-    Explicit content filter level.
-    """
+    """Explicit content filter level."""
 
     roles: tuple[Role, ...]
-    """
-    A list of roles in the guild.
-    """
+    """A list of roles in the guild."""
 
     emojis: tuple[Emoji, ...]
-    """
-    A list of custom guild emoji.
-    """
+    """A list of custom guild emoji."""
 
     features: tuple[Any]
-    """
-    A list of enabled guild features.
-    """
+    """A list of enabled guild features."""
 
     mfa_level: enums.MFALevel
-    """
-    Required MFA level for the guild.
-    """
+    """Required MFA level for the guild."""
 
     application_id: Snowflake | None
-    """
-    Application ID of the guild creator if it's bot-created.
-    """
+    """Application ID of the guild creator if it's bot-created."""
 
     system_channel_id: Snowflake | None
-    """
-    The ID of the channel where system messages are sent.
-    """
+    """The ID of the channel where system messages are sent."""
 
     system_channel_flags: bitfields.SystemChannelFlags
-    """
-    System channel flags.
-    """
+    """System channel flags."""
 
     rules_channel_id: Snowflake | None
-    """
-    The ID of the rules and/or guidelines channel.
-    """
+    """The ID of the rules and/or guidelines channel."""
 
     vanity_url_code: str | None
-    """
-    The vanity url code for the guild.
-    """
+    """The vanity url code for the guild."""
 
     description: str | None
-    """
-    The description of the guild.
-    """
+    """The description of the guild."""
 
     banner: str | None
-    """
-    The banner hash of the guild.
-    """
+    """The banner hash of the guild."""
 
     premium_tier: int
-    """
-    Guild boost level.
-    """
+    """Guild boost level."""
 
     preferred_locale: str
-    """
-    The preferred locale of the Community guild.
-    """
+    """The preferred locale of the Community guild."""
 
     public_updates_channel_id: Snowflake | None
-    """
-    The ID of the channel where admins and moderators of Community
+    """The ID of the channel where admins and moderators of Community \
     guilds receive notices from Discord.
     """
 
     nsfw_level: int
-    """
-    Guild age-restriction level.
-    """
+    """Guild age-restriction level."""
 
     premium_progress_bar_enabled: bool
-    """
-    Whether the guild has the boost progress bar enabled.
-    """
+    """Whether the guild has the boost progress bar enabled."""
 
     safety_alerts_channel_id: Snowflake | None
-    """
-    The ID of the channel where admins and moderators of Community
+    """The ID of the channel where admins and moderators of Community \
     guilds receive safety alerts from Discord.
     """
 
     incidents_data: Any | None
-    """
-    The incidents data of this guild.
-    """
+    """The incidents data of this guild."""
 
     icon_hash: str | None | MISSING = MISSING
-    """
-    The icon hash of the guild when in a guild template.
-    """
+    """The icon hash of the guild when in a guild template."""
 
     owner: bool | MISSING = MISSING
-    """
-    If the user is the owner of the guild.
-    """
+    """If the user is the owner of the guild."""
 
     permissions: str | MISSING = MISSING
-    """
-    Total permissions for the user in the guild.
-    """
+    """Total permissions for the user in the guild."""
 
     widget_enabled: bool | MISSING = MISSING
-    """
-    Whether the guild widget is enabled.
-    """
+    """Whether the guild widget is enabled."""
 
     widget_channel_id: Snowflake | None | MISSING = MISSING
-    """
-    The channel ID that the widget will generate an invite to.
-    """
+    """The channel ID that the widget will generate an invite to."""
 
     max_presences: int | None | MISSING = MISSING
-    """
-    The maximum number of presences for the guild.
-    """
+    """The maximum number of presences for the guild."""
 
     max_members: int | None | MISSING = MISSING
-    """
-    The maximum number of members for the guild.
-    """
+    """The maximum number of members for the guild."""
 
     premium_subscription_count: int | MISSING = MISSING
-    """
-    The number of boosts this guild currently has.
-    """
+    """The number of boosts this guild currently has."""
 
     max_video_channel_users: int | MISSING = MISSING
-    """
-    The maximum amount of users in a video channel.
-    """
+    """The maximum amount of users in a video channel."""
 
     max_stage_video_channel_users: int | MISSING = MISSING
-    """
-    The maximum amount of users in a stage video channel.
-    """
+    """The maximum amount of users in a stage video channel."""
 
     approximate_member_count: int | MISSING = MISSING
-    """
-    Approximate number of members in this guild.
-    """
+    """Approximate number of members in this guild."""
 
     approximate_presence_count: int | MISSING = MISSING
-    """
-    Approximate number of non-offline members in this guild.
-    """
+    """Approximate number of non-offline members in this guild."""
 
     welcome_screen: Any | MISSING = MISSING
-    """
-    The welcome screen of a Community guild shown to new members.
-    """
+    """The welcome screen of a Community guild shown to new members."""
 
     stickers: tuple[Sticker, ...] | MISSING = MISSING
-    """
-    A list of custom guild stickers.
-    """
+    """A list of custom guild stickers."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -263,15 +178,13 @@ class Guild(Model):
 
     def icon_url(
         self,
-        size: int = CDN.MAX_SIZE,
+        size: int = cdn.MAX_SIZE,
         format: types.AnimatedFormat | None = None,
     ) -> str | None:
-        """
-        The URL of the guild's icon.
-        """
+        """The URL of the guild's icon."""
         if self.icon is None or self.icon is MISSING:
             return None
-        return CDN.guild_icon(
+        return cdn.guild_icon(
             guild_id=self.id,
             hash=self.icon,
             size=size,
@@ -280,15 +193,13 @@ class Guild(Model):
 
     def banner_url(
         self,
-        size: int = CDN.MAX_SIZE,
+        size: int = cdn.MAX_SIZE,
         format: types.AnimatedFormat | None = None,
     ) -> str | None:
-        """
-        The URL of the guild's icon.
-        """
+        """The URL of the guild's icon."""
         if self.banner is None:
             return None
-        return CDN.guild_banner(
+        return cdn.guild_banner(
             guild_id=self.id,
             hash=self.banner,
             size=size,

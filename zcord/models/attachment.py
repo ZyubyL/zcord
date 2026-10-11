@@ -14,79 +14,49 @@ from zcord.models.user import User
 
 @dataclass(frozen=True, slots=True)
 class Attachment(Model):
-    """
-    Represent a Discord attachment.
-    """
+    """Represent a Discord attachment."""
 
     id: Snowflake
-    """
-    The ID of the attachment.
-    """
+    """The ID of the attachment."""
 
     filename: str
-    """
-    The name of the file attached.
-    """
+    """The name of the file attached."""
 
     size: int
-    """
-    The size of the attachment.
-    """
+    """The size of the attachment."""
 
     url: str
-    """
-    The source url of the file.
-    """
+    """The source url of the file."""
 
     proxy_url: str
-    """
-    A proxied url of the file.
-    """
+    """A proxied url of the file."""
 
     title: str | MISSING = MISSING
-    """
-    The title of the file.
-    """
+    """The title of the file."""
 
     description: str | MISSING = MISSING
-    """
-    Alt text for the file.
-    """
+    """Alt text for the file."""
 
     content_type: str | MISSING = MISSING
-    """
-    The media type of the attachment.
-    """
+    """The media type of the attachment."""
 
     height: int | None | MISSING = MISSING
-    """
-    The height of the image/video file.
-    """
+    """The height of the image/video file."""
 
     width: int | None | MISSING = MISSING
-    """
-    The width of the image/video file.
-    """
+    """The width of the image/video file."""
 
     placeholder: str | MISSING = MISSING
-    """
-    Thumbhash placeholder for image/video file.
-    """
+    """Thumbhash placeholder for image/video file."""
 
     placeholder_version: int | MISSING = MISSING
-    """
-    Version of the image/video file.
-    """
+    """Version of the image/video file."""
 
     ephemeral: bool | MISSING = MISSING
-    """
-    Whether this attachment is ephemeral.
-    """
+    """Whether this attachment is ephemeral."""
 
     duration_secs: float | MISSING = MISSING
-    """
-    The duration of the audio/video file.
-    """
+    """The duration of the audio/video file."""
 
     waveform: str | MISSING = MISSING
     """
@@ -94,24 +64,16 @@ class Attachment(Model):
     """
 
     flags: bitfields.AttachmentFlags | MISSING = MISSING
-    """
-    The attachment flags combined as a bitfield.
-    """
+    """The attachment flags combined as a bitfield."""
 
     clip_participants: tuple[User] | MISSING = MISSING
-    """
-    A list of users who were in the stream when it is clipped.
-    """
+    """A list of users who were in the stream when it is clipped."""
 
     clip_created_at: datetime | MISSING = MISSING
-    """
-    The timestamp for when the clip is created.
-    """
+    """The timestamp for when the clip is created."""
 
     application: Application | None | MISSING = MISSING
-    """
-    The application in the stream, if recognized, when it is clipped.
-    """
+    """The application in the stream, if recognized, when it is clipped."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,

@@ -4,8 +4,7 @@ from enum import IntEnum
 
 
 class MessageActivityType(IntEnum):
-    """
-    Type of message activity.
+    """Type of message activity.
 
     | Type | Value |
     |------|-------|

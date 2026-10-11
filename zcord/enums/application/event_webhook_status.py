@@ -4,8 +4,7 @@ from enum import IntEnum
 
 
 class EventWebhookStatus(IntEnum):
-    """
-    Status indicating whether event webhooks are enabled or disabled for an \
+    """Status indicating whether event webhooks are enabled or disabled for an \
     application.
 
     | Name | Value |

@@ -10,19 +10,13 @@ from zcord.models.snowflake import Snowflake
 
 @dataclass(frozen=True, slots=True)
 class DefaultValue(Model):
-    """
-    The default value of the select menu.
-    """
+    """The default value of the select menu."""
 
     id: Snowflake | MISSING = MISSING
-    """
-    The ID of the user/role/channel.
-    """
+    """The ID of the user/role/channel."""
 
     type: Literal["user", "role", "channel"] | MISSING = MISSING
-    """
-    The type of the default value.
-    """
+    """The type of the default value."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,

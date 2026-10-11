@@ -14,44 +14,28 @@ class WebhookEventType(Enum):
     """
 
     APPLICATION_DEAUTHORIZED = "APPLICATION_DEAUTHORIZED"
-    """
-    Sent when an app was deauthorized by a user.
-    """
+    """Sent when an app was deauthorized by a user."""
 
     ENTITLEMENT_CREATE = "ENTITLEMENT_CREATE"
-    """
-    Entitlement was created.
-    """
+    """Entitlement was created."""
 
     ENTITLEMENT_UPDATE = "ENTITLEMENT_UPDATE"
-    """
-    Entitlement was updated.
-    """
+    """Entitlement was updated."""
 
     ENTITLEMENT_DELETE = "ENTITLEMENT_DELETE"
-    """
-    Entitlement was deleted.
-    """
+    """Entitlement was deleted."""
 
     QUEST_USER_ENROLLMENT = "QUEST_USER_ENROLLMENT"
-    """
-    User was added to a Quest (currently unavailable).
-    """
+    """User was added to a Quest (currently unavailable)."""
 
     LOBBY_MESSAGE_CREATE = "LOBBY_MESSAGE_CREATE"
-    """
-    Sent when a message is created in a lobby.
-    """
+    """Sent when a message is created in a lobby."""
 
     LOBBY_MESSAGE_UPDATE = "LOBBY_MESSAGE_UPDATE"
-    """
-    Sent when a message is updated in a lobby.
-    """
+    """Sent when a message is updated in a lobby."""
 
     LOBBY_MESSAGE_DELETE = "LOBBY_MESSAGE_DELETE"
-    """
-    Sent when a message is deleted from a lobby.
-    """
+    """Sent when a message is deleted from a lobby."""
 
     GAME_DIRECT_MESSAGE_CREATE = "GAME_DIRECT_MESSAGE_CREATE"
     """

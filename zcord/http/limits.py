@@ -13,9 +13,7 @@ _MAJOR_RESOURCES = ("channels", "guilds", "webhooks")
 
 
 def _route_key(method: str, endpoint: str) -> str:
-    """
-    Route identity
-    """
+    """Route identity."""
     major = False
     key = []
     for part in endpoint.split("?")[0].split("/"):
@@ -28,9 +26,7 @@ def _route_key(method: str, endpoint: str) -> str:
 
 
 def _major_key(endpoint: str) -> str:
-    """
-    The top level resources this route's limits count against.
-    """
+    """The top level resources this route's limits count against."""
     parts = endpoint.split("?")[0].split("/")
     majors = [
         f"{part}/{parts[i + 1]}"
@@ -54,7 +50,7 @@ class RateLimiter:
         sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
     ) -> None:
         """
-        Params:
+        Args:
             clock:
                 Injectable monotonic time source.
             sleep:
@@ -77,7 +73,7 @@ class RateLimiter:
             - Wait for global limit and route's bucket
             - Yield the bucket to sync state before release.
 
-        Params:
+        Args:
             global_limited:
                 `False` for interaction endpoints, which are exempt \
                 from global rate limit.
@@ -107,9 +103,7 @@ class RateLimiter:
         )
 
     def hold_global(self, retry_after: float) -> None:
-        """
-        Pause all global limited requests.
-        """
+        """Pause all global limited requests."""
         now = self._clock()
         self._global_hold_util = max(self._global_hold_util, now + retry_after)
 
@@ -152,7 +146,7 @@ class Bucket:
         sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
     ) -> None:
         """
-        Params:
+        Args:
             clock:
                 Injectable monotonic time source.
             sleep:
@@ -196,7 +190,5 @@ class Bucket:
         self._reset_at = self._clock() + reset_after
 
     def hold(self, retry_after: float) -> None:
-        """
-        Block the bucket until `retry_after` elapses.
-        """
+        """Block the bucket until `retry_after` elapses."""
         self._hold_until = max(self._hold_until, self._clock() + retry_after)

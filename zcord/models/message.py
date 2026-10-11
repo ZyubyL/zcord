@@ -30,19 +30,13 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class MessageActivity(Model):
-    """
-    Contain info about a [`Message`][zcord.Message]'s activity.
-    """
+    """Contain info about a [`Message`][zcord.Message]'s activity."""
 
     type: enums.MessageActivityType
-    """
-    The type of activity.
-    """
+    """The type of activity."""
 
     party_id: str | MISSING = MISSING
-    """
-    The party ID from a Rich presence event.
-    """
+    """The party ID from a Rich presence event."""
 
     _transforms: ClassVar[dict] = {
         "type": enums.MessageActivityType,
@@ -51,33 +45,22 @@ class MessageActivity(Model):
 
 @dataclass(frozen=True, slots=True)
 class MessageReference(Model):
-    """
-    Contain the additional data of the referenced message.
-    """
+    """Contain the additional data of the referenced message."""
 
     type: enums.MessageReferenceType = enums.MessageReferenceType.DEFAULT
-    """
-    The type of reference.
-    """
+    """The type of reference."""
 
     message_id: Snowflake | MISSING = MISSING
-    """
-    The ID of the originating message.
-    """
+    """The ID of the originating message."""
 
     channel_id: Snowflake | MISSING = MISSING
-    """
-    The ID of the originating message's channnel.
-    """
+    """The ID of the originating message's channnel."""
 
     guild_id: Snowflake | MISSING = MISSING
-    """
-    The ID of the originating messgae's guild.
-    """
+    """The ID of the originating messgae's guild."""
 
     fail_if_not_exists: bool = True  # Maybe I won't need to expose this, idk
-    """
-    Whether to error if the referenced message doesn't exist instead \
+    """Whether to error if the referenced message doesn't exist instead \
     of sending as a normal (non-reply) message.
     """
 
@@ -91,127 +74,80 @@ class MessageReference(Model):
 
 @dataclass(frozen=True, slots=True)
 class MessageSnapshot(Model):
-    """
-    The snapshot of a forwarded message.
-    """
+    """The snapshot of a forwarded message."""
 
     message: Message
-    """
-    The forwarded message.
-    """
+    """The forwarded message."""
 
 
 @dataclass(frozen=True, slots=True)
 class Message(Model):
-    """
-    Represent a Discord message.
-    """
+    """Represent a Discord message."""
 
     id: Snowflake | MISSING = MISSING
-    """
-    The ID of the message.
-    """
+    """The ID of the message."""
 
     channel_id: Snowflake | MISSING = MISSING
-    """
-    The ID of the channel the message was sent in.
-    """
+    """The ID of the channel the message was sent in."""
 
     author: User | MISSING = MISSING
-    """
-    The author of this message.
-    """
+    """The author of this message."""
 
     content: str | MISSING = MISSING
-    """
-    The message content.
-    """
+    """The message content."""
 
     timestamp: datetime | MISSING = MISSING
-    """
-    The timestamp when this message was sent.
-    """
+    """The timestamp when this message was sent."""
 
     tts: bool = False
-    """
-    Whether this message is a text-to-speech message.
-    """
+    """Whether this message is a text-to-speech message."""
 
     mention_everyone: bool | MISSING = MISSING
-    """
-    Whether this message mentions everyone.
-    """
+    """Whether this message mentions everyone."""
 
     mentions: tuple[User, ...] | MISSING = MISSING
-    """
-    Users mentioned in this message.
-    """
+    """Users mentioned in this message."""
 
     mention_roles: tuple[Snowflake, ...] | MISSING = MISSING
-    """
-    Roles mentioned in this message.
-    """
+    """Roles mentioned in this message."""
 
     attachments: tuple[Attachment, ...] | MISSING = MISSING
-    """
-    Attached files in this message.
-    """
+    """Attached files in this message."""
 
     embeds: tuple[Embed, ...] | MISSING = MISSING
-    """
-    Embeded contents in this message.
-    """
+    """Embeded contents in this message."""
 
     pinned: bool | MISSING = MISSING
-    """
-    Whether this message is pinned.
-    """
+    """Whether this message is pinned."""
 
     type: enums.MessageType | MISSING = MISSING
-    """
-    The type of the message.
-    """
+    """The type of the message."""
 
     edited_timestamp: datetime | None = None
-    """
-    The timestamp when this message was edited.
-    """
+    """The timestamp when this message was edited."""
 
     mention_channels: tuple[Channel, ...] | MISSING = MISSING
-    """
-    Channels mentioned in this message.
-    """
+    """Channels mentioned in this message."""
 
     reactions: tuple[Reaction, ...] | MISSING = MISSING
-    """
-    Reactions to this message.
-    """
+    """Reactions to this message."""
 
     webhook_id: Snowflake | MISSING = MISSING
-    """
-    The webhook's ID if this message was sent via webhook.
-    """
+    """The webhook's ID if this message was sent via webhook."""
 
     activity: MessageActivity | MISSING = MISSING
-    """
-    Activity object sent via Rich presence related embeds.
-    """
+    """Activity object sent via Rich presence related embeds."""
 
     application: Application | MISSING = MISSING
-    """
-    Partial application object sent via Rich presence related embeds.
-    """
+    """Partial application object sent via Rich presence related embeds."""
 
     application_id: Snowflake | MISSING = MISSING
-    """
-    The application ID if this message was sent via an `Interaction`
+    """The application ID if this message was sent via an `Interaction` \
     or an application-owned webhook.
     """
 
     flags: bitfields.MessageFlags | MISSING = MISSING
-    """
-    The message flags combined as a bitfield.
-    """
+    """The message flags combined as a bitfield."""
 
     message_reference: MessageReference | MISSING = MISSING
     """
@@ -219,44 +155,30 @@ class Message(Model):
     """
 
     message_snapshots: tuple[MessageSnapshot, ...] | MISSING = MISSING
-    """
-    The message associated with the `message_reference`. This is a
+    """The message associated with the `message_reference`. This is a \
     minimal subset of fields in a `Message`.
     """
 
     referenced_message: Message | None | MISSING = MISSING
-    """
-    The message associated with the `message_reference`.
-    """
+    """The message associated with the `message_reference`."""
 
     interaction_metadata: InteractionMetadata | MISSING = MISSING
-    """
-    Message interaction metadata.
-    """
+    """Message interaction metadata."""
 
     thread: Channel | MISSING = MISSING
-    """
-    The thread that was started from this message.
-    """
+    """The thread that was started from this message."""
 
     components: tuple[Component, ...] | MISSING = MISSING
-    """
-    Interactive components in this message.
-    """
+    """Interactive components in this message."""
 
     sticker_items: tuple[Sticker, ...] | MISSING = MISSING
-    """
-    Stickers in this message.
-    """
+    """Stickers in this message."""
 
     position: int | MISSING = MISSING
-    """
-    The approximated position of the message in a thread.
-    """
+    """The approximated position of the message in a thread."""
 
     role_subscription_data: RoleSubscriptionData | MISSING = MISSING
-    """
-    Data of the subscription if this message is a
+    """Data of the subscription if this message is a \
     `ROLE_SUBSCRIPTION_PURCHASE` message
     """
 
@@ -266,19 +188,13 @@ class Message(Model):
     """
 
     poll: Poll | MISSING = MISSING
-    """
-    A poll.
-    """
+    """A poll."""
 
     call: Any | MISSING = MISSING
-    """
-    The call associated with this message.
-    """
+    """The call associated with this message."""
 
     shared_client_theme: SharedClientTheme | MISSING = MISSING
-    """
-    The custom client-side theme shared in this message.
-    """
+    """The custom client-side theme shared in this message."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -331,8 +247,7 @@ class Message(Model):
         # call: Any | MISSING = MISSING,
         shared_client_theme: SharedClientTheme | MISSING = MISSING,
     ) -> Message:
-        """
-        Create a new message.
+        """Create a new message.
 
         Raises:
             ValueError:
@@ -364,16 +279,13 @@ class Message(Model):
         return self
 
     def set_content(self, content: str | MISSING = MISSING) -> Message:
-        """
-        Set the content of the message.
-        """
+        """Set the content of the message."""
         return set_field_value(self, "content", content)
 
     def set_embeds(
         self, embeds: types.TupleOrList[Embed] | MISSING = MISSING
     ) -> Message:
-        """
-        Set the embeds of the message.
+        """Set the embeds of the message.
 
         Raises:
             ValueError:
@@ -386,8 +298,7 @@ class Message(Model):
         return m
 
     def add_embed(self, embed: Embed) -> Message:
-        """
-        Add an embed to the message.
+        """Add an embed to the message.
 
         Raises:
             ValueError:
@@ -398,31 +309,24 @@ class Message(Model):
         return add_field_value(self, "embeds", embed)
 
     def clear_embeds(self) -> Message:
-        """
-        Clear the embeds of the message.
-        """
+        """Clear the embeds of the message."""
         return set_field_value(self, "embeds", MISSING)
 
     def set_shared_client_theme(
         self, theme: SharedClientTheme | MISSING = MISSING
     ) -> Message:
-        """
-        Add a shared client theme to the message.
-        """
+        """Add a shared client theme to the message."""
         return set_field_value(self, "shared_client_theme", theme)
 
     def set_poll(self, poll: Poll | MISSING = MISSING) -> Message:
-        """
-        Add a poll to the message.
-        """
+        """Add a poll to the message."""
         return set_field_value(self, "poll", poll)
 
     def set_components(
         self,
         components: types.TupleOrList[Component] | MISSING = MISSING,
     ) -> Message:
-        """
-        Set the components of the message.
+        """Set the components of the message.
 
         Raises:
             ValueError:
@@ -436,8 +340,7 @@ class Message(Model):
         return m
 
     def add_component(self, component: Component) -> Message:
-        """
-        Add a component to the message.
+        """Add a component to the message.
 
         Raises:
             ValueError:
@@ -451,18 +354,14 @@ class Message(Model):
         return add_field_value(self, "components", component)
 
     def clear_components(self) -> Message:
-        """
-        Clear all components from the message.
-        """
+        """Clear all components from the message."""
         return set_field_value(self, "components", MISSING)
 
     def set_attachments(
         self,
         attachments: types.TupleOrList[Attachment] | MISSING = MISSING,
     ) -> Message:
-        """
-        Set the attachments of the message.
-        """
+        """Set the attachments of the message."""
         m = self.clear_attachments()
         if attachments is not MISSING:
             for attachment in attachments:
@@ -470,21 +369,15 @@ class Message(Model):
         return m
 
     def add_attachment(self, attachment: Attachment) -> Message:
-        """
-        Add an attachment to the message.
-        """
+        """Add an attachment to the message."""
         return add_field_value(self, "attachments", attachment)
 
     def clear_attachments(self) -> Message:
-        """
-        Clear the attachments of the message.
-        """
+        """Clear the attachments of the message."""
         return set_field_value(self, "attachments", MISSING)
 
     def set_tts(self, tts: bool = False) -> Message:
-        """
-        Set whether the message is a text-to-speech message or not.
-        """
+        """Set whether the message is a text-to-speech message or not."""
         return set_field_value(self, "tts", tts)
 
     async def send(
@@ -494,10 +387,9 @@ class Message(Model):
         sticker_ids: types.TupleOrList[int | Snowflake] | MISSING = MISSING,
         flags: bitfields.MessageFlags | MISSING = MISSING,
     ) -> Message:
-        """
-        Send the message to the specified channel.
+        """Send the message to the specified channel.
 
-        Params:
+        Args:
             sticker_ids:
                 List of max 3 stickers to send with this message.
             flags:
@@ -511,7 +403,7 @@ class Message(Model):
             ValueError:
                 - More than 3 stickers are passed.
                 - Cannot set these flags when sending message.
-            ZcordError:
+            errors.ZcordError:
                 Cannot send a message that already has an ID.
         """
         if self.id is not MISSING:
@@ -525,11 +417,10 @@ class Message(Model):
         )
 
     async def reply(self, message: Message) -> Message:
-        """
-        Reply to the message.
+        """Reply to the message.
 
         Raises:
-            ZcordError:
+            errors.ZcordError:
                 - Cannot reply to a message with no ID.
                 - Cannot reply to a message with no channel ID.
         """
@@ -548,39 +439,25 @@ class Message(Model):
 
 @dataclass(frozen=True, slots=True)
 class Resolved(Model):
-    """
-    Resolved data in the [`Message`][].
-    """
+    """Resolved data in the [`Message`][]."""
 
     users: dict[Snowflake, User] | MISSING = MISSING
-    """
-    A dict of user ID to User.
-    """
+    """A dict of user ID to User."""
 
     members: dict[Snowflake, Any] | MISSING = MISSING
-    """
-    A dict of member ID to Member.
-    """
+    """A dict of member ID to Member."""
 
     roles: dict[Snowflake, Role] | MISSING = MISSING
-    """
-    A dict of role ID to Role.
-    """
+    """A dict of role ID to Role."""
 
     channels: dict[Snowflake, Channel] | MISSING = MISSING
-    """
-    A dict of channel ID to Channel.
-    """
+    """A dict of channel ID to Channel."""
 
     messages: dict[Snowflake, Message] | MISSING = MISSING
-    """
-    A dict of message ID to Message.
-    """
+    """A dict of message ID to Message."""
 
     attachments: dict[Snowflake, Attachment] | MISSING = MISSING
-    """
-    A dict of attachment ID to Attachment.
-    """
+    """A dict of attachment ID to Attachment."""
 
     _transforms: ClassVar[dict] = {
         "users": dict[Snowflake, User],

@@ -8,21 +8,13 @@ from zcord.models.base import Model
 
 @dataclass(frozen=True, slots=True)
 class EmbedField(Model):
-    """
-    Contain embed's field info.
-    """
+    """Contain embed's field info."""
 
     name: str
-    """
-    The name of the field.
-    """
+    """The name of the field."""
 
     value: str
-    """
-    The value of the field.
-    """
+    """The value of the field."""
 
     inline: bool | MISSING = MISSING
-    """
-    Whether or not this field should display inline.
-    """
+    """Whether or not this field should display inline."""

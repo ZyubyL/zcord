@@ -17,8 +17,7 @@ class Snowflake(int):
         return super().__new__(cls, value)
 
     def to_datetime(self) -> datetime:
-        """
-        Convert this Snowflake to `datetime` object
+        """Convert this Snowflake to `datetime` object
 
         Returns:
             The timestamp when this Snowflake is generated

@@ -10,9 +10,7 @@ from zcord.models.base import Model
 
 @dataclass(frozen=True, slots=True)
 class Component(Model):
-    """
-    Generic component model.
-    """
+    """Generic component model."""
 
     _registry: ClassVar[dict[enums.ComponentType, type[Component]]] = {}
 

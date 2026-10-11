@@ -13,29 +13,19 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class SharedClientTheme(Model):
-    """
-    Represent a shared client theme.
-    """
+    """Represent a shared client theme."""
 
     colors: tuple[str, ...] | MISSING = MISSING
-    """
-    A list of colors of the theme.
-    """
+    """A list of colors of the theme."""
 
     gradient_angle: int | MISSING = MISSING
-    """
-    The direction of the theme's colors (max 360).
-    """
+    """The direction of the theme's colors (max 360)."""
 
     base_mix: int | MISSING = MISSING
-    """
-    The intensity of the theme's colors (max 100).
-    """
+    """The intensity of the theme's colors (max 100)."""
 
     base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET
-    """
-    The mode of the theme.
-    """
+    """The mode of the theme."""
 
     _transforms: ClassVar[dict] = {
         "base_theme": enums.BaseThemeType,
@@ -58,9 +48,7 @@ class SharedClientTheme(Model):
         base_mix: int | MISSING = MISSING,
         base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET,
     ) -> SharedClientTheme:
-        """
-        Create a new shared client theme.
-        """
+        """Create a new shared client theme."""
         return (
             cls()
             .set_colors(colors)
@@ -70,8 +58,7 @@ class SharedClientTheme(Model):
         )
 
     def add_color(self, color: str) -> SharedClientTheme:
-        """
-        Add a color to the theme.
+        """Add a color to the theme.
 
         Raises:
             ValueError:
@@ -82,8 +69,7 @@ class SharedClientTheme(Model):
         return add_field_value(self, "colors", color)
 
     def add_colors(self, *colors: str) -> SharedClientTheme:
-        """
-        Add multiple colors to the theme.
+        """Add multiple colors to the theme.
 
         Raises:
             ValueError:
@@ -97,8 +83,7 @@ class SharedClientTheme(Model):
     def set_colors(
         self, colors: types.TupleOrList[str] | MISSING = MISSING
     ) -> SharedClientTheme:
-        """
-        Set the colors of the theme.
+        """Set the colors of the theme.
 
         Raises:
             ValueError:
@@ -115,16 +100,13 @@ class SharedClientTheme(Model):
         return theme
 
     def clear_colors(self) -> SharedClientTheme:
-        """
-        Clear all the colors of the theme.
-        """
+        """Clear all the colors of the theme."""
         return set_field_value(self, "colors", MISSING)
 
     def set_gradient_angle(
         self, angle: int | MISSING = MISSING
     ) -> SharedClientTheme:
-        """
-        Set the gradient angle of the theme.
+        """Set the gradient angle of the theme.
 
         Raises:
             ValueError:
@@ -137,8 +119,7 @@ class SharedClientTheme(Model):
     def set_base_mix(
         self, base_mix: int | MISSING = MISSING
     ) -> SharedClientTheme:
-        """
-        Set the base mix of the theme.
+        """Set the base mix of the theme.
 
         Raises:
             ValueError:
@@ -151,7 +132,5 @@ class SharedClientTheme(Model):
     def set_base_theme(
         self, base_theme: enums.BaseThemeType = enums.BaseThemeType.UNSET
     ) -> SharedClientTheme:
-        """
-        Set the base theme of the theme.
-        """
+        """Set the base theme of the theme."""
         return set_field_value(self, "base_theme", base_theme)

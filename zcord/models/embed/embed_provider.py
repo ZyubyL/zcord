@@ -8,16 +8,10 @@ from zcord.models.base import Model
 
 @dataclass(frozen=True, slots=True)
 class EmbedProvider(Model):
-    """
-    Contain embed's provider info.
-    """
+    """Contain embed's provider info."""
 
     name: str | MISSING = MISSING
-    """
-    Name of the provider.
-    """
+    """Name of the provider."""
 
     url: str | MISSING = MISSING
-    """
-    URL of the provider.
-    """
+    """URL of the provider."""

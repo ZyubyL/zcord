@@ -12,64 +12,40 @@ from zcord.models.user import User
 
 @dataclass(frozen=True, slots=True)
 class Sticker(Model):
-    """
-    Represent a Discord Sticker.
-    """
+    """Represent a Discord Sticker."""
 
     id: Snowflake
-    """
-    The ID of the sticker.
-    """
+    """The ID of the sticker."""
 
     name: str
-    """
-    The name of the sticker.
-    """
+    """The name of the sticker."""
 
     format_type: enums.StickerFormatType
-    """
-    The type of sticker format.
-    """
+    """The type of sticker format."""
 
     tags: str | MISSING = MISSING
-    """
-    The tags for autocomplete/suggestion for the sticker.
-    """
+    """The tags for autocomplete/suggestion for the sticker."""
 
     type: enums.StickerType | MISSING = MISSING
-    """
-    The type of the sticker.
-    """
+    """The type of the sticker."""
 
     pack_id: Snowflake | MISSING = MISSING
-    """
-    The ID of the pack the sticker is from.
-    """
+    """The ID of the pack the sticker is from."""
 
     description: str | None = None
-    """
-    The description of the sticker.
-    """
+    """The description of the sticker."""
 
     available: bool | MISSING = MISSING
-    """
-    Whether this guild sticker can be used.
-    """
+    """Whether this guild sticker can be used."""
 
     guild_id: Snowflake | MISSING = MISSING
-    """
-    The ID of the guild that owns this sticker.
-    """
+    """The ID of the guild that owns this sticker."""
 
     user: User | MISSING = MISSING
-    """
-    The user who uploaded this sticker.
-    """
+    """The user who uploaded this sticker."""
 
     sort_value: int | MISSING = MISSING
-    """
-    The standard sticker sort order within its pack.
-    """
+    """The standard sticker sort order within its pack."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -83,44 +59,28 @@ class Sticker(Model):
 
 @dataclass(frozen=True, slots=True)
 class StickerPack(Model):
-    """
-    Represent a pack of standard stickers.
-    """
+    """Represent a pack of standard stickers."""
 
     id: Snowflake
-    """
-    The ID of the pack.
-    """
+    """The ID of the pack."""
 
     stickers: tuple[Sticker, ...]
-    """
-    The stickers in the pack.
-    """
+    """The stickers in the pack."""
 
     name: str
-    """
-    The name of the pack.
-    """
+    """The name of the pack."""
 
     sku_id: Snowflake
-    """
-    The ID of the pack's SKU.
-    """
+    """The ID of the pack's SKU."""
 
     description: str
-    """
-    The description of the pack.
-    """
+    """The description of the pack."""
 
     cover_sticker_id: Snowflake | MISSING = MISSING
-    """
-    The ID of a sticker in the pack which is shown as the pack's icon.
-    """
+    """The ID of a sticker in the pack which is shown as the pack's icon."""
 
     banner_asset_id: Snowflake | MISSING = MISSING
-    """
-    The ID of the pack's banner image.
-    """
+    """The ID of the pack's banner image."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,

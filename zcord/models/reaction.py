@@ -9,59 +9,41 @@ from zcord.models.emoji import Emoji
 
 @dataclass(frozen=True, slots=True)
 class ReactionCountDetails(Model):
-    """
-    Contain a breakdown of normal and super reaction counts for the associated \
-    emoji.
+    """Contain a breakdown of normal and super reaction counts for \
+    the associated emoji.
     """
 
     burst: int
-    """
-    Count of super reactions.
-    """
+    """Count of super reactions."""
 
     normal: int
-    """
-    Count of normal reactions.
-    """
+    """Count of normal reactions."""
 
 
 @dataclass(frozen=True, slots=True)
 class Reaction(Model):
-    """
-    Represent a Discord reaction.
-    """
+    """Represent a Discord reaction."""
 
     count: int
-    """
-    Total number of times this emoji has been used to react.
-    """
+    """Total number of times this emoji has been used to react."""
 
     count_details: ReactionCountDetails
-    """
-    Reaction count details.
-    """
+    """Reaction count details."""
 
     me: bool
-    """
-    Whether the bot reacted using this emoji.
-    """
+    """Whether the bot reacted using this emoji."""
 
     me_burst: bool
-    """
-    Whether the user super-reacted using this emoji.[^1]
+    """Whether the user super-reacted using this emoji.[^1]
 
     [^1]: Since bot can't super react, this field should always be `False`(?).
     """
 
     emoji: Emoji
-    """
-    Emoji info.
-    """
+    """Emoji info."""
 
     burst_colors: tuple[int, ...]
-    """
-    A list of colors used for super reaction.
-    """
+    """A list of colors used for super reaction."""
 
     _transforms: ClassVar[dict] = {
         "count_details": ReactionCountDetails,

@@ -14,21 +14,17 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class PollMedia(Model):
-    """
-    Generic poll media data.
-    """
+    """Generic poll media data."""
 
     text: str | MISSING = MISSING
-    """
-    The text of the field.
+    """The text of the field.
 
-    **Notes**: 300 characters max for question, and 55 max for answer.
+    Notes:
+        300 characters max for question, and 55 max for answer.
     """
 
     emoji: Emoji | MISSING = MISSING
-    """
-    The emoji of the field.
-    """
+    """The emoji of the field."""
 
     _transforms: ClassVar[dict] = {
         "emoji": Emoji,
@@ -47,19 +43,13 @@ class PollMedia(Model):
 
 @dataclass(frozen=True, slots=True)
 class PollAnswer(Model):
-    """
-    Contain info about a poll answer.
-    """
+    """Contain info about a poll answer."""
 
     poll_media: PollMedia
-    """
-    The data of the answer.
-    """
+    """The data of the answer."""
 
     answer_id: int | MISSING = MISSING
-    """
-    The ID of the answer.
-    """
+    """The ID of the answer."""
 
     _transforms: ClassVar[dict] = {
         "poll_media": PollMedia,
@@ -72,9 +62,7 @@ class PollAnswer(Model):
         text: str | MISSING = MISSING,
         emoji: Emoji | str | MISSING = MISSING,
     ) -> PollAnswer:
-        """
-        Create a new poll answer.
-        """
+        """Create a new poll answer."""
         return cls(
             poll_media=PollMedia(
                 text=text,
@@ -89,41 +77,27 @@ class PollAnswer(Model):
 
 @dataclass(frozen=True, slots=True)
 class PollAnswerCount(Model):
-    """
-    Contain info about the poll answer vote count.
-    """
+    """Contain info about the poll answer vote count."""
 
     id: int
-    """
-    The ID of the answer.
-    """
+    """The ID of the answer."""
 
     count: int
-    """
-    The number of votes for the answer.
-    """
+    """The number of votes for the answer."""
 
     me_voted: bool
-    """
-    Whether the bot voted for this answer.
-    """
+    """Whether the bot voted for this answer."""
 
 
 @dataclass(frozen=True, slots=True)
 class PollResults(Model):
-    """
-    Contain info about the poll results.
-    """
+    """Contain info about the poll results."""
 
     is_finalized: bool
-    """
-    Whether the votes have been precisely counted.
-    """
+    """Whether the votes have been precisely counted."""
 
     answer_counts: tuple[PollAnswerCount, ...]
-    """
-    A list of number of votes for each answer.
-    """
+    """A list of number of votes for each answer."""
 
     _transforms: ClassVar[dict] = {
         "answer_counts": PollAnswerCount,
@@ -132,41 +106,28 @@ class PollResults(Model):
 
 @dataclass(frozen=True, slots=True)
 class Poll(Model):
-    """
-    Represent a Discord poll.
-    """
+    """Represent a Discord poll."""
 
     question: PollMedia | MISSING = MISSING
-    """
-    The question of the poll.
-    """
+    """The question of the poll."""
 
     answers: tuple[PollAnswer, ...] | MISSING = MISSING
-    """
-    A list of answers for the poll.
-    """
+    """A list of answers for the poll."""
 
     allow_multiselect: bool = False
-    """
-    Whether a user can select multiple answers.
-    """
+    """Whether a user can select multiple answers."""
 
     layout_type: int = 1
-    """
-    The layout type of the poll.[^1]
+    """The layout type of the poll.[^1]
 
     [^1]: Discord only supports layout type `1` for now.
     """
 
     expiry: datetime | None = None
-    """
-    The time when the poll ends.
-    """
+    """The time when the poll ends."""
 
     results: PollResults | MISSING = MISSING
-    """
-    The results of the poll.
-    """
+    """The results of the poll."""
 
     # For creating request. thanks Discord for the inconsistency
     _duration: int | MISSING = MISSING
@@ -197,8 +158,7 @@ class Poll(Model):
         duration: int = 24,
         allow_multiselect: bool = False,
     ) -> Poll:
-        """
-        Create a new poll.
+        """Create a new poll.
 
         Raises:
             ValueError:
@@ -217,9 +177,7 @@ class Poll(Model):
         )
 
     def set_question(self, question: str | MISSING = MISSING) -> Poll:
-        """
-        Set the question of the poll.
-        """
+        """Set the question of the poll."""
         return set_field_value(
             self, "question", PollMedia(text=question, _is_question=True)
         )
@@ -228,9 +186,7 @@ class Poll(Model):
         self,
         answers: types.TupleOrList[PollAnswer] | MISSING = MISSING,
     ) -> Poll:
-        """
-        Set the answers of the poll.
-        """
+        """Set the answers of the poll."""
         poll = self.clear_answers()
         if answers is not MISSING:
             for answer in answers:
@@ -244,10 +200,9 @@ class Poll(Model):
         emoji: Emoji | str | MISSING = MISSING,
         answer: PollAnswer | MISSING = MISSING,
     ) -> Poll:
-        """
-        Add an answer to the poll.
+        """Add an answer to the poll.
 
-        Parameters:
+        Args:
             text:
                 The text of the answer.
             emoji:
@@ -272,14 +227,11 @@ class Poll(Model):
         return add_field_value(self, "answers", answer)
 
     def clear_answers(self) -> Poll:
-        """
-        Clear all answers from the poll.
-        """
+        """Clear all answers from the poll."""
         return set_field_value(self, "answers", MISSING)
 
     def set_duration(self, hours: int = 24) -> Poll:
-        """
-        Set the duration of the poll.
+        """Set the duration of the poll.
 
         Raises:
             ValueError:
@@ -290,7 +242,5 @@ class Poll(Model):
         return set_field_value(self, "_duration", hours)
 
     def set_multiselect(self, allow_multiselect: bool = True) -> Poll:
-        """
-        Allow multiple answers to be selected.
-        """
+        """Allow multiple answers to be selected."""
         return set_field_value(self, "allow_multiselect", allow_multiselect)

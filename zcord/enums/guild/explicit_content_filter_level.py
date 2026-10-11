@@ -4,8 +4,7 @@ from enum import IntEnum
 
 
 class ExplicitContentFilterLevel(IntEnum):
-    """
-    The explicit content filtering level of the guild.
+    """The explicit content filtering level of the guild.
 
     | Level | Value | Description |
     |-------|-------|-------------|

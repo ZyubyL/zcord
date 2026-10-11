@@ -15,46 +15,30 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Button(Component):
-    """
-    Represent an interactive button.
-    """
+    """Represent an interactive button."""
 
     type: enums.ComponentType = enums.ComponentType.BUTTON
 
     style: enums.ButtonStyle = enums.ButtonStyle.SECONDARY
-    """
-    The style of the button.
-    """
+    """The style of the button."""
 
     label: str | MISSING = MISSING
-    """
-    The label of the button.
-    """
+    """The label of the button."""
 
     emoji: Emoji | MISSING = MISSING
-    """
-    The emoji of the button.
-    """
+    """The emoji of the button."""
 
     custom_id: str | MISSING = MISSING
-    """
-    The custom ID of the button.
-    """
+    """The custom ID of the button."""
 
     sku_id: Snowflake | MISSING = MISSING
-    """
-    The SKU ID of the button.
-    """
+    """The SKU ID of the button."""
 
     url: str | MISSING = MISSING
-    """
-    The URL of the button.
-    """
+    """The URL of the button."""
 
     disabled: bool = False
-    """
-    Whether the button is disabled.
-    """
+    """Whether the button is disabled."""
 
     _transforms: ClassVar[dict] = {
         "type": enums.ComponentType,
@@ -74,8 +58,7 @@ class Button(Component):
         url: str | MISSING = MISSING,
         disabled: bool = False,
     ) -> Button:
-        """
-        Create a new button.
+        """Create a new button.
 
         Raises:
             ValueError:
@@ -105,8 +88,7 @@ class Button(Component):
             raise ValueError("Custom ID is required for non-URL buttons.")
 
     def set_custom_id(self, custom_id: str) -> Button:
-        """
-        Set the custom ID of the button.
+        """Set the custom ID of the button.
 
         Raises:
             ValueError:
@@ -119,14 +101,11 @@ class Button(Component):
     def set_style(
         self, style: enums.ButtonStyle = enums.ButtonStyle.SECONDARY
     ) -> Button:
-        """
-        Set the style of the button.
-        """
+        """Set the style of the button."""
         return set_field_value(self, "style", style)
 
     def set_label(self, label: str | MISSING = MISSING) -> Button:
-        """
-        Set the label of the button.
+        """Set the label of the button.
 
         Raises:
             ValueError:
@@ -137,9 +116,7 @@ class Button(Component):
         return set_field_value(self, "label", label)
 
     def set_emoji(self, emoji: Emoji | str | MISSING = MISSING) -> Button:
-        """
-        Set the emoji of the button.
-        """
+        """Set the emoji of the button."""
         return set_field_value(
             self,
             "emoji",
@@ -151,8 +128,7 @@ class Button(Component):
         )
 
     def set_url(self, url: str | MISSING = MISSING) -> Button:
-        """
-        Set the URL of the button.
+        """Set the URL of the button.
 
         Raises:
             ValueError:
@@ -163,9 +139,7 @@ class Button(Component):
         return set_field_value(self, "url", url)
 
     def set_disabled(self, disabled: bool = False) -> Button:
-        """
-        Set the disabled state of the button.
-        """
+        """Set the disabled state of the button."""
         return set_field_value(self, "disabled", disabled)
 
 

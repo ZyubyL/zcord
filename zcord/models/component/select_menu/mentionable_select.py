@@ -9,7 +9,16 @@ from zcord.models.component.select_menu.base import AutoPopulatedSelect
 
 @dataclass(frozen=True, slots=True)
 class MentionableSelect(AutoPopulatedSelect):
-    """A mentionable select menu component"""
+    """A mentionable select menu component.
+
+    Notes:
+        - If `required` is True or [`MISSING`][zcord.MISSING], \
+        `min_values` must be 1 or [`MISSING`][zcord.MISSING].
+        - `required` is only available for [`Modal`][].
+
+    Warning:
+        - You can't use `disabled` with [`Modal`][].
+    """
 
     type: enums.ComponentType = enums.ComponentType.MENTIONABLE_SELECT
 

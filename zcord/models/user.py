@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
-from zcord import bitfields
-from zcord.cdn import CDN
+from zcord import bitfields, cdn
 from zcord.missing import MISSING
 from zcord.models.avatar_decoration_data import AvatarDecorationData
 from zcord.models.base import Model
@@ -18,106 +17,67 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class User(Model):
-    """
-    Represent a Discord User
-    """
+    """Represent a Discord user."""
 
     id: Snowflake
-    """
-    The user's ID.
-    """
+    """The user's ID."""
 
     username: str
-    """
-    The user's username.
-    """
+    """The user's username."""
 
     discriminator: str
-    """
-    The user's Discord tag[^1].
+    """The user's Discord tag[^1].
 
     [^1]: Except bots, this field will be `"0"`.
     """
 
     global_name: str | None
-    """
-    The user's display name if it is set.
-    """
+    """The user's display name if it is set."""
 
     avatar: str | None
-    """
-    The user's avatar hash.
-    """
+    """The user's avatar hash."""
 
     bot: bool | MISSING = MISSING
-    """
-    Whether the user is a bot.
-    """
+    """Whether the user is a bot."""
 
     system: bool | MISSING = MISSING
-    """
-    Whether the user is an **Official Discord System** user.
-    """
+    """Whether the user is an **Official Discord System** user."""
 
     mfa_enabled: bool | MISSING = MISSING
-    """
-    Whether the user has multi factor authentication enabled.
-    """
+    """Whether the user has multi factor authentication enabled."""
 
     banner: str | None | MISSING = MISSING
-    """
-    The user's banner hash.
-    """
+    """The user's banner hash."""
 
     accent_color: int | None | MISSING = MISSING
-    """
-    The user's banner color encoded as an `int`.
-    """
+    """The user's banner color encoded as an `int`."""
 
     locale: str | MISSING = MISSING
-    """
-    The user's chosen language option.
-    """
+    """The user's chosen language option."""
 
     verified: bool | MISSING = MISSING
-    """
-    Whether the email on this account is verified.
-    """
+    """Whether the email on this account is verified."""
 
     email: str | None | MISSING = MISSING
-    """
-    The user's email.
-    """
+    """The user's email."""
 
     flags: bitfields.UserFlags | MISSING = MISSING
-    """
-    The user's account flags.
-    """
+    """The user's account flags."""
 
     premium_type: int | MISSING = MISSING
-    """
-    The type of Nitro subscription of the user.
-    """
+    """The type of Nitro subscription of the user."""
 
     public_flags: bitfields.UserFlags | MISSING = MISSING
-    """
-    The user's public account flags.
-    """
+    """The user's public account flags."""
 
     avatar_decoration_data: AvatarDecorationData | None | MISSING = MISSING
-    """
-    The user's avatar decoration data.
-    """
+    """The user's avatar decoration data."""
 
     collectibles: Collectibles | None | MISSING = MISSING
-    """
-    The user's collectibles data.
-    """
+    """The user's collectibles data."""
 
     primary_guild: PrimaryGuild | None | MISSING = MISSING
-    """
-    The user's primary guild.
-    """
+    """The user's primary guild."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -130,15 +90,13 @@ class User(Model):
 
     def avatar_url(
         self,
-        size: int = CDN.MAX_SIZE,
+        size: int = cdn.MAX_SIZE,
         format: types.AnimatedFormat | None = None,
     ) -> str | None:
-        """
-        The URL of the user's avatar.
-        """
+        """The URL of the user's avatar."""
         if self.avatar is None:
             return None
-        return CDN.user_avatar(
+        return cdn.user_avatar(
             user_id=self.id,
             hash=self.avatar,
             size=size,
@@ -147,25 +105,21 @@ class User(Model):
 
     def banner_url(
         self,
-        size: int = CDN.MAX_SIZE,
+        size: int = cdn.MAX_SIZE,
         format: types.AnimatedFormat | None = None,
     ) -> str | None:
-        """
-        The URL of the user's banner.
-        """
+        """The URL of the user's banner."""
         if self.banner is None or self.banner is MISSING:
             return None
-        return CDN.user_banner(
+        return cdn.user_banner(
             user_id=self.id,
             hash=self.banner,
             size=size,
             format=format,
         )
 
-    def avatar_decoration_url(self, size: int = CDN.MAX_SIZE) -> str | None:
-        """
-        The URL of the user's avatar decoration.
-        """
+    def avatar_decoration_url(self, size: int = cdn.MAX_SIZE) -> str | None:
+        """The URL of the user's avatar decoration."""
         if (
             self.avatar_decoration_data is None
             or self.avatar_decoration_data is MISSING

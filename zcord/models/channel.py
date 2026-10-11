@@ -22,101 +22,68 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Channel(Model):
-    """
-    Represent a Discord server or DM channel.
-    """
+    """Represent a Discord server or DM channel."""
 
     id: Snowflake | MISSING = MISSING
-    """
-    The ID of the channel.
-    """
+    """The ID of the channel."""
 
     type: enums.ChannelType | MISSING = MISSING
-    """
-    The channel type.
-    """
+    """The channel type."""
 
     guild_id: Snowflake | MISSING = MISSING
-    """
-    The guild ID the message belongs to.
-    """
+    """The guild ID the message belongs to."""
 
     position: int | MISSING = MISSING
-    """
-    The sorting position of the channel.
-    """
+    """The sorting position of the channel."""
 
     permission_overwrites: list | MISSING = MISSING
-    """
-    A list of explicit permission overwrites for members and roles.
-    """
+    """A list of explicit permission overwrites for members and roles."""
 
     name: str | None | MISSING = MISSING
-    """
-    The name of the channel.
+    """The name of the channel.
 
-    **Notes**: Can only be in 1-100 characters range.
+    Notes:
+        Can only be in 1-100 characters range.
     """
 
     topic: str | None | MISSING = MISSING
-    """
-    The channel's topic.
+    """The channel's topic.
 
-    **Notes**:
-        For most `ChannelType`, it can be up to 1024
-        characters long. Except `GUILD_FORUM` which can be up to
+    Notes:
+        For most `ChannelType`, it can be up to 1024 \
+        characters long. Except `GUILD_FORUM` which can be up to \
         4096 characters.
     """
 
     nsfw: bool | MISSING = MISSING
-    """
-    Whether the channel is age-restricted.
-    """
+    """Whether the channel is age-restricted."""
 
     last_message_id: Snowflake | None | MISSING = MISSING
-    """
-    The ID of the last message sent in this channel.
-    """
+    """The ID of the last message sent in this channel."""
 
     bitrate: int | MISSING = MISSING
-    """
-    The bit per second of the voice channel.
-    """
+    """The bit per second of the voice channel."""
 
     user_limit: int | MISSING = MISSING
-    """
-    The user limit of the voice channel.
-    """
+    """The user limit of the voice channel."""
 
     rate_limit_per_user: int | MISSING = MISSING
-    """
-    The channel slowmode in seconds. This ranges from 0-21600.
-    """
+    """The channel slowmode in seconds. This ranges from 0-21600."""
 
     recipients: tuple[User, ...] | MISSING = MISSING
-    """
-    The recipients of the DM.
-    """
+    """The recipients of the DM."""
 
     icon: str | None | MISSING = MISSING
-    """
-    The icon hash of the Group DM.
-    """
+    """The icon hash of the Group DM."""
 
     owner_id: Snowflake | MISSING = MISSING
-    """
-    The ID of the Group DM or a thread.
-    """
+    """The ID of the Group DM or a thread."""
 
     application_id: Snowflake | MISSING = MISSING
-    """
-    The app ID of the Group DM if it's created by a bot.
-    """
+    """The app ID of the Group DM if it's created by a bot."""
 
     managed: bool | MISSING = MISSING
-    """
-    Whether the channel is managed.
-    """
+    """Whether the channel is managed."""
 
     parent_id: Snowflake | None | MISSING = MISSING
     """
@@ -125,39 +92,30 @@ class Channel(Model):
     """
 
     last_pin_timestamp: datetime | None | MISSING = MISSING
-    """
-    When the last pinned message was pinned.
-    """
+    """When the last pinned message was pinned."""
 
     rtc_region: str | None | MISSING = MISSING
-    """
-    ID of the region of the voice channel. Automatic when set to None.
-    """
+    """ID of the region of the voice channel. Automatic when set to None."""
 
     video_quality_mode: int | MISSING = MISSING
-    """
-    The camera video quality mode of the voice channel.
+    """The camera video quality mode of the voice channel.
     `1` when not present.
     """
 
     message_count: int | MISSING = MISSING
-    """
-    Number of messages[^1] in a thread.
+    """Number of messages[^1] in a thread.
 
     [^1]:Can be inaccurate if the thread was created before July 1st, 2022.
     """
 
     member_count: int | MISSING = MISSING
-    """
-    Approximate count of users[^1] in a thread.
+    """Approximate count of users[^1] in a thread.
 
     [^1]: Stop counting at 50.
     """
 
     thread_metadata: ThreadMetadata | MISSING = MISSING
-    """
-    Thread specific fields.
-    """
+    """Thread specific fields."""
 
     member: ThreadMember | MISSING = MISSING
     """
@@ -165,51 +123,42 @@ class Channel(Model):
     """
 
     default_auto_archive_duration: int | MISSING = MISSING
-    """
-    Default duration for threads to be auto archived (in minutes).
+    """Default duration for threads to be auto archived (in minutes).
 
-    **Notes**: Can be set to 60, 1440, 4320, 10080.
+    Notes:
+        Can be set to 60, 1440, 4320, 10080.
     """
 
     permissions: str | MISSING = MISSING
-    """
-    Computed permissions for the invoking user in the channel, including
+    """Computed permissions for the invoking user in the channel, including \
     overwrites.
     """
 
     flags: bitfields.ChannelFlags | MISSING = MISSING
-    """
-    Channel flags combined as a bitfield.
-    """
+    """Channel flags combined as a bitfield."""
 
     total_message_sent: int | MISSING = MISSING
-    """
-    Number of messages ever sent[^1] in a thread.
+    """Number of messages ever sent[^1] in a thread.
 
     [^1]: Unlike `message_count`, the value won't
     decrease when a message is deleted.
     """
 
     available_tags: tuple | MISSING = MISSING
-    """
-    The set of tags that can be used in a `GUILD_FORUM` channel.
-    """
+    """The set of tags that can be used in a `GUILD_FORUM` channel."""
 
     applied_tags: tuple[Snowflake, ...] | MISSING = MISSING
-    """
-    The IDs of the set of tags that have been applied to a thread in a
+    """The IDs of the set of tags that have been applied to a thread in a \
     `GUILD_FORUM` channel.
     """
 
     default_reaction_emoji: DefaultReaction | None | MISSING = MISSING
-    """
-    The emoji to show in the add reaction button on a thread in a
+    """The emoji to show in the add reaction button on a thread in a \
     `GUILD_FORUM` channel.
     """
 
     default_thread_rate_limit_per_user: int | MISSING = MISSING
-    """
-    The initial `rate_limit_per_user` to set on newly created threads
+    """The initial `rate_limit_per_user` to set on newly created threads \
     in a channel.
     """
 
@@ -219,8 +168,7 @@ class Channel(Model):
     """
 
     default_forum_layout: int | MISSING = MISSING
-    """
-    The default forum layout view used to display posts in `GUILD_FORUM`
+    """The default forum layout view used to display posts in `GUILD_FORUM` \
     channel.
     """
 
@@ -250,8 +198,7 @@ class Channel(Model):
         sticker_ids: types.TupleOrList[Snowflake | int] | MISSING = MISSING,
         flags: bitfields.MessageFlags | MISSING = MISSING,
     ) -> Message:
-        """
-        Send a message to this channel.
+        """Send a message to this channel.
 
         Params:
             sticker_ids:

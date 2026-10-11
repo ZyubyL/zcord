@@ -16,8 +16,7 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class StringSelect(SelectMenu):
-    """
-    A string select menu that holds a list of max to 25 options.
+    """A string select menu that holds a list of max to 25 options.
 
     Notes:
         - If `required` is True or [`MISSING`][zcord.MISSING], \
@@ -31,9 +30,7 @@ class StringSelect(SelectMenu):
     type: enums.ComponentType = enums.ComponentType.STRING_SELECT
 
     options: tuple[SelectOption, ...] | MISSING = MISSING
-    """
-    A list of select options.
-    """
+    """A list of select options."""
 
     _transforms: ClassVar[dict] = {
         "type": enums.ComponentType,
@@ -52,8 +49,7 @@ class StringSelect(SelectMenu):
         required: bool = True,
         disabled: bool = False,
     ) -> StringSelect:
-        """
-        Create a new string select component.
+        """Create a new string select component.
 
         Raises:
             ValueError:
@@ -74,8 +70,7 @@ class StringSelect(SelectMenu):
         self,
         options: types.TupleOrList[SelectOption] | MISSING = MISSING,
     ) -> StringSelect:
-        """
-        Set the options of the string select component.
+        """Set the options of the string select component.
 
         Raises:
             ValueError:
@@ -88,8 +83,7 @@ class StringSelect(SelectMenu):
         return select.add_options(*options)
 
     def add_options(self, *options: SelectOption) -> StringSelect:
-        """
-        Add options to the string select component.
+        """Add options to the string select component.
 
         Raises:
             ValueError:
@@ -101,8 +95,7 @@ class StringSelect(SelectMenu):
         return select
 
     def add_option(self, option: SelectOption) -> StringSelect:
-        """
-        Add an option to the string select component.
+        """Add an option to the string select component.
 
         Raises:
             ValueError:
@@ -115,9 +108,7 @@ class StringSelect(SelectMenu):
         return add_field_value(self, "options", option)
 
     def clear_options(self) -> StringSelect:
-        """
-        Clear the options of the string select component.
-        """
+        """Clear the options of the string select component."""
         return set_field_value(self, "options", MISSING)
 
 

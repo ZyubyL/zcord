@@ -4,8 +4,7 @@ from enum import IntEnum
 
 
 class VerificationLevel(IntEnum):
-    """
-    Guild verification level.
+    """Guild verification level.
 
     | Level | Value | Description |
     |-------|-------|-------------|

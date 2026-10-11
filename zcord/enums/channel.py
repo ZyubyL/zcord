@@ -4,8 +4,7 @@ from enum import IntEnum
 
 
 class ChannelType(IntEnum):
-    """
-    Represent the type of a Discord channel.
+    """Represent the type of a Discord channel.
 
     | Name | Value | Description |
     |------|-------|-------------|

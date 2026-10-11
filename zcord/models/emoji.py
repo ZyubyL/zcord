@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, ClassVar
 
 import regex
 
-from zcord.cdn import CDN
+from zcord import cdn
 from zcord.errors import ZcordError
 from zcord.missing import MISSING
 from zcord.models.base import Model
@@ -20,49 +20,31 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Emoji(Model):
-    """
-    Represent a Discord emoji.
-    """
+    """Represent a Discord emoji."""
 
     id: Snowflake | None = None
-    """
-    The ID of the emoji.
-    """
+    """The ID of the emoji."""
 
     name: str | None = None
-    """
-    The name of the emoji.
-    """
+    """The name of the emoji."""
 
     roles: tuple[Snowflake, ...] | MISSING = MISSING
-    """
-    A list of role IDs that the emoji is restricted to.
-    """
+    """A list of role IDs that the emoji is restricted to."""
 
     user: User | MISSING = MISSING
-    """
-    The user who created the emoji.
-    """
+    """The user who created the emoji."""
 
     require_colons: bool | MISSING = MISSING
-    """
-    Whether the emoji requires colons to be used.
-    """
+    """Whether the emoji requires colons to be used."""
 
     managed: bool | MISSING = MISSING
-    """
-    Whether the emoji is managed.
-    """
+    """Whether the emoji is managed."""
 
     animated: bool | MISSING = MISSING
-    """
-    Whether the emoji is animated.
-    """
+    """Whether the emoji is animated."""
 
     available: bool | MISSING = MISSING
-    """
-    Whether the emoji is available.
-    """
+    """Whether the emoji is available."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -91,9 +73,7 @@ class Emoji(Model):
 
     @classmethod
     def is_unicode(cls, emoji: str) -> bool:
-        """
-        Check if the emoji is a valid Unicode emoji.
-        """
+        """Check if the emoji is a valid Unicode emoji."""
         clusters = cls._EMOJI_REGEX.findall(emoji)
         return (
             len(clusters) == 1
@@ -102,15 +82,13 @@ class Emoji(Model):
 
     def url(
         self,
-        size: int = CDN.MAX_SIZE,
+        size: int = cdn.MAX_SIZE,
         format: types.AnimatedFormat | None = None,
     ) -> str | None:
-        """
-        The URL of the emoji.
-        """
+        """The URL of the emoji."""
         if self.id is None:
             return None
-        return CDN.emoji(
+        return cdn.emoji(
             hash=str(self.id),
             size=size,
             format=format,
@@ -118,8 +96,7 @@ class Emoji(Model):
 
     @classmethod
     def new(cls, emoji: str) -> Emoji:
-        """
-        Create a new emoji object.
+        """Create a new emoji object.
 
         Raises:
             ValueError:

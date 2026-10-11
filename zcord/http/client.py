@@ -23,6 +23,11 @@ _H_SCOPE = "X-RateLimit-Scope"
 _INTERACTIONS = "/interactions/"
 
 
+def _is_global_limited(endpoint: str) -> bool:
+    """Whether this endpoint is global limited."""
+    return not endpoint.startswith(_INTERACTIONS)
+
+
 def _sync_headers(bucket: Bucket, headers: Mapping[str, str]) -> None:
     """Feed `X-RateLimit-*` response headers into the bucket."""
     remaining = headers.get(_H_REMAINING)
@@ -33,8 +38,7 @@ def _sync_headers(bucket: Bucket, headers: Mapping[str, str]) -> None:
 
 
 async def _read_ratelimit(resp: aiohttp.ClientResponse) -> tuple[float, bool]:
-    """
-    Parse 429 feedback.
+    """Parse 429 feedback.
 
     Returns:
         Seconds to wait, and whether the limit is global.
@@ -62,7 +66,7 @@ class HTTPClient:
         self, token: str, *, limiter: RateLimiter | None = None
     ) -> None:
         """
-        Params:
+        Args:
             token:
                 The bot token.
             limiter:
@@ -115,8 +119,7 @@ class HTTPClient:
     async def request(
         self, method: str, endpoint: str, *, json: dict | list | None = None
     ) -> tuple[int, dict | list[dict] | str | None]:
-        """
-        Perform a HTTP request.
+        """Perform a HTTP request.
 
         Returns:
             A tuple of the HTTP status code and the response JSON.
@@ -124,10 +127,11 @@ class HTTPClient:
         """
         log.debug("%s %s", method, endpoint)
         for _ in range(self.MAX_RETRIES):
-            global_limited = not endpoint.startswith(_INTERACTIONS)
             async with (
                 self._limiter.slot(
-                    method, endpoint, global_limited=global_limited
+                    method,
+                    endpoint,
+                    global_limited=_is_global_limited(endpoint),
                 ) as bucket,
                 self.session.request(
                     method, self.BASE_URL + endpoint, json=json

@@ -4,8 +4,8 @@ import logging
 from typing import TYPE_CHECKING
 
 from zcord import enums
+from zcord.http import rest
 from zcord.http.client import HTTPClient
-from zcord.http.rest import REST
 from zcord.missing import MISSING
 from zcord.models import (
     Guild,
@@ -66,7 +66,7 @@ class ConnectionState:
         message: Message,
         params: _MessageCreate,
     ) -> Message:
-        return await REST.send_message(
+        return await rest.send_message(
             self._http, channel_id=channel_id, message=message, params=params
         )
 
@@ -76,7 +76,7 @@ class ConnectionState:
         *,
         with_counts: bool | MISSING = MISSING,
     ) -> Guild:
-        return await REST.fetch_guild(
+        return await rest.fetch_guild(
             self._http, guild_id, with_counts=with_counts
         )
 
@@ -89,7 +89,7 @@ class ConnectionState:
         after: int | Snowflake | MISSING = MISSING,
         limit: int = 50,
     ) -> list[Message]:
-        return await REST.fetch_channel_messages(
+        return await rest.fetch_channel_messages(
             self._http,
             channel_id,
             around=around,
@@ -104,30 +104,30 @@ class ConnectionState:
         channel_id: int | Snowflake,
         message_id: int | Snowflake,
     ) -> Message:
-        return await REST.fetch_channel_message(
+        return await rest.fetch_channel_message(
             self._http, channel_id=channel_id, message_id=message_id
         )
 
     async def fetch_sticker(self, *, sticker_id: int | Snowflake) -> Sticker:
-        return await REST.fetch_sticker(self._http, sticker_id=sticker_id)
+        return await rest.fetch_sticker(self._http, sticker_id=sticker_id)
 
     async def fetch_sticker_packs(self) -> list[StickerPack]:
-        return await REST.fetch_sticker_packs(self._http)
+        return await rest.fetch_sticker_packs(self._http)
 
     async def fetch_sticker_pack(
         self, *, pack_id: int | Snowflake
     ) -> StickerPack:
-        return await REST.fetch_sticker_pack(self._http, pack_id=pack_id)
+        return await rest.fetch_sticker_pack(self._http, pack_id=pack_id)
 
     async def fetch_guild_stickers(
         self, *, guild_id: int | Snowflake | Guild
     ) -> list[Sticker]:
-        return await REST.fetch_guild_stickers(self._http, guild_id=guild_id)
+        return await rest.fetch_guild_stickers(self._http, guild_id=guild_id)
 
     async def fetch_guild_sticker(
         self, *, guild_id: int | Snowflake | Guild, sticker_id: int | Snowflake
     ) -> Sticker:
-        return await REST.fetch_guild_sticker(
+        return await rest.fetch_guild_sticker(
             self._http, guild_id=guild_id, sticker_id=sticker_id
         )
 
@@ -140,7 +140,7 @@ class ConnectionState:
         tags: str,
         file,
     ) -> Sticker:
-        return await REST.create_guild_sticker(
+        return await rest.create_guild_sticker(
             self._http,
             guild_id=guild_id,
             name=name,
@@ -158,7 +158,7 @@ class ConnectionState:
         description: str | None = None,
         tags: str,
     ) -> Sticker:
-        return await REST.edit_guild_sticker(
+        return await rest.edit_guild_sticker(
             self._http,
             guild_id=guild_id,
             sticker_id=sticker_id,
@@ -173,7 +173,7 @@ class ConnectionState:
         guild_id: int | Snowflake | Guild,
         sticker_id: int | Snowflake | Sticker,
     ) -> bool:
-        return await REST.delete_guild_sticker(
+        return await rest.delete_guild_sticker(
             self._http, guild_id=guild_id, sticker_id=sticker_id
         )
 
@@ -186,7 +186,7 @@ class ConnectionState:
         after: int | Snowflake | MISSING = MISSING,
         limit: int = 50,
     ) -> list[User]:
-        return await REST.fetch_answer_voters(
+        return await rest.fetch_answer_voters(
             self._http,
             channel_id=channel_id,
             message_id=message_id,
@@ -201,28 +201,28 @@ class ConnectionState:
         channel_id: int | Snowflake | Channel,
         message_id: int | Snowflake | Message,
     ) -> Message:
-        return await REST.end_poll(
+        return await rest.end_poll(
             self._http,
             channel_id=channel_id,
             message_id=message_id,
         )
 
     async def fetch_current_application(self) -> Application:
-        return await REST.fetch_current_application(self._http)
+        return await rest.fetch_current_application(self._http)
 
     async def edit_current_application(
         self, application: _ApplicationUpdate
     ) -> Application:
-        return await REST.edit_current_application(self._http, application)
+        return await rest.edit_current_application(self._http, application)
 
     async def fetch_channel(self, channel_id: int | Snowflake) -> Channel:
-        return await REST.fetch_channel(self._http, channel_id=channel_id)
+        return await rest.fetch_channel(self._http, channel_id=channel_id)
 
     async def fetch_user(self, user_id: int | Snowflake) -> User:
-        return await REST.fetch_user(self._http, user_id=user_id)
+        return await rest.fetch_user(self._http, user_id=user_id)
 
     async def fetch_current_user(self) -> User:
-        return await REST.fetch_current_user(self._http)
+        return await rest.fetch_current_user(self._http)
 
     async def create_interaction_response(
         self,
@@ -232,7 +232,7 @@ class ConnectionState:
         callback: _InteractionCallback,
         with_response: bool = False,
     ) -> Message | None:
-        return await REST.create_interaction_response(
+        return await rest.create_interaction_response(
             self._http,
             interaction_id=interaction_id,
             interaction_token=interaction_token,

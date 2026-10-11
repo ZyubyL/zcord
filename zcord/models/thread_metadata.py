@@ -10,14 +10,10 @@ from zcord.models.base import Model
 
 @dataclass(frozen=True, slots=True)
 class ThreadMetadata(Model):
-    """
-    Contain thread specific data.
-    """
+    """Contain thread specific data."""
 
     archived: bool
-    """
-    Whether the thread is archived.
-    """
+    """Whether the thread is archived."""
 
     auto_archive_duration: int
     """
@@ -25,26 +21,20 @@ class ThreadMetadata(Model):
     """
 
     archive_timestamp: datetime
-    """
-    The timestamp when the thread was archived.
-    """
+    """The timestamp when the thread was archived."""
 
     locked: bool
-    """
-    Whether the thread is locked.[^1]
+    """Whether the thread is locked.[^1]
 
     [^1]: When the thread is locked, only users with `MANAGE_THREADS` \
     permission can unarchive it.
     """
 
     invitable: bool | MISSING = MISSING
-    """
-    Whether non-moderators can add other non-moderators to the thread.
-    """
+    """Whether non-moderators can add other non-moderators to the thread."""
 
     create_timestamp: datetime | None | MISSING = MISSING
-    """
-    The timestamp when the thread was created.[^1]
+    """The timestamp when the thread was created.[^1]
 
     [^1]: Only populated for threads created after January 1, 2022.
     """

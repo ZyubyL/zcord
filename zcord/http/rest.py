@@ -25,6 +25,30 @@ if TYPE_CHECKING:
     from zcord.models.message import _MessageCreate
 
 
+__all__ = [
+    "create_guild_sticker",
+    "create_interaction_response",
+    "delete_guild_sticker",
+    "edit_current_application",
+    "edit_guild_sticker",
+    "end_poll",
+    "fetch_answer_voters",
+    "fetch_channel",
+    "fetch_channel_message",
+    "fetch_channel_messages",
+    "fetch_current_application",
+    "fetch_current_user",
+    "fetch_guild",
+    "fetch_guild_sticker",
+    "fetch_guild_stickers",
+    "fetch_sticker",
+    "fetch_sticker_pack",
+    "fetch_sticker_packs",
+    "fetch_user",
+    "send_message",
+]
+
+
 def _build_query(**params) -> str:
     filtered = {}
     for k, v in params.items():
@@ -47,502 +71,480 @@ def _mutually_exclusive(**params) -> None:
         )
 
 
-class REST:
-    @staticmethod
-    async def _get_gateway_bot(http: HTTPClient) -> _GetGatewayBotResponse:
-        _, r = await http.request("GET", "/gateway/bot")
-        assert isinstance(r, dict)
-        return _GetGatewayBotResponse._from_payload(r)
+async def _get_gateway_bot(http: HTTPClient) -> _GetGatewayBotResponse:
+    _, r = await http.request("GET", "/gateway/bot")
+    assert isinstance(r, dict)
+    return _GetGatewayBotResponse._from_payload(r)
 
-    @staticmethod
-    async def send_message(
-        http: HTTPClient,
-        *,
-        channel_id: int | Snowflake | Channel,
-        message: Message,
-        params: _MessageCreate,
-    ) -> Message:
-        """
-        Send a message to a channel.
-        """
-        _, resp = await http.request(
-            "POST",
-            f"/channels/{int(channel_id)}/messages",
-            json=message._to_payload() | params._to_payload(),
-        )
-        if isinstance(resp, dict):
-            return Message._from_payload(resp)
-        raise HTTPError(f"Failed to send the message: {resp}")
 
-    @staticmethod
-    async def fetch_channel_messages(
-        http: HTTPClient,
-        channel_id: int | Snowflake,
-        *,
-        around: int | Snowflake | MISSING = MISSING,
-        before: int | Snowflake | MISSING = MISSING,
-        after: int | Snowflake | MISSING = MISSING,
-        limit: int = 50,
-    ) -> list[Message]:
-        """
-        Fetch the messages in a channel.
+async def send_message(
+    http: HTTPClient,
+    *,
+    channel_id: int | Snowflake | Channel,
+    message: Message,
+    params: _MessageCreate,
+) -> Message:
+    """Send a message to a channel.
 
-        Params:
-            channel_id:
-                The channel to fetch the messages.
-            around:
-                Get messages around this message ID.
-            before:
-                Get messages before this message ID.
-            after:
-                Get messages after this message ID.
+    Raises:
+        errors.HTTPError:
+            The request is failed.
+    """
+    _, resp = await http.request(
+        "POST",
+        f"/channels/{int(channel_id)}/messages",
+        json=message._to_payload() | params._to_payload(),
+    )
+    if isinstance(resp, dict):
+        return Message._from_payload(resp)
+    raise HTTPError(f"Failed to send the message: {resp!r}")
 
-        Notes:
-            `around`, `before` and `after` are mutually exclusive.
 
-        Returns:
-            A list of [`Message`][] from newest to oldest.
+async def fetch_channel_messages(
+    http: HTTPClient,
+    channel_id: int | Snowflake,
+    *,
+    around: int | Snowflake | MISSING = MISSING,
+    before: int | Snowflake | MISSING = MISSING,
+    after: int | Snowflake | MISSING = MISSING,
+    limit: int = 50,
+) -> list[Message]:
+    """Fetch the messages in a channel.
 
-        Raises
-            HTTPError:
-                The request failed.
-            MutuallyExclusiveParamsError:
-                Parameters which mutually exclusive to each other have been \
-                passed.
-            ValueError:
-                An incorrect value of `limit` has been passed.
-        """
-        _mutually_exclusive(around=around, before=before, after=after)
-        if limit <= 0 or limit > 100:
-            raise ValueError(f"Expected 1-100 messages, got {limit}")
-        endpoint = f"/channels/{channel_id}/messages"
-        endpoint += _build_query(
-            around=around, before=before, after=after, limit=limit
-        )
-        _, resp = await http.request("GET", endpoint)
-        if isinstance(resp, list):
-            return [Message._from_payload(m) for m in resp]
-        raise HTTPError(f"Failed to fetch channel messages: {resp}")
+    Args:
+        around:
+            Get messages around this message ID.
+        before:
+            Get messages before this message ID.
+        after:
+            Get messages after this message ID.
 
-    @staticmethod
-    async def fetch_channel_message(
-        http: HTTPClient,
-        *,
-        channel_id: int | Snowflake,
-        message_id: int | Snowflake,
-    ) -> Message:
-        """
-        Fetch a specific message in a channel.
+    Notes:
+        `around`, `before` and `after` are mutually exclusive.
 
-        Params:
-            channel_id:
-                The channnel ID to get the message.
-            message_id:
-                The message ID.
+    Returns:
+        A list of [`Message`][] from newest to oldest.
 
-        Returns:
-            A Discord [`Message`][].
+    Raises
+        errors.HTTPError:
+            The request failed.
+        errors.MutuallyExclusiveParamsError:
+            Parameters which mutually exclusive to each other have been \
+            passed.
+        ValueError:
+            An incorrect value of `limit` has been passed.
+    """
+    _mutually_exclusive(around=around, before=before, after=after)
+    if limit <= 0 or limit > 100:
+        raise ValueError(f"Expected 1-100 messages, got {limit}")
+    endpoint = f"/channels/{channel_id}/messages"
+    endpoint += _build_query(
+        around=around, before=before, after=after, limit=limit
+    )
+    _, resp = await http.request("GET", endpoint)
+    if isinstance(resp, list):
+        return [Message._from_payload(m) for m in resp]
+    raise HTTPError(f"Failed to fetch channel messages: {resp}")
 
-        Raise:
-            HTTPError:
-                The request failed.
-        """
-        endpoint = f"/channels/{channel_id}/messages/{message_id}"
-        _, resp = await http.request("GET", endpoint)
-        if isinstance(resp, dict):
-            return Message._from_payload(resp)
-        raise HTTPError(f"Failed to fetch message ID {message_id}: {resp}")
 
-    @staticmethod
-    async def fetch_guild(
-        http: HTTPClient,
-        guild_id: int | Snowflake,
-        *,
-        with_counts: bool | MISSING = MISSING,
-    ) -> Guild:
-        """
-        Fetch a guild with guild ID.
+async def fetch_channel_message(
+    http: HTTPClient,
+    *,
+    channel_id: int | Snowflake,
+    message_id: int | Snowflake,
+) -> Message:
+    """Fetch a specific message in a channel.
 
-        Returns:
-            A Discord [`Guild`][].
+    Returns:
+        A Discord [`Message`][].
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        endpoint = f"/guilds/{guild_id}{_build_query(with_counts=with_counts)}"
-        _, resp = await http.request("GET", endpoint)
-        if isinstance(resp, dict):
-            return Guild._from_payload(resp)
-        raise HTTPError(f"Failed to fetch guild ID {guild_id}: {resp}")
+    Raise:
+        errors.HTTPError:
+            The request failed.
+    """
+    endpoint = f"/channels/{channel_id}/messages/{message_id}"
+    _, resp = await http.request("GET", endpoint)
+    if isinstance(resp, dict):
+        return Message._from_payload(resp)
+    raise HTTPError(f"Failed to fetch message ID {message_id}: {resp}")
 
-    @staticmethod
-    async def fetch_sticker(
-        http: HTTPClient, *, sticker_id: int | Snowflake
-    ) -> Sticker:
-        """
-        Fetch a sticker with its ID.
 
-        Returns:
-            A Discord [`Sticker`][].
+async def fetch_guild(
+    http: HTTPClient,
+    guild_id: int | Snowflake,
+    *,
+    with_counts: bool | MISSING = MISSING,
+) -> Guild:
+    """Fetch a guild with guild ID.
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        _, resp = await http.request("GET", f"/stickers/{sticker_id}")
-        if isinstance(resp, dict):
-            return Sticker._from_payload(resp)
-        raise HTTPError(f"Failed to fetch sticker ID {sticker_id}: {resp}")
+    Returns:
+        A Discord [`Guild`][].
 
-    @staticmethod
-    async def fetch_sticker_packs(http: HTTPClient) -> list[StickerPack]:
-        """
-        Fetch a list of available sticker packs.
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    endpoint = f"/guilds/{guild_id}{_build_query(with_counts=with_counts)}"
+    _, resp = await http.request("GET", endpoint)
+    if isinstance(resp, dict):
+        return Guild._from_payload(resp)
+    raise HTTPError(f"Failed to fetch guild ID {guild_id}: {resp}")
 
-        Returns:
-            A list of Discord [`StickerPack`][].
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        _, resp = await http.request("GET", "/sticker-packs")
-        if isinstance(resp, dict):
-            sticker_packs = resp.get("sticker_packs", [])
-            return [StickerPack._from_payload(r) for r in sticker_packs]
-        raise HTTPError(f"Failed to fetch sticker packs: {resp}")
+async def fetch_sticker(
+    http: HTTPClient, *, sticker_id: int | Snowflake
+) -> Sticker:
+    """
+    Fetch a sticker with its ID.
 
-    @staticmethod
-    async def fetch_sticker_pack(
-        http: HTTPClient, *, pack_id: int | Snowflake
-    ) -> StickerPack:
-        """
-        Fetch a sticker pack by ID.
+    Returns:
+        A Discord [`Sticker`][].
 
-        Returns:
-            A Discord [`StickerPack`][].
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    _, resp = await http.request("GET", f"/stickers/{sticker_id}")
+    if isinstance(resp, dict):
+        return Sticker._from_payload(resp)
+    raise HTTPError(f"Failed to fetch sticker ID {sticker_id}: {resp}")
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        _, resp = await http.request("GET", f"/sticker-packs/{pack_id}")
-        if isinstance(resp, dict):
-            return StickerPack._from_payload(resp)
-        raise HTTPError(f"Failed to fetch sticker pack ID {pack_id}: {resp}")
 
-    @staticmethod
-    async def fetch_guild_stickers(
-        http: HTTPClient, *, guild_id: int | Snowflake | Guild
-    ) -> list[Sticker]:
-        """
-        Fetch all guild stickers.
+async def fetch_sticker_packs(http: HTTPClient) -> list[StickerPack]:
+    """
+    Fetch a list of available sticker packs.
 
-        Returns:
-            A list of [`Sticker`][]s.
+    Returns:
+        A list of Discord [`StickerPack`][].
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        _, resp = await http.request("GET", f"/guilds/{int(guild_id)}/stickers")
-        if isinstance(resp, list):
-            return [Sticker._from_payload(r) for r in (resp or [])]
-        raise HTTPError(f"Failed to fetch guild stickers: {resp}")
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    _, resp = await http.request("GET", "/sticker-packs")
+    if isinstance(resp, dict):
+        sticker_packs = resp.get("sticker_packs", [])
+        return [StickerPack._from_payload(r) for r in sticker_packs]
+    raise HTTPError(f"Failed to fetch sticker packs: {resp}")
 
-    @staticmethod
-    async def fetch_guild_sticker(
-        http: HTTPClient,
-        *,
-        guild_id: int | Snowflake | Guild,
-        sticker_id: int | Snowflake,
-    ) -> Sticker:
-        """
-        Fetch a specific guild sticker.
 
-        Returns:
-            A [`Sticker`][].
+async def fetch_sticker_pack(
+    http: HTTPClient, *, pack_id: int | Snowflake
+) -> StickerPack:
+    """
+    Fetch a sticker pack by ID.
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        _, resp = await http.request(
-            "GET", f"/guilds/{int(guild_id)}/stickers/{sticker_id}"
-        )
-        if isinstance(resp, dict):
-            return Sticker._from_payload(resp)
-        raise HTTPError(f"Failed to fetch guild sticker: {resp}")
+    Returns:
+        A Discord [`StickerPack`][].
 
-    @staticmethod
-    async def create_guild_sticker(
-        http: HTTPClient,
-        *,
-        guild_id: int | Snowflake | Guild,
-        name: str,
-        description: str = "",
-        tags: str = "",
-        file,
-    ) -> Sticker:
-        """|Not implemented|
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    _, resp = await http.request("GET", f"/sticker-packs/{pack_id}")
+    if isinstance(resp, dict):
+        return StickerPack._from_payload(resp)
+    raise HTTPError(f"Failed to fetch sticker pack ID {pack_id}: {resp}")
 
-        Create a new sticker for the guild.
 
-        Params:
-            name:
-                The sticker name (2-30 character long).
-            description:
-                The sticker description (either empty or 2-100 character long).
-            tags:
-                The sticker tags for autocomplete/suggestion \
-                (max 200 characters).
-            file:
-                The sticker to upload.
+async def fetch_guild_stickers(
+    http: HTTPClient, *, guild_id: int | Snowflake | Guild
+) -> list[Sticker]:
+    """
+    Fetch all guild stickers.
 
-        Returns:
-            The newly uploaded sticker.
+    Returns:
+        A list of [`Sticker`][]s.
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        raise NotImplementedError
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    _, resp = await http.request("GET", f"/guilds/{int(guild_id)}/stickers")
+    if isinstance(resp, list):
+        return [Sticker._from_payload(r) for r in (resp or [])]
+    raise HTTPError(f"Failed to fetch guild stickers: {resp}")
 
-    @staticmethod
-    async def edit_guild_sticker(
-        http: HTTPClient,
-        *,
-        guild_id: int | Snowflake | Guild,
-        sticker_id: int | Snowflake,
-        name: str,
-        description: str | None = None,
-        tags: str,
-    ) -> Sticker:
-        """|Not implemented|
 
-        Modify the given sticker.
+async def fetch_guild_sticker(
+    http: HTTPClient,
+    *,
+    guild_id: int | Snowflake | Guild,
+    sticker_id: int | Snowflake,
+) -> Sticker:
+    """Fetch a specific guild sticker.
 
-        Params:
-            name:
-                The updated name of the sticker (2-30 character long).
-            description:
-                The updated description of the sticker \
-                (`None` to keep the old one, 2-100 character long if update).
-            tags:
-                The updated tags of the sticker (max 200 characters).
-        """
-        raise NotImplementedError
+    Returns:
+        A [`Sticker`][].
 
-    @staticmethod
-    async def delete_guild_sticker(
-        http: HTTPClient,
-        *,
-        guild_id: int | Snowflake | Guild,
-        sticker_id: int | Snowflake | Sticker,
-    ) -> bool:
-        """
-        Delete the given sticker.
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    _, resp = await http.request(
+        "GET", f"/guilds/{int(guild_id)}/stickers/{sticker_id}"
+    )
+    if isinstance(resp, dict):
+        return Sticker._from_payload(resp)
+    raise HTTPError(f"Failed to fetch guild sticker: {resp}")
 
-        Returns:
-            If the request is successful or not.
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        code, _ = await http.request(
-            "DELETE", f"/guilds/{int(guild_id)}/stickers/{int(sticker_id)})"
-        )
-        # Discord returns 204 on successful deletion
-        return code == 204
+async def create_guild_sticker(
+    http: HTTPClient,
+    *,
+    guild_id: int | Snowflake | Guild,
+    name: str,
+    description: str = "",
+    tags: str = "",
+    file,
+) -> Sticker:
+    """|Not implemented|
 
-    @staticmethod
-    async def fetch_answer_voters(
-        http: HTTPClient,
-        *,
-        channel_id: int | Snowflake | Channel,
-        message_id: int | Snowflake | Message,
-        answer_id: int,
-        after: int | Snowflake | MISSING = MISSING,
-        limit: int = 50,
-    ) -> list[User]:
-        """
-        Fetch the voters for a given answer in a poll.
+    Create a new sticker for the guild.
 
-        Returns:
-            A list of users who voted for the answer.
+    Args:
+        name:
+            The sticker name (2-30 character long).
+        description:
+            The sticker description (either empty or 2-100 character long).
+        tags:
+            The sticker tags for autocomplete/suggestion \
+            (max 200 characters).
+        file:
+            The sticker to upload.
 
-        Raises:
-            HTTPError:
-                The request failed.
-            ValueError:
-                Wrong limit amount has been provided.
-        """
-        if limit < 1 or limit > 100:
-            raise ValueError("limit must be between 1 and 100")
-        endpoint = (
-            f"/channels/{int(channel_id)}/polls/{int(message_id)}/answers/{answer_id}"
-            + _build_query(after=after, limit=limit)
-        )
-        _, resp = await http.request("GET", endpoint)
-        if isinstance(resp, dict):
-            users = resp.get("users", [])
-            return [User._from_payload(user) for user in users]
-        raise HTTPError(f"Failed to fetch poll answer voters: {resp}")
+    Returns:
+        The newly uploaded sticker.
 
-    @staticmethod
-    async def end_poll(
-        http: HTTPClient,
-        *,
-        channel_id: int | Snowflake | Channel,
-        message_id: int | Snowflake | Message,
-    ) -> Message:
-        """
-        End a poll and return the updated message.
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    raise NotImplementedError
 
-        Returns:
-            The updated message after the poll has been ended.
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        endpoint = f"/channels/{int(channel_id)}/polls/{int(message_id)}/expire"
-        _, resp = await http.request("POST", endpoint)
-        if isinstance(resp, dict):
-            return Message._from_payload(resp)
-        raise HTTPError(f"Failed to end the poll: {resp}")
+async def edit_guild_sticker(
+    http: HTTPClient,
+    *,
+    guild_id: int | Snowflake | Guild,
+    sticker_id: int | Snowflake,
+    name: str,
+    description: str | None = None,
+    tags: str,
+) -> Sticker:
+    """|Not implemented|
 
-    @staticmethod
-    async def fetch_current_application(http: HTTPClient) -> Application:
-        """
-        Fetch info about the current application.
+    Modify the given sticker.
 
-        Returns:
-            The current application.
+    Args:
+        name:
+            The updated name of the sticker (2-30 character long).
+        description:
+            The updated description of the sticker \
+            (`None` to keep the old one, 2-100 character long if update).
+        tags:
+            The updated tags of the sticker (max 200 characters).
+    """
+    raise NotImplementedError
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        endpoint = "/applications/@me"
-        _, resp = await http.request("GET", endpoint)
-        if isinstance(resp, dict):
-            return Application._from_payload(resp)
-        raise HTTPError(f"Failed to fetch current application: {resp}")
 
-    @staticmethod
-    async def edit_current_application(
-        http: HTTPClient, application: _ApplicationUpdate
-    ) -> Application:
-        """
-        Edit the current application info.
+async def delete_guild_sticker(
+    http: HTTPClient,
+    *,
+    guild_id: int | Snowflake | Guild,
+    sticker_id: int | Snowflake | Sticker,
+) -> bool:
+    """Delete the given sticker.
 
-        Returns:
-            The updated application.
+    Returns:
+        If the request is successful or not.
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        endpoint = "/applications/@me"
-        _, resp = await http.request(
-            "PATCH", endpoint, json=application._to_payload()
-        )
-        if isinstance(resp, dict):
-            return Application._from_payload(resp)
-        raise HTTPError(f"Failed to fetch current application: {resp}")
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    code, _ = await http.request(
+        "DELETE", f"/guilds/{int(guild_id)}/stickers/{int(sticker_id)})"
+    )
+    # Discord returns 204 on successful deletion
+    return code == 204
 
-    @staticmethod
-    async def fetch_channel(
-        http: HTTPClient, channel_id: int | Snowflake
-    ) -> Channel:
-        """
-        Fetch a channel by its ID.
 
-        Returns:
-            The channel with the given ID.
+async def fetch_answer_voters(
+    http: HTTPClient,
+    *,
+    channel_id: int | Snowflake | Channel,
+    message_id: int | Snowflake | Message,
+    answer_id: int,
+    after: int | Snowflake | MISSING = MISSING,
+    limit: int = 50,
+) -> list[User]:
+    """Fetch the voters for a given answer in a poll.
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        endpoint = f"/channels/{int(channel_id)}"
-        _, resp = await http.request("GET", endpoint)
-        if isinstance(resp, dict):
-            return Channel._from_payload(resp)
-        raise HTTPError(f"Failed to fetch channel ID {channel_id}: {resp}")
+    Returns:
+        A list of users who voted for the answer.
 
-    @staticmethod
-    async def fetch_user(http: HTTPClient, user_id: int | Snowflake) -> User:
-        """
-        Fetch a user by their ID.
+    Raises:
+        errors.HTTPError:
+            The request failed.
+        ValueError:
+            Wrong limit amount has been provided.
+    """
+    if limit < 1 or limit > 100:
+        raise ValueError("limit must be between 1 and 100")
+    endpoint = (
+        f"/channels/{int(channel_id)}/polls/{int(message_id)}/answers/{answer_id}"
+        + _build_query(after=after, limit=limit)
+    )
+    _, resp = await http.request("GET", endpoint)
+    if isinstance(resp, dict):
+        users = resp.get("users", [])
+        return [User._from_payload(user) for user in users]
+    raise HTTPError(f"Failed to fetch poll answer voters: {resp}")
 
-        Returns:
-            The user with the given ID.
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        endpoint = f"/users/{int(user_id)}"
-        _, resp = await http.request("GET", endpoint)
-        if isinstance(resp, dict):
-            return User._from_payload(resp)
-        raise HTTPError(f"Failed to fetch user ID {user_id}: {resp}")
+async def end_poll(
+    http: HTTPClient,
+    *,
+    channel_id: int | Snowflake | Channel,
+    message_id: int | Snowflake | Message,
+) -> Message:
+    """End a poll and return the updated message.
 
-    @staticmethod
-    async def fetch_current_user(http: HTTPClient) -> User:
-        """
-        Fetch the current user.
+    Returns:
+        The updated message after the poll has been ended.
 
-        Returns:
-            The current user.
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    endpoint = f"/channels/{int(channel_id)}/polls/{int(message_id)}/expire"
+    _, resp = await http.request("POST", endpoint)
+    if isinstance(resp, dict):
+        return Message._from_payload(resp)
+    raise HTTPError(f"Failed to end the poll: {resp}")
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        endpoint = "/users/@me"
-        code, resp = await http.request("GET", endpoint)
-        assert isinstance(resp, dict)
-        # TODO: This is kinda temporary
-        if code == 401:
-            raise HTTPError("Invalid token has been passed")
+
+async def fetch_current_application(http: HTTPClient) -> Application:
+    """Fetch info about the current application.
+
+    Returns:
+        The current application.
+
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    endpoint = "/applications/@me"
+    _, resp = await http.request("GET", endpoint)
+    if isinstance(resp, dict):
+        return Application._from_payload(resp)
+    raise HTTPError(f"Failed to fetch current application: {resp}")
+
+
+async def edit_current_application(
+    http: HTTPClient, application: _ApplicationUpdate
+) -> Application:
+    """Edit the current application info.
+
+    Returns:
+        The updated application.
+
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    endpoint = "/applications/@me"
+    _, resp = await http.request(
+        "PATCH", endpoint, json=application._to_payload()
+    )
+    if isinstance(resp, dict):
+        return Application._from_payload(resp)
+    raise HTTPError(f"Failed to fetch current application: {resp}")
+
+
+async def fetch_channel(
+    http: HTTPClient, channel_id: int | Snowflake
+) -> Channel:
+    """Fetch a channel by its ID.
+
+    Returns:
+        The channel with the given ID.
+
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    endpoint = f"/channels/{int(channel_id)}"
+    _, resp = await http.request("GET", endpoint)
+    if isinstance(resp, dict):
+        return Channel._from_payload(resp)
+    raise HTTPError(f"Failed to fetch channel ID {channel_id}: {resp}")
+
+
+async def fetch_user(http: HTTPClient, user_id: int | Snowflake) -> User:
+    """Fetch a user by their ID.
+
+    Returns:
+        The user with the given ID.
+
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    endpoint = f"/users/{int(user_id)}"
+    _, resp = await http.request("GET", endpoint)
+    if isinstance(resp, dict):
         return User._from_payload(resp)
+    raise HTTPError(f"Failed to fetch user ID {user_id}: {resp}")
 
-    @staticmethod
-    async def create_interaction_response(
-        http: HTTPClient,
-        *,
-        interaction_id: Snowflake,
-        interaction_token: str,
-        callback: _InteractionCallback,
-        with_response: bool = False,
-    ) -> Message | None:
-        """
-        Create a response to an interaction.
 
-        Raises:
-            HTTPError:
-                The request failed.
-        """
-        i_id = int(interaction_id)
-        i_token = interaction_token
-        endpoint = f"/interactions/{i_id}/{i_token}/callback"
-        if with_response:
-            endpoint += "?with_response=true"
-        code, resp = await http.request(
-            "POST", endpoint, json=callback._to_payload()
-        )
-        if code == 200 and isinstance(resp, dict):
-            resource = resp.get("resource", {})
-            msg = resource.get("message")
-            if isinstance(msg, dict):
-                return Message._from_payload(msg)
-        if code not in (200, 204):
-            raise HTTPError(
-                f"Failed to create interaction response: {code} {resp}"
-            )
-        return None
+async def fetch_current_user(http: HTTPClient) -> User:
+    """Fetch the current user.
+
+    Returns:
+        The current user.
+
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    endpoint = "/users/@me"
+    code, resp = await http.request("GET", endpoint)
+    assert isinstance(resp, dict)
+    # TODO: This is kinda temporary
+    if code == 401:
+        raise HTTPError("Invalid token has been passed")
+    return User._from_payload(resp)
+
+
+async def create_interaction_response(
+    http: HTTPClient,
+    *,
+    interaction_id: Snowflake,
+    interaction_token: str,
+    callback: _InteractionCallback,
+    with_response: bool = False,
+) -> Message | None:
+    """Create a response to an interaction.
+
+    Raises:
+        errors.HTTPError:
+            The request failed.
+    """
+    endpoint = (
+        f"/interactions/{int(interaction_id)}/{interaction_token}/callback"
+    )
+    if with_response:
+        endpoint += "?with_response=true"
+    code, resp = await http.request(
+        "POST", endpoint, json=callback._to_payload()
+    )
+    if code == 200 and isinstance(resp, dict):
+        resource = resp.get("resource", {})
+        msg = resource.get("message")
+        if isinstance(msg, dict):
+            return Message._from_payload(msg)
+    if code not in (200, 204):
+        raise HTTPError(f"Failed to create interaction response: {code} {resp}")
+    return None

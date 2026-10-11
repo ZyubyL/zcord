@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar, Literal
 
-from zcord import errors
-from zcord.cdn import CDN
+from zcord import cdn, errors
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
@@ -15,23 +14,16 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Nameplate(Model):
-    """
-    Contain info about the user's nameplate.
-    """
+    """Contain info about the user's nameplate."""
 
     sku_id: Snowflake
-    """
-    The ID of the nameplate SKU.
-    """
+    """The ID of the nameplate SKU."""
 
     asset: str
-    """
-    Path to the nameplate asset.
-    """
+    """Path to the nameplate asset."""
 
     label: str
-    """
-    The label of the nameplate.[^1]
+    """The label of the nameplate.[^1]
 
     [^1]: This field is unused.
     """
@@ -49,9 +41,7 @@ class Nameplate(Model):
         "lemon",
         "white",
     ]
-    """
-    The background color of the nameplate.
-    """
+    """The background color of the nameplate."""
 
     _transforms: ClassVar[dict] = {
         "sku_id": Snowflake,
@@ -59,7 +49,7 @@ class Nameplate(Model):
 
     def url(
         self,
-        size: int = CDN.MAX_SIZE,
+        size: int = cdn.MAX_SIZE,
         format: types.ImageFormat | None = None,
     ) -> str:
         raise errors.ZcordError(
@@ -72,14 +62,10 @@ class Nameplate(Model):
 
 @dataclass(frozen=True, slots=True)
 class Collectibles(Model):
-    """
-    Contain info about the user's collectibles.
-    """
+    """Contain info about the user's collectibles."""
 
     nameplate: Nameplate | MISSING = MISSING
-    """
-    The user's nameplate.
-    """
+    """The user's nameplate."""
 
     _transforms: ClassVar[dict] = {
         "nameplate": Nameplate,
@@ -87,12 +73,10 @@ class Collectibles(Model):
 
     def nameplate_url(
         self,
-        size: int = CDN.MAX_SIZE,
+        size: int = cdn.MAX_SIZE,
         format: types.ImageFormat | None = None,
     ) -> str | None:
-        """
-        The URL of the user's nameplate.
-        """
+        """The URL of the user's nameplate."""
         if self.nameplate is MISSING:
             return None
 

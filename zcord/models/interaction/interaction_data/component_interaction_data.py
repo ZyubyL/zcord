@@ -10,26 +10,19 @@ from zcord.models.interaction.interaction_data.base import InteractionData
 
 @dataclass(frozen=True, slots=True)
 class ComponentInteractionData(InteractionData):
-    """
-    Data for a \
+    """Data for a \
     [`MESSAGE_COMPONENT`][zcord.enums.InteractionType.MESSAGE_COMPONENT] \
     interaction.
     """
 
     custom_id: str
-    """
-    The custom ID of the component.
-    """
+    """The custom ID of the component."""
 
     component_type: enums.ComponentType
-    """
-    The type of the component.
-    """
+    """The type of the component."""
 
     values: tuple[str, ...] | MISSING = MISSING
-    """
-    The values selected in a select menu component.
-    """
+    """The values selected in a select menu component."""
 
     _transforms: ClassVar[dict] = {
         "component_type": enums.ComponentType,

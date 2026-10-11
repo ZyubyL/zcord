@@ -13,7 +13,7 @@ import orjson
 
 from zcord import bitfields, enums
 from zcord.enums.gateway import GatewayCloseCode, GatewayOpcode
-from zcord.http.rest import REST
+from zcord.http import rest
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
@@ -38,8 +38,7 @@ class ZlibStream:
 
     @property
     def suffix_index(self) -> int:
-        """
-        Get the index of the suffix string in the buffer.
+        """Get the index of the suffix string in the buffer.
 
         Returns:
             Non-negative index, or `-1` if not found.
@@ -48,8 +47,7 @@ class ZlibStream:
 
     @property
     def end_index(self) -> int | None:
-        """
-        The end index of the buffer after added the suffix.
+        """The end index of the buffer after added the suffix.
 
         Returns:
             `None` if the `suffix_index` was not found.
@@ -59,8 +57,7 @@ class ZlibStream:
         return self.suffix_index + len(self.SUFFIX)
 
     def feed(self, chunk: bytes) -> list[bytes]:
-        """
-        Accumulate chunk into the buffer.
+        """Accumulate chunk into the buffer.
 
         Returns:
             All complete inflated messages found in the buffer.
@@ -81,24 +78,22 @@ class ZlibStream:
         return self._inflator.decompress(compressed_msg)
 
     def reset(self) -> None:
-        """
-        Reset inflator for new connection.
-        """
+        """Reset the inflator for new connection."""
         self._buffer = bytearray()
         self._inflator = zlib.decompressobj()
 
 
 class Backoff:
-    """Reconnection backoff logic"""
+    """Reconnection backoff logic."""
 
     DELAY_STEP: Final = 1.0
     DELAY_CAP: Final = 60.0
     MAX_CONNECT_FAILURES: Final = 5
-    """How many times until the gateway just accept defeat"""
+    """How many times until the websocket just accept defeat."""
 
     def __init__(self, *, rng: Callable[[], float] = random.random) -> None:
         """
-        Params:
+        Args:
             rng:
                 Source of the random jitter added to the reconnect delay.
         """
@@ -108,21 +103,16 @@ class Backoff:
 
     @property
     def reconnect_delay(self) -> float:
-        """
-        The delay before trying to reconnect (including jitter).
-        """
+        """The delay before trying to reconnect (including jitter)."""
         return self._delay + self._rng()
 
     @property
     def connect_failures(self) -> int:
-        """
-        Number of consecutive connection failures.
-        """
+        """Number of consecutive connection failures."""
         return self._connect_failures
 
     def record_connect_failure(self) -> bool:
-        """
-        Register a failed connection attempt.
+        """Register a failed connection attempt.
 
         Returns:
             Whether the failure streak reached `MAX_CONNECT_FAILURES`.
@@ -137,9 +127,7 @@ class Backoff:
         self._connect_failures = 0
 
     def increase_delay(self) -> None:
-        """
-        Increase the delay to reconnect, capped at `DELAY_CAP`.
-        """
+        """Increase the delay to reconnect, capped at [`DELAY_CAP`][]."""
         self._delay = min(self._delay + self.DELAY_STEP, self.DELAY_CAP)
 
     def reset_delay(self) -> None:
@@ -150,7 +138,7 @@ class Backoff:
 
 
 class Heartbeat:
-    """Keep a gateway session alive"""
+    """Keep a gateway session alive."""
 
     def __init__(
         self,
@@ -164,11 +152,11 @@ class Heartbeat:
         ] = asyncio.timeout,
     ) -> None:
         """
-        Params:
+        Args:
             send:
                 Call to send one heartbeat payload.
             on_timeout:
-                What to call when the gateway missed an ACK deadline.
+                What to call when the websocket missed an ACK deadline.
             rng:
                 Source of the random jitter for the first beat.
             sleep:
@@ -187,17 +175,13 @@ class Heartbeat:
         self._ack = asyncio.Event()
 
     async def start(self, interval: float) -> None:
-        """
-        Start the heartbeat task at interval (in seconds).
-        """
+        """Start the heartbeat task at interval (in seconds)."""
         await self.stop()
         self._interval = interval
         self._task = asyncio.create_task(self._run())
 
     async def stop(self) -> None:
-        """
-        Cancel the heartbeat task and wait for it to finish.
-        """
+        """Cancel the heartbeat task and wait for it to finish."""
         if self._task is None:
             return
         self._task.cancel()
@@ -205,9 +189,7 @@ class Heartbeat:
         self._task = None
 
     def ack(self) -> None:
-        """
-        Record a heartbeat ACK returned from the gateway.
-        """
+        """Record a heartbeat ACK returned from the gateway."""
         self._ack.set()
 
     async def _run(self) -> None:
@@ -234,7 +216,7 @@ class Gateway:
     ENCODING: Final = "json"
     COMPRESSION: Final = "zlib-stream"
     DEFAULT_WS_URL: Final = "wss://gateway.discord.gg/"
-    """Fallback URL for websocket to use"""
+    """Fallback URL for the websocket to use."""
 
     def __init__(
         self,
@@ -248,7 +230,7 @@ class Gateway:
         backoff: Backoff | None = None,
     ) -> None:
         """
-        Params:
+        Args:
             http:
                 HTTP client for REST call and websocket.
             token:
@@ -286,6 +268,39 @@ class Gateway:
         self._closed = False
 
     @property
+    def _identify_payload(self) -> dict:
+        return {
+            "op": GatewayOpcode.IDENTIFY,
+            "d": {
+                "token": self._token,
+                "intents": self._intents,
+                "properties": {
+                    "os": sys.platform,
+                    "browser": "zcord",
+                    "device": "zcord",
+                },
+            },
+        }
+
+    @property
+    def _resume_payload(self) -> dict:
+        return {
+            "op": GatewayOpcode.RESUME,
+            "d": {
+                "token": self._token,
+                "session_id": self._session_id,
+                "seq": self._sequence,
+            },
+        }
+
+    @property
+    def _heartbeat_payload(self) -> dict:
+        return {
+            "op": GatewayOpcode.HEARTBEAT,
+            "d": self._sequence,
+        }
+
+    @property
     def ws_url(self) -> str:
         if self._resume_url is not None:
             url = self._resume_url
@@ -302,9 +317,7 @@ class Gateway:
 
     @property
     def _needs_gateway_bot(self) -> bool:
-        """
-        Whether the bot needs to `GET /gateway/bot`.
-        """
+        """Whether the bot needs to `GET /gateway/bot`."""
         return (
             self._ws_connect is None
             and self._gateway_response is None
@@ -391,37 +404,15 @@ class Gateway:
 
     async def _send_resume(self) -> None:
         log.debug("Sending resume...")
-        await self._send(
-            {
-                "op": GatewayOpcode.RESUME,
-                "d": {
-                    "token": self._token,
-                    "session_id": self._session_id,
-                    "seq": self._sequence,
-                },
-            }
-        )
+        await self._send(self._resume_payload)
 
     async def _send_identify(self) -> None:
         log.debug("Sending identify...")
-        await self._send(
-            {
-                "op": GatewayOpcode.IDENTIFY,
-                "d": {
-                    "token": self._token,
-                    "intents": self._intents,
-                    "properties": {
-                        "os": sys.platform,
-                        "browser": "zcord",
-                        "device": "zcord",
-                    },
-                },
-            }
-        )
+        await self._send(self._identify_payload)
 
     async def _send_heartbeat(self) -> None:
         log.debug("Sending heartbeat...")
-        await self._send({"op": GatewayOpcode.HEARTBEAT, "d": self._sequence})
+        await self._send(self._heartbeat_payload)
 
     def _on_dispatch(self, name: str | None, data: Any) -> None:
         log.debug("Dispatch: %s", name)
@@ -447,7 +438,7 @@ class Gateway:
 
     async def _get_gateway_bot(self) -> None:
         if not self._gateway_response:
-            self._gateway_response = await REST._get_gateway_bot(self._http)
+            self._gateway_response = await rest._get_gateway_bot(self._http)
 
     async def connect(self) -> None:
         if self._needs_gateway_bot:
@@ -492,9 +483,7 @@ class Gateway:
             self._backoff.increase_delay()
 
     async def run(self) -> None:
-        """
-        Connect to the gateway and start the event loop.
-        """
+        """Connect to the gateway and start the event loop."""
         while not self._closed:
             await self.connect()
 

@@ -4,7 +4,8 @@ from enum import IntEnum
 
 
 class ButtonStyle(IntEnum):
-    """
+    """The style the button is displayed.
+
     | Name | Value |
     |------|-------|
     | `PRIMARY` | `1` |

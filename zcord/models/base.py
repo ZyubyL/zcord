@@ -14,11 +14,11 @@ def _apply_transform(transform: Any, value: Any) -> Any:
 
 
 def add_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
-    """
-    Wrapper for all the add_* methods
+    """Wrapper for all the add_* methods.
 
-    Notes:
-        Value is not a sequence type
+    Raises:
+        ValueError:
+            `value` is a sequence.
     """
     if isinstance(value, (tuple, list)):
         raise ValueError(
@@ -40,7 +40,7 @@ def add_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
 
 
 def set_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
-    """Wrapper for all the set_* methods"""
+    """Wrapper for all the set_* methods."""
     field = getattr(self, field_name)
 
     if isinstance(field, tuple):
@@ -60,9 +60,7 @@ def set_field_value[T: Model](self: T, field_name: str, value: Any) -> T:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Model:
-    """
-    Base class for all Discord API Models.
-    """
+    """Base class for all Discord API Models."""
 
     _transforms: ClassVar[dict] = {}
 

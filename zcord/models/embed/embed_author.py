@@ -8,29 +8,19 @@ from zcord.models.base import Model
 
 @dataclass(frozen=True, slots=True)
 class EmbedAuthor(Model):
-    """
-    Contain embed's author info.
-    """
+    """Contain embed's author info."""
 
     name: str
-    """
-    The name of the author.
-    """
+    """The name of the author."""
 
     url: str | MISSING = MISSING
-    """
-    The URL of the author.
-    """
+    """The URL of the author."""
 
     icon_url: str | MISSING = MISSING
-    """
-    The URL of the author icon.
-    """
+    """The URL of the author icon."""
 
     proxy_icon_url: str | MISSING = MISSING
-    """
-    A proxied url of the author icon.
-    """
+    """A proxied url of the author icon."""
 
     @classmethod
     def new(
@@ -39,7 +29,5 @@ class EmbedAuthor(Model):
         url: str | MISSING = MISSING,
         icon_url: str | MISSING = MISSING,
     ) -> EmbedAuthor:
-        """
-        Create a new embed author.
-        """
+        """Create a new embed author."""
         return cls(name=name, url=url, icon_url=icon_url)

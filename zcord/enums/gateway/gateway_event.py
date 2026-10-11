@@ -4,49 +4,40 @@ from enum import StrEnum
 
 
 class GatewayEvent(StrEnum):
-    """
-    Represent the event name sent from the gateway.
-    """
+    """Represent the event name sent from the gateway."""
 
     def __str__(self) -> str:
         return self.value
 
     READY = "READY"
-    """
-    The bot has successfully connected to the gateway.
+    """The bot has successfully connected to the gateway.
 
     This event contains the bot's [`User`][zcord.User] object.
     """
 
     GUILD_CREATE = "GUILD_CREATE"
-    """
-    The bot has joined a guild.
+    """The bot has joined a guild.
 
     This event contains the guild's [`Guild`][zcord.Guild] object.
     """
 
     GUILD_UPDATE = "GUILD_UPDATE"
-    """
-    The guild has been updated.
+    """The guild has been updated.
 
     This event contains the old and updated [`Guild`][zcord.Guild] objects.
     """
 
     MESSAGE_CREATE = "MESSAGE_CREATE"
-    """
-    A message has been created.
+    """A message has been created.
 
     This event contains a [`Message`][zcord.Message] object.
     """
 
     RESUMED = "RESUMED"
-    """
-    The connection to the websocket has been resumed.
-    """
+    """The connection to the websocket has been resumed."""
 
     INTERACTION_CREATE = "INTERACTION_CREATE"
-    """
-    Someone triggered an interaction.
+    """Someone triggered an interaction.
 
     This event contains an [`Interaction`][zcord.Interaction] object.
     """

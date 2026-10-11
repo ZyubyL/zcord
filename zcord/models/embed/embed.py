@@ -20,79 +20,49 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class Embed(Model):
-    """
-    Represent a Discord embed.
-    """
+    """Represent a Discord embed."""
 
     title: str | MISSING = MISSING
-    """
-    Title of the embed.
-    """
+    """Title of the embed."""
 
     type: str | MISSING = MISSING
-    """
-    Type of the embed.
-    """
+    """Type of the embed."""
 
     description: str | MISSING = MISSING
-    """
-    Description of the embed.
-    """
+    """Description of the embed."""
 
     url: str | MISSING = MISSING
-    """
-    URL of the embed.
-    """
+    """URL of the embed."""
 
     timestamp: datetime | MISSING = MISSING
-    """
-    Timestamp of the embed.
-    """
+    """Timestamp of the embed."""
 
     color: int | MISSING = MISSING
-    """
-    Color of the embed.
-    """
+    """Color of the embed."""
 
     footer: EmbedFooter | MISSING = MISSING
-    """
-    Embed's footer info.
-    """
+    """Embed's footer info."""
 
     image: EmbedImage | MISSING = MISSING
-    """
-    Embed's image info.
-    """
+    """Embed's image info."""
 
     thumbnail: EmbedImage | MISSING = MISSING
-    """
-    Embed's thumbnail info.
-    """
+    """Embed's thumbnail info."""
 
     video: EmbedVideo | MISSING = MISSING
-    """
-    Embed's video info.
-    """
+    """Embed's video info."""
 
     provider: EmbedProvider | MISSING = MISSING
-    """
-    Embed's provider info.
-    """
+    """Embed's provider info."""
 
     author: EmbedAuthor | MISSING = MISSING
-    """
-    Embed's author info.
-    """
+    """Embed's author info."""
 
     fields: tuple[EmbedField, ...] | MISSING = MISSING
-    """
-    Embed's field info.
-    """
+    """Embed's field info."""
 
     flags: bitfields.EmbedFlags | MISSING = MISSING
-    """
-    Embed's flags combined as a bitfield.
-    """
+    """Embed's flags combined as a bitfield."""
 
     _transforms: ClassVar[dict] = {
         "timestamp": datetime.fromisoformat,
@@ -148,8 +118,7 @@ class Embed(Model):
         author: EmbedAuthor | MISSING = MISSING,
         fields: types.TupleOrList[EmbedField] | MISSING = MISSING,
     ) -> Embed:
-        """
-        Create a new embed.
+        """Create a new embed.
 
         Examples:
             There are two ways to create an embed.
@@ -195,8 +164,7 @@ class Embed(Model):
         return embed
 
     def set_title(self, title: str | MISSING = MISSING) -> Embed:
-        """
-        Set the title of the embed.
+        """Set the title of the embed.
 
         Raises:
             ValueError:
@@ -207,8 +175,7 @@ class Embed(Model):
         return set_field_value(self, "title", title)
 
     def set_description(self, description: str | MISSING = MISSING) -> Embed:
-        """
-        Set the description of the embed.
+        """Set the description of the embed.
 
         Raises:
             ValueError:
@@ -219,14 +186,11 @@ class Embed(Model):
         return set_field_value(self, "description", description)
 
     def set_url(self, url: str | MISSING = MISSING) -> Embed:
-        """
-        Set the URL of the embed.
-        """
+        """Set the URL of the embed."""
         return set_field_value(self, "url", url)
 
     def set_color(self, color: int | MISSING = MISSING) -> Embed:
-        """
-        Set the color of the embed.
+        """Set the color of the embed.
 
         Raises:
             ValueError:
@@ -239,9 +203,7 @@ class Embed(Model):
         return set_field_value(self, "color", color)
 
     def set_timestamp(self, timestamp: datetime | MISSING = MISSING) -> Embed:
-        """
-        Set the timestamp of the embed.
-        """
+        """Set the timestamp of the embed."""
         return set_field_value(self, "timestamp", timestamp)
 
     def set_footer(
@@ -250,8 +212,7 @@ class Embed(Model):
         text: str | MISSING = MISSING,
         icon_url: str | MISSING = MISSING,
     ) -> Embed:
-        """
-        Set the footer of the embed.
+        """Set the footer of the embed.
 
         Raises:
             ValueError:
@@ -266,17 +227,13 @@ class Embed(Model):
         )
 
     def set_image(self, url: str | MISSING = MISSING) -> Embed:
-        """
-        Set the image of the embed.
-        """
+        """Set the image of the embed."""
         if url is MISSING:
             return set_field_value(self, "image", MISSING)
         return set_field_value(self, "image", EmbedImage(url=url))
 
     def set_thumbnail(self, url: str | MISSING = MISSING) -> Embed:
-        """
-        Set the thumbnail of the embed.
-        """
+        """Set the thumbnail of the embed."""
         if url is MISSING:
             return set_field_value(self, "thumbnail", MISSING)
         return set_field_value(self, "thumbnail", EmbedImage(url=url))
@@ -299,8 +256,7 @@ class Embed(Model):
         url: str | MISSING = MISSING,
         icon_url: str | MISSING = MISSING,
     ) -> Embed:
-        """
-        Set the author of the embed.
+        """Set the author of the embed.
 
         Raises:
             ValueError:
@@ -344,10 +300,9 @@ class Embed(Model):
         value: str | MISSING = MISSING,
         inline: bool = True,
     ) -> Embed:
-        """
-        Add a field to the embed.
+        """Add a field to the embed.
 
-        Params:
+        Args:
             name:
                 The field name.
             value:
@@ -375,7 +330,5 @@ class Embed(Model):
         return add_field_value(self, "fields", field)
 
     def remove_fields(self) -> Embed:
-        """
-        Remove all fields from the embed.
-        """
+        """Remove all fields from the embed."""
         return set_field_value(self, "fields", MISSING)

@@ -12,10 +12,7 @@ if TYPE_CHECKING:
 
 
 class InteractionResponse:
-    """
-    Interface for responding to an \
-    [`Interaction`][zcord.Interaction].
-    """
+    """Interface for responding to an [`Interaction`][zcord.Interaction]."""
 
     def __init__(
         self,
@@ -28,8 +25,7 @@ class InteractionResponse:
         self._interaction_token = interaction_token
 
     async def send(self, message: Message) -> Message:
-        """
-        Respond to the interaction with a new message.
+        """Respond to the interaction with a new message.
 
         Returns:
             The created message.
@@ -51,8 +47,7 @@ class InteractionResponse:
         return msg
 
     async def defer(self) -> None:
-        """
-        ACK the interaction without showing a loading state.
+        """ACK the interaction without showing a loading state.
 
         Use this to defer the response and edit the original \
         message later.
@@ -70,8 +65,7 @@ class InteractionResponse:
         )
 
     async def edit(self, message: Message) -> Message:
-        """
-        Edit the message the component was attached to.
+        """Edit the message the component was attached to.
 
         Returns:
             The edited message.

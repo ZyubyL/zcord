@@ -10,34 +10,22 @@ from zcord.models.emoji import Emoji
 
 @dataclass(frozen=True, slots=True)
 class SelectOption(Model):
-    """
-    A select option for a string select menu.
-    """
+    """A select option for a string select menu."""
 
     label: str | MISSING = MISSING
-    """
-    The bold text displayed on the option.
-    """
+    """The bold text displayed on the option."""
 
     value: str | MISSING = MISSING
-    """
-    The value under-the-hood of the option.
-    """
+    """The value under-the-hood of the option."""
 
     description: str | MISSING = MISSING
-    """
-    The small text displayed below the label.
-    """
+    """The small text displayed below the label."""
 
     emoji: Emoji | MISSING = MISSING
-    """
-    The emoji next to the label.
-    """
+    """The emoji next to the label."""
 
     default: bool = False
-    """
-    Whether the option is selected by default.
-    """
+    """Whether the option is selected by default."""
 
     _transforms: ClassVar[dict] = {
         "emoji": Emoji,
@@ -61,9 +49,7 @@ class SelectOption(Model):
         emoji: Emoji | MISSING = MISSING,
         default: bool = False,
     ) -> SelectOption:
-        """
-        Create a select option for a string select menu.
-        """
+        """Create a select option for a string select menu."""
         return (
             cls()
             .set_description(description)
@@ -74,8 +60,7 @@ class SelectOption(Model):
         )
 
     def set_label(self, label: str | MISSING = MISSING) -> SelectOption:
-        """
-        Set the label of the select option.
+        """Set the label of the select option.
 
         Raises:
             ValueError:
@@ -86,8 +71,7 @@ class SelectOption(Model):
         return set_field_value(self, "label", label)
 
     def set_value(self, value: str | MISSING = MISSING) -> SelectOption:
-        """
-        Set the value of the select option.
+        """Set the value of the select option.
 
         Raises:
             ValueError:
@@ -100,8 +84,7 @@ class SelectOption(Model):
     def set_description(
         self, description: str | MISSING = MISSING
     ) -> SelectOption:
-        """
-        Set the description of the select option.
+        """Set the description of the select option.
 
         Raises:
             ValueError:
@@ -114,13 +97,9 @@ class SelectOption(Model):
         return set_field_value(self, "description", description)
 
     def set_emoji(self, emoji: Emoji | MISSING = MISSING) -> SelectOption:
-        """
-        Set the emoji of the select option.
-        """
+        """Set the emoji of the select option."""
         return set_field_value(self, "emoji", emoji)
 
     def set_default(self, default: bool) -> SelectOption:
-        """
-        Set whether showing this option as selected by default.
-        """
+        """Set whether showing this option as selected by default."""
         return set_field_value(self, "default", default)

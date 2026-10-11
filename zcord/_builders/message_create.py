@@ -14,9 +14,7 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, slots=True)
 class _MessageCreate(Model):
-    """
-    Private class for sending message.
-    """
+    """Private class for sending message."""
 
     sticker_ids: tuple[Snowflake, ...] | MISSING = MISSING
     flags: bitfields.MessageFlags | MISSING = MISSING

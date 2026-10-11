@@ -4,8 +4,7 @@ from enum import IntEnum
 
 
 class MessageType(IntEnum):
-    """
-    The type of the message.
+    """The type of the message.
 
     | Name | Value |
     |------|-------|

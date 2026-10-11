@@ -9,8 +9,6 @@ if TYPE_CHECKING:
 
 
 class InteractionData(Model):
-    """
-    Base class for interaction data payloads.
-    """
+    """Base class for interaction data payloads."""
 
     _registry: ClassVar[dict[enums.InteractionType, type[InteractionData]]] = {}

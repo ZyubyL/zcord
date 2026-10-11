@@ -10,26 +10,19 @@ from zcord.models.snowflake import Snowflake
 
 @dataclass(frozen=True, slots=True)
 class ApplicationCommandInteractionData(InteractionData):
-    """
-    Data for an \
+    """Data for an \
     [`APPLICATION_COMMAND`][zcord.enums.InteractionType.APPLICATION_COMMAND] \
     interaction.
     """
 
     id: Snowflake
-    """
-    The ID of the invoked command.
-    """
+    """The ID of the invoked command."""
 
     name: str
-    """
-    The name of the invoked command.
-    """
+    """The name of the invoked command."""
 
     type: int
-    """
-    The type of the invoked command.
-    """
+    """The type of the invoked command."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,

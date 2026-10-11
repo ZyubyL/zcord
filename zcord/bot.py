@@ -35,7 +35,7 @@ log = logging.getLogger(__name__)
 
 
 class EventConverter:
-    """Convert gateway event payloads to typed listener args"""
+    """Convert gateway event payloads to typed listener args."""
 
     _CREATE_MODELS: Final[dict[str, type[Model]]] = {
         enums.GatewayEvent.READY.value: User,
@@ -52,8 +52,7 @@ class EventConverter:
         self._state = state
 
     def convert(self, event: str, data: Any) -> tuple[Any, ...]:
-        """
-        Build the listener args for a gateway event.
+        """Build the listener args for a gateway event.
 
         Returns:
             - `(old, new)` for update events.
@@ -77,7 +76,7 @@ class EventConverter:
 
 
 class EventDispatcher:
-    """Route events to registered listeners"""
+    """Route events to registered listeners."""
 
     def __init__(self) -> None:
         self._listeners: dict[str, list[tuple[Callable[..., Any], bool]]] = {}
@@ -89,15 +88,14 @@ class EventDispatcher:
         """
         Register a listener for the event.
 
-        Params:
+        Args:
             once:
                 Whether to remove the listener after its first fire.
         """
         self._listeners.setdefault(event, []).append((callback, once))
 
     def dispatch(self, event: str, args: tuple[Any, ...]) -> None:
-        """
-        Fire all listeners for the event with the given arguments.
+        """Fire all listeners for the event with the given arguments.
 
         Notes:
             Listener failures are non-blocking and is logged with traceback.
@@ -125,13 +123,13 @@ class EventDispatcher:
 
 
 class Bot:
-    """Represent the bot client"""
+    """Represent the bot client."""
 
     def __init__(
         self, token: str, *, intents: bitfields.Intents | None
     ) -> None:
         """
-        Params:
+        Args:
             token:
                 The bot token.
             intents:
@@ -174,9 +172,7 @@ class Bot:
         await self._state._http.close()
 
     async def start(self) -> None:
-        """
-        Start the bot loop.
-        """
+        """Start the bot loop."""
         log.debug("zcord version %s", __version__)
         log.debug("aiohttp version %s", aiohttp.__version__)
         done = asyncio.Event()
@@ -199,9 +195,7 @@ class Bot:
         task.cancel()
 
     def run(self) -> None:
-        """
-        Run the bot loop.
-        """
+        """Run the bot loop."""
         if not logging.getLogger("zcord").handlers:
             setup_logging()
 
@@ -237,8 +231,7 @@ class Bot:
         event: str | enums.GatewayEvent,
         callback: Callable[..., Any] | None = None,
     ) -> Callable[..., Any] | None:
-        """
-        Register a persistent event listener.
+        """Register a persistent event listener.
 
         Examples:
             There are 2 ways of registering events:
@@ -281,8 +274,7 @@ class Bot:
         event: str | enums.GatewayEvent,
         callback: Callable[..., Any] | None = None,
     ) -> Callable[..., Any] | None:
-        """
-        Register a one-time event listener.
+        """Register a one-time event listener.
 
         Examples:
             See [`Bot.on`][zcord.Bot.on] for examples.
@@ -312,9 +304,7 @@ class Bot:
         self._state._update_cache(event, data)
 
     async def fetch_current_application(self) -> Application:
-        """
-        Fetch info about the current application.
-        """
+        """Fetch info about the current application."""
         return await self._state.fetch_current_application()
 
     async def edit_current_application(
@@ -336,10 +326,9 @@ class Bot:
         event_webhooks_types: types.TupleOrList[enums.WebhookEventType]
         | MISSING = MISSING,
     ) -> Application:
-        """
-        Edit the current application.
+        """Edit the current application.
 
-        Params:
+        Args:
             custom_install_url:
                 Default custom authorization URL for the app, if enabled
             description:
@@ -404,35 +393,25 @@ class Bot:
         )
 
     async def fetch_channel(self, channel_id: int | Snowflake) -> Channel:
-        """
-        Fetch a channel by its ID.
-        """
+        """Fetch a channel by its ID."""
         return await self._state.fetch_channel(channel_id)
 
     async def fetch_guild(self, guild_id: int | Snowflake) -> Guild:
-        """
-        Fetch a guild by its ID.
-        """
+        """Fetch a guild by its ID."""
         return await self._state.fetch_guild(guild_id)
 
     async def fetch_user(self, user_id: int | Snowflake) -> User:
-        """
-        Fetch a user by their ID.
-        """
+        """Fetch a user by their ID."""
         return await self._state.fetch_user(user_id)
 
     async def fetch_current_user(self) -> User:
-        """
-        Fetch the current bot user.
-        """
+        """Fetch the current bot user."""
         return await self._state.fetch_current_user()
 
     async def fetch_message(
         self, *, channel_id: int | Snowflake, message_id: int | Snowflake
     ) -> Message:
-        """
-        Fetch a message by its ID and channel ID.
-        """
+        """Fetch a message by its ID and channel ID."""
         return await self._state.fetch_channel_message(
             channel_id=channel_id, message_id=message_id
         )

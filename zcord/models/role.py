@@ -11,9 +11,7 @@ from zcord.models.snowflake import Snowflake
 
 @dataclass(frozen=True, slots=True)
 class RoleTags(Model):
-    """
-    Role tags.
-    """
+    """Role tags."""
 
     type null = Literal[True]
     bot_id: Snowflake | MISSING = MISSING
@@ -32,29 +30,20 @@ class RoleTags(Model):
 
 @dataclass(frozen=True, slots=True)
 class RoleColors(Model):
-    """
-    Contain the colors of the role.
-    """
+    """Contain the colors of the role."""
 
     primary_color: int = 0
-    """
-    The primary color of the role.
-    """
+    """The primary color of the role."""
 
     secondary_color: int | None = None
-    """
-    The secondary color of the role (gradient color).
-    """
+    """The secondary color of the role (gradient color)."""
 
     tertiary_color: int | None = None
-    """
-    The tertiary color of the role (holographic style).
-    """
+    """The tertiary color of the role (holographic style)."""
 
     @classmethod
     def default(cls) -> RoleColors:
-        """
-        Non color role has the default `primary_color` of `0` and `None`
+        """Non color role has the default `primary_color` of `0` and `None` \
         for other fields.
         """
         return cls()
@@ -80,70 +69,45 @@ class RoleColors(Model):
 
 @dataclass(frozen=True, slots=True)
 class Role(Model):
-    """
-    Represent a Discord role.
-    """
+    """Represent a Discord role."""
 
     id: Snowflake
-    """
-    The role's ID.
-    """
+    """The role's ID."""
 
     name: str
-    """
-    The role's name.
-    """
+    """The role's name."""
 
     colors: RoleColors
-    """
-    The role's colors.
-    """
+    """The role's colors."""
 
     hoist: bool
-    """
-    Whether the option for "Display role members separately from online
+    """Whether the option for "Display role members separately from online \
     members" is enabled.
     """
 
     position: int
-    """
-    Position of the role.
-    """
+    """Position of the role."""
 
     permissions: str
-    """
-    The role's permissions bit set.
-    """
+    """The role's permissions bit set."""
 
     managed: bool
-    """
-    Whether the role is managed by an integration.
-    """
+    """Whether the role is managed by an integration."""
 
     mentionable: bool
-    """
-    Whether the role is mentionable.
-    """
+    """Whether the role is mentionable."""
 
     flags: bitfields.RoleFlags
-    """
-    The role's flags combined as a bitfield.
-    """
+    """The role's flags combined as a bitfield."""
 
     tags: RoleTags | MISSING = MISSING
-    """
-    The tags of the role.
-    """
+    """The tags of the role."""
 
     icon: str | None | MISSING = MISSING
-    """
-    The role's icon hash.
-    """
+    """The role's icon hash."""
 
     unicode_emoji: str | None | MISSING = MISSING
-    """
-    The role's unicode emoji.
-    """
+    """The role's unicode emoji."""
 
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
@@ -155,29 +119,19 @@ class Role(Model):
 
 @dataclass(frozen=True, slots=True)
 class RoleSubscriptionData(Model):
-    """
-    Contain data of the role subscription purchase or renewal.
-    """
+    """Contain data of the role subscription purchase or renewal."""
 
     role_subscription_listing_id: Snowflake
-    """
-    The ID of the SKU and listing that the user is subscribed to.
-    """
+    """The ID of the SKU and listing that the user is subscribed to."""
 
     tier_name: str
-    """
-    The name of the tier that the user is subscribed to.
-    """
+    """The name of the tier that the user is subscribed to."""
 
     total_months_subscribed: int
-    """
-    The cumulative number of months that the user has been subscribed for.
-    """
+    """The cumulative number of months that the user has been subscribed for."""
 
     is_renewal: bool
-    """
-    Whether this notification is for a renewal rather than a new purchase.
-    """
+    """Whether this notification is for a renewal rather than a new purchase."""
 
     _transforms: ClassVar[dict] = {
         "role_subscription_listing_id": Snowflake,

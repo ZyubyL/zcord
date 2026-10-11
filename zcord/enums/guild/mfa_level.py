@@ -4,8 +4,7 @@ from enum import IntEnum
 
 
 class MFALevel(IntEnum):
-    """
-    The MFA level of the guild.
+    """The MFA level of the guild.
 
     | Level | Value | Description |
     |-------|-------|-------------|

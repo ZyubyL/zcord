@@ -10,8 +10,7 @@ from zcord.models.component.select_menu.base import AutoPopulatedSelect
 
 @dataclass(frozen=True, slots=True)
 class UserSelect(AutoPopulatedSelect):
-    """
-    A user select menu component.
+    """A user select menu component.
 
     Notes:
         - If `required` is True or [`MISSING`][zcord.MISSING], \

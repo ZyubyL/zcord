@@ -4,8 +4,7 @@ from enum import IntEnum
 
 
 class MessageNotificationLevel(IntEnum):
-    """
-    The default message notification level of the guild.
+    """The default message notification level of the guild.
 
     | Level | Value | Description |
     |-------|-------|-------------|

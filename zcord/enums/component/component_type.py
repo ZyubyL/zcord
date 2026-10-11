@@ -4,7 +4,8 @@ from enum import IntEnum
 
 
 class ComponentType(IntEnum):
-    """
+    """Type of the component.
+
     | Name | Value |
     |------|-------|
     | `ACTION_ROW` | `1` |

@@ -4,8 +4,7 @@ from enum import IntEnum
 
 
 class MessageReferenceType(IntEnum):
-    """
-    Type of referenced message.
+    """Type of referenced message.
 
     | Type | Value | Description |
     |------|-------|-------------|
