@@ -4,23 +4,24 @@ import logging
 from typing import TYPE_CHECKING
 
 from zcord import enums
+from zcord.caching import MessageStore, SnowflakeStore
 from zcord.http import rest
 from zcord.http.client import HTTPClient
 from zcord.missing import MISSING
 from zcord.models import (
+    Channel,
     Guild,
+    Message,
+    User,
 )
 
 if TYPE_CHECKING:
     from zcord.gateway import Gateway
     from zcord.models import (
         Application,
-        Channel,
-        Message,
         Snowflake,
         Sticker,
         StickerPack,
-        User,
     )
     from zcord.models.application import _ApplicationUpdate
     from zcord.models.interaction.interaction_response import (
@@ -35,29 +36,70 @@ log = logging.getLogger(__name__)
 class ConnectionState:
     _http: HTTPClient
     _gateway: Gateway | None = None
-    _channels: dict[int, Channel]
-    _users: dict[int, User]
-    _guilds: dict[int, Guild]
+    guilds: SnowflakeStore[Guild]
+    users: SnowflakeStore[User]
+    channels: SnowflakeStore[Channel]
+    messages: MessageStore
 
     def __init__(self, token: str):
         self._http = HTTPClient(token)
-        self._channels = {}
-        self._users = {}
-        self._guilds = {}
+        self.guilds = SnowflakeStore[Guild]()
+        self.users = SnowflakeStore[User]()
+        self.channels = SnowflakeStore[Channel]()
+        self.messages = MessageStore()
 
     def _update_cache(self, event: str, data: dict) -> None:
+        """Update the cache stores from a gateway event payload."""
         try:
             match enums.GatewayEvent(event):
+                case enums.GatewayEvent.READY:
+                    self._cache_user(data["user"])
+                case enums.GatewayEvent.GUILD_CREATE:
+                    self._cache_guild(data)
+                    self._cache_guild_channels(data)
+                case enums.GatewayEvent.GUILD_UPDATE:
+                    self._cache_guild(data)
                 case (
-                    enums.GatewayEvent.GUILD_CREATE
-                    | enums.GatewayEvent.GUILD_UPDATE
+                    enums.GatewayEvent.CHANNEL_CREATE
+                    | enums.GatewayEvent.CHANNEL_UPDATE
                 ):
-                    guild = Guild._from_payload(data)
-                    self._guilds[guild.id] = guild
+                    self._cache_channel(data)
+                case enums.GatewayEvent.MESSAGE_CREATE:
+                    self._cache_message(data)
                 case _:
                     pass
         except Exception:
-            log.warning("Failed to update cache for event %s", event)
+            log.warning(
+                "Failed to update cache for event %s", event, exc_info=True
+            )
+
+    def _cache_user(self, data: dict) -> None:
+        user = User._from_payload(data)
+        self.users.set(user.id, user)
+
+    def _cache_guild(self, data: dict) -> None:
+        guild = Guild._from_payload(data)
+        self.guilds.set(guild.id, guild)
+
+    def _cache_guild_channels(self, data: dict) -> None:
+        for raw_channel in data.get("channels", []):
+            self._cache_channel(raw_channel)
+
+    def _cache_channel(self, data: dict) -> None:
+        channel = Channel._from_payload(data)
+        if channel.id is MISSING:
+            raise RuntimeError("Failed to cache a channel with no ID")
+        self.channels.set(channel.id, channel)
+
+    def _cache_message(self, data: dict) -> None:
+        message = Message._from_payload(data)
+        if message.id is MISSING or message.channel_id is MISSING:
+            raise RuntimeError(
+                "Failed to cache a message with no ID or with no channel_id"
+            )
+        self.messages.set(message.channel_id, message.id, message)
+        if message.author is not MISSING:
+            self.users.set(message.author.id, message.author)
 
     async def send_message(
         self,
