@@ -35,6 +35,13 @@ class SelectMenu(Component):
     disabled: bool | MISSING = MISSING
     """Whether this select menu is disabled."""
 
+    def __post_init__(self) -> None:
+        if getattr(self, "type", MISSING) is MISSING:
+            raise TypeError(
+                f"{type(self).__name__} is a base class and cannot be "
+                "instantiated directly."
+            )
+
     def set_custom_id(self, custom_id: str) -> Self:
         """Set the custom ID of the select component.
 

@@ -85,10 +85,6 @@ class ActionRow(Component):
         Notes:
             This will replace any existing select menu or buttons.
         """
-        # Since the bare SelectMenu/AutoPopulatedSelect doesn't have
-        # the type field, we can check if it exist to detect if it is bare class
-        if not hasattr(select, "type"):
-            raise TypeError("Cannot add bare SelectMenu/AutoPopulatedSelect.")
         return set_field_value(self, "components", (select,))
 
 
