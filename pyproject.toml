@@ -81,7 +81,8 @@ module-root = ""
 dev = [
     "mkdocs==1.6.1",
     "mkdocs-materialx==10.2.0",
-    "mkdocstrings[python]==1.0.6",
+    "mkdocstrings==1.0.6",
+    "mkdocstrings-python==2.0.5",
     "pytest==9.1.1",
     "pytest-asyncio==1.4.0",
     "ruff==0.17.0",
