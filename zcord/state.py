@@ -64,7 +64,10 @@ class ConnectionState:
                     | enums.GatewayEvent.CHANNEL_UPDATE
                 ):
                     self._cache_channel(data)
-                case enums.GatewayEvent.MESSAGE_CREATE:
+                case (
+                    enums.GatewayEvent.MESSAGE_CREATE
+                    | enums.GatewayEvent.MESSAGE_UPDATE
+                ):
                     self._cache_message(data)
                 case _:
                     pass
