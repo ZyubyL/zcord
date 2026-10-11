@@ -1,6 +1,15 @@
 """Discord API models."""
 
-from .activity import Activity, ActivityButton, ActivityTimestamp
+from .activity import (
+    Activity,
+    ActivityAssets,
+    ActivityButton,
+    ActivityEmoji,
+    ActivityParty,
+    ActivityPartySize,
+    ActivitySecrets,
+    ActivityTimestamp,
+)
 from .application import Application
 from .attachment import Attachment
 from .avatar_decoration_data import AvatarDecorationData
@@ -61,7 +70,12 @@ from .user import User
 __all__ = [
     "ActionRow",
     "Activity",
+    "ActivityAssets",
     "ActivityButton",
+    "ActivityEmoji",
+    "ActivityParty",
+    "ActivityPartySize",
+    "ActivitySecrets",
     "ActivityTimestamp",
     "Application",
     "ApplicationCommandInteractionData",

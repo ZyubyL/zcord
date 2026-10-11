@@ -2,14 +2,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, ClassVar
+from typing import ClassVar
 
 from zcord import bitfields, enums
 from zcord.missing import MISSING
+from zcord.models.activity.activity_assets import ActivityAssets
 from zcord.models.activity.activity_button import ActivityButton
+from zcord.models.activity.activity_emoji import ActivityEmoji
+from zcord.models.activity.activity_party import ActivityParty
+from zcord.models.activity.activity_secrets import ActivitySecrets
 from zcord.models.activity.activity_timestamp import ActivityTimestamp
 from zcord.models.base import Model, set_field_value
-from zcord.models.emoji import Emoji
 from zcord.models.snowflake import Snowflake
 
 
@@ -42,16 +45,16 @@ class Activity(Model):
     state_url: str | None | MISSING = MISSING
     """URL that is linked when clicking on the state text."""
 
-    emoji: Emoji | None | MISSING = MISSING
+    emoji: ActivityEmoji | None | MISSING = MISSING
     """Emoji used for a custom status."""
 
-    party: Any | MISSING = MISSING
+    party: ActivityParty | MISSING = MISSING
     """Information for the current party of the player"""
 
-    assets: Any | MISSING = MISSING
+    assets: ActivityAssets | MISSING = MISSING
     """Images for the presence and their text hover."""
 
-    secrets: Any | MISSING = MISSING
+    secrets: ActivitySecrets | MISSING = MISSING
     """Secrets for Rich Presence joining and spectating."""
 
     instance: bool | MISSING = MISSING
@@ -81,7 +84,10 @@ class Activity(Model):
         "timestamps": ActivityTimestamp,
         "application_id": Snowflake,
         "status_display_type": enums.StatusDisplayType,
-        "emoji": Emoji,
+        "emoji": ActivityEmoji,
+        "party": ActivityParty,
+        "assets": ActivityAssets,
+        "secrets": ActivitySecrets,
         "flags": bitfields.ActivityFlags,
         "buttons": ActivityButton,
         "type": enums.ActivityType,
