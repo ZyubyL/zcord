@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
     from zcord.http import HTTPClient
     from zcord.models._gateway import _GetGatewayBotResponse
-    from zcord.models.presence import PresenceUpdate
+    from zcord.models.presence_update import PresenceUpdate
 
 log = logging.getLogger(__name__)
 

@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
     from zcord import bitfields, types
     from zcord.models.base import Model
-    from zcord.models.presence import PresenceUpdate
+    from zcord.models.presence_update import PresenceUpdate
     from zcord.models.snowflake import Snowflake
 
 __all__ = ["Bot"]
