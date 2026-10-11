@@ -13,3 +13,4 @@ uv.lock
 
 # Mkdocs plugins
 .cache
+site/
