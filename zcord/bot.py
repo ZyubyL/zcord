@@ -27,6 +27,7 @@ if TYPE_CHECKING:
 
     from zcord import bitfields, types
     from zcord.models.base import Model
+    from zcord.models.presence import PresenceUpdate
     from zcord.models.snowflake import Snowflake
 
 __all__ = ["Bot"]
@@ -126,7 +127,12 @@ class Bot:
     """Represent the bot client."""
 
     def __init__(
-        self, token: str, *, intents: bitfields.Intents | None
+        self,
+        token: str,
+        *,
+        intents: bitfields.Intents | None,
+        presence: PresenceUpdate | MISSING = MISSING,
+        large_threshold: int | MISSING = MISSING,
     ) -> None:
         """
         Args:
@@ -138,6 +144,16 @@ class Bot:
                 Notes:
                     If you don't provide intents, the bot can only perform \
                     HTTP requests.
+            presence:
+                The initial presence for the gateway connection.
+
+                Notes:
+                    Ignored if `intents` is `None`.
+            large_threshold:
+                Total number of members where the gateway stops sending \
+                offline members in the guild member list. Between 50 and 250.
+
+                Notes: Ignored if `intents` is `None`.
         """
         self._state = ConnectionState(token)
         if intents is not None:
@@ -145,6 +161,8 @@ class Bot:
                 http=self._state._http,
                 token=token,
                 intents=intents,
+                presence=presence,
+                large_threshold=large_threshold,
                 dispatch=self._dispatch,
             )
         else:

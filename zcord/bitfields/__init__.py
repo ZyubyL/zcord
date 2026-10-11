@@ -2,6 +2,7 @@
 Discord API bitfield flags module.
 """
 
+from .activity import ActivityFlags
 from .application import ApplicationFlags
 from .attachment import AttachmentFlags
 from .channel import ChannelFlags
@@ -14,6 +15,7 @@ from .role import RoleFlags
 from .user import UserFlags
 
 __all__ = [
+    "ActivityFlags",
     "ApplicationFlags",
     "AttachmentFlags",
     "ChannelFlags",

@@ -6,6 +6,7 @@ from .bot import Bot
 from .missing import MISSING
 from .models import (
     ActionRow,
+    Activity,
     Application,
     ApplicationCommandInteractionData,
     Attachment,
@@ -44,6 +45,7 @@ from .models import (
     PollAnswerCount,
     PollMedia,
     PollResults,
+    PresenceUpdate,
     PrimaryGuild,
     Reaction,
     ReactionCountDetails,
@@ -69,6 +71,7 @@ from .models import (
 __all__ = [
     "MISSING",
     "ActionRow",
+    "Activity",
     "Application",
     "ApplicationCommandInteractionData",
     "Attachment",
@@ -108,6 +111,7 @@ __all__ = [
     "PollAnswerCount",
     "PollMedia",
     "PollResults",
+    "PresenceUpdate",
     "PrimaryGuild",
     "Reaction",
     "ReactionCountDetails",

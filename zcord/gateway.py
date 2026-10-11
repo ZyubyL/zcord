@@ -14,6 +14,7 @@ import orjson
 from zcord import bitfields, enums
 from zcord.enums.gateway import GatewayCloseCode, GatewayOpcode
 from zcord.http import rest
+from zcord.missing import MISSING
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
@@ -21,6 +22,7 @@ if TYPE_CHECKING:
 
     from zcord.http import HTTPClient
     from zcord.models._gateway import _GetGatewayBotResponse
+    from zcord.models.presence import PresenceUpdate
 
 log = logging.getLogger(__name__)
 
@@ -132,7 +134,7 @@ class Backoff:
 
     def reset_delay(self) -> None:
         """
-        Clear the reconnect delay when the gateway is sucessfully connected.
+        Clear the reconnect delay when the gateway is successfully connected.
         """
         self._delay = 0.0
 
@@ -224,6 +226,8 @@ class Gateway:
         http: HTTPClient,
         token: str,
         intents: bitfields.Intents,
+        presence: PresenceUpdate | MISSING = MISSING,
+        large_threshold: int | MISSING = MISSING,
         dispatch: Callable[..., Any] | None = None,
         ws_connect: Callable[[str], AbstractAsyncContextManager[Any]]
         | None = None,
@@ -237,16 +241,29 @@ class Gateway:
                 The bot token.
             intents:
                 The gateway intents for identify payload.
+            presence:
+                The initial presence for the identify payload.
+            large_threshold:
+                Total number of members where the gateway stops sending \
+                offline members in the guild member list. Betwween 50 and 250.
             dispatch:
                 Call when dispatch events.
             ws_connect:
                 Injected function to open the websocket.
             backoff:
                 Reconnection backoff policy.
+
+        Raises:
+            ValueError:
+                `large_threshold` is not between 50 and 250.
         """
+        if large_threshold is not MISSING and not 50 <= large_threshold <= 250:
+            raise ValueError("large_threshold must be between 50 and 250.")
         self._http = http
         self._token = token
         self._intents = intents
+        self._presence = presence
+        self._large_threshold = large_threshold
         self._dispatch = dispatch
         self._ws_connect = ws_connect
         self._backoff = backoff or Backoff()
@@ -269,18 +286,20 @@ class Gateway:
 
     @property
     def _identify_payload(self) -> dict:
-        return {
-            "op": GatewayOpcode.IDENTIFY,
-            "d": {
-                "token": self._token,
-                "intents": self._intents,
-                "properties": {
-                    "os": sys.platform,
-                    "browser": "zcord",
-                    "device": "zcord",
-                },
+        payload = {
+            "token": self._token,
+            "intents": self._intents,
+            "properties": {
+                "os": sys.platform,
+                "browser": "zcord",
+                "device": "zcord",
             },
         }
+        if self._presence is not MISSING:
+            payload["presence"] = self._presence._to_payload()
+        if self._large_threshold is not MISSING:
+            payload["large_threshold"] = self._large_threshold
+        return {"op": GatewayOpcode.IDENTIFY, "d": payload}
 
     @property
     def _resume_payload(self) -> dict:

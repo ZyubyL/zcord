@@ -2,10 +2,11 @@
 Discord API enums module.
 """
 
+from .activity import ActivityType, StatusDisplayType
 from .application import EventWebhookStatus, WebhookEventType
 from .channel import ChannelType
 from .component import ButtonStyle, ComponentType
-from .gateway import GatewayEvent
+from .gateway import GatewayEvent, Status
 from .guild import (
     ExplicitContentFilterLevel,
     MessageNotificationLevel,
@@ -23,6 +24,7 @@ from .sticker import StickerFormatType, StickerType
 from .team import MembershipState
 
 __all__ = [
+    "ActivityType",
     "BaseThemeType",
     "ButtonStyle",
     "ChannelType",
@@ -39,6 +41,8 @@ __all__ = [
     "MessageNotificationLevel",
     "MessageReferenceType",
     "MessageType",
+    "Status",
+    "StatusDisplayType",
     "StickerFormatType",
     "StickerType",
     "VerificationLevel",

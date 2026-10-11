@@ -45,6 +45,7 @@ from .interaction import (
 from .member import Member
 from .message import Message, MessageActivity, MessageReference, MessageSnapshot
 from .poll import Poll, PollAnswer, PollAnswerCount, PollMedia, PollResults
+from .presence import Activity, PresenceUpdate
 from .primary_guild import PrimaryGuild
 from .reaction import Reaction, ReactionCountDetails
 from .role import Role, RoleColors, RoleSubscriptionData, RoleTags
@@ -58,6 +59,7 @@ from .user import User
 
 __all__ = [
     "ActionRow",
+    "Activity",
     "Application",
     "ApplicationCommandInteractionData",
     "Attachment",
@@ -99,6 +101,7 @@ __all__ = [
     "PollAnswerCount",
     "PollMedia",
     "PollResults",
+    "PresenceUpdate",
     "PrimaryGuild",
     "Reaction",
     "ReactionCountDetails",
