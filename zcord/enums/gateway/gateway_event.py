@@ -41,3 +41,16 @@ class GatewayEvent(StrEnum):
 
     This event contains an [`Interaction`][zcord.Interaction] object.
     """
+
+    CHANNEL_CREATE = "CHANNEL_CREATE"
+    """A new guild channel is created.
+
+    This event contains a [`Channel`][zcord.Channel] object.
+    """
+
+    CHANNEL_UPDATE = "CHANNEL_UPDATE"
+    """A guild channel has been updated.
+
+    This event contains the old and an updated \
+    [`Channel`][zcord.Channel] objects.
+    """

@@ -42,11 +42,13 @@ class EventConverter:
         enums.GatewayEvent.READY.value: User,
         enums.GatewayEvent.GUILD_CREATE.value: Guild,
         enums.GatewayEvent.MESSAGE_CREATE.value: Message,
+        enums.GatewayEvent.CHANNEL_CREATE.value: Channel,
         enums.GatewayEvent.INTERACTION_CREATE.value: Interaction,
     }
 
     _UPDATE_MODELS: Final[dict[str, tuple[type[Model], str]]] = {
-        enums.GatewayEvent.GUILD_UPDATE.value: (Guild, "_guilds")
+        enums.GatewayEvent.GUILD_UPDATE.value: (Guild, "guilds"),
+        enums.GatewayEvent.CHANNEL_UPDATE.value: (Channel, "channels"),
     }
 
     def __init__(self, state: ConnectionState) -> None:
@@ -65,8 +67,8 @@ class EventConverter:
             `READY` payload is unwrapped to `user`.
         """
         if data and event in self._UPDATE_MODELS:
-            model, cache_attr = self._UPDATE_MODELS[event]
-            old = getattr(self._state, cache_attr, {}).get(int(data["id"]))
+            model, store_name = self._UPDATE_MODELS[event]
+            old = getattr(self._state, store_name).get(int(data["id"]))
             return old, model._from_payload(data)
         if data and event in self._CREATE_MODELS:
             payload = (
