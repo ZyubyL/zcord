@@ -220,6 +220,11 @@ class Gateway:
     DEFAULT_WS_URL: Final = "wss://gateway.discord.gg/"
     """Fallback URL for the websocket to use."""
 
+    LARGE_THRESHOLD_MIN: Final = 50
+    """The maximum value you can set to for `large_threshold`."""
+    LARGE_THRESHOLD_MAX: Final = 250
+    """The minimum value you can set to for `large_threshold`."""
+
     def __init__(
         self,
         *,
@@ -257,7 +262,9 @@ class Gateway:
             ValueError:
                 `large_threshold` is not between 50 and 250.
         """
-        if large_threshold is not MISSING and not 50 <= large_threshold <= 250:
+        if large_threshold is not MISSING and large_threshold not in range(
+            self.LARGE_THRESHOLD_MIN, self.LARGE_THRESHOLD_MAX + 1
+        ):
             raise ValueError("large_threshold must be between 50 and 250.")
         self._http = http
         self._token = token
