@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, overload
 
 from zcord import bitfields, enums
 from zcord.missing import MISSING
@@ -23,6 +23,13 @@ class Activity(Model):
     """Represent an activity."""
 
     created_at: int | MISSING = MISSING
+    """Unix time (in milliseconds) for when the activity session started.
+
+    Notes:
+        This is what Discord sends to the client.
+        Use `created_time` to get this value in \
+        [`datetime`][datetime.datetime] format.
+    """
 
     timestamps: ActivityTimestamp | MISSING = MISSING
     """Unix timestamps for start/or end of the game."""
@@ -60,9 +67,10 @@ class Activity(Model):
     """Whether the activity is an instanced game session."""
 
     flags: bitfields.ActivityFlags | MISSING = MISSING
-    """Activity flags"""
+    """Activity flags."""
 
     buttons: tuple[ActivityButton, ...] | MISSING = MISSING
+    """The buttons shown under the activity."""
 
     name: str | MISSING = MISSING
     """The activity name."""
@@ -95,6 +103,29 @@ class Activity(Model):
     def created_time(self) -> datetime | MISSING:
         """The time when this activity was added to the user's session."""
         return ActivityTimestamp._to_datetime(self.created_at)
+
+    @classmethod
+    @overload
+    def _from_payload(cls, payload: dict) -> Activity: ...
+    @classmethod
+    @overload
+    def _from_payload(cls, payload: MISSING) -> MISSING: ...
+    @classmethod
+    def _from_payload(cls, payload: dict | MISSING) -> Activity | MISSING:
+        if payload is MISSING:
+            return MISSING
+        # The gateway sends buttons as an array of button labels.
+        # But they require us to send them correct structure.
+        # Thank you Discord.
+        buttons = payload.get("buttons")
+        if isinstance(buttons, list):
+            payload = {
+                **payload,
+                "buttons": [
+                    {"label": b} if isinstance(b, str) else b for b in buttons
+                ],
+            }
+        return Model._from_payload.__func__(cls, payload)
 
     @classmethod
     def new(
