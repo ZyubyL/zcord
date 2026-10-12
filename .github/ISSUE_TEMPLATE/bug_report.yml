@@ -1,0 +1,64 @@
+name: Bug report
+description: Report something broken in zcord
+
+title: "[Bug]: "
+
+labels: [bug]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please check the [docs](https://zcord.readthedocs.io) and existing issues first.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Clear description of the bug
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Minimal code to reproduce (make sure to redact any tokens).
+      render: python
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: input
+    id: zcord-version
+    attributes:
+      label: zcord version
+      placeholder: 2026.0.6
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: 3.12.9
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: Windows 11 / macOS 15 / Ubuntu 24.04
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / traceback
+      render: shell
