@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://zcord.readthedocs.io
+    about: Check the docs before opening an issue.
+  - name: Discord API reference
+    url: https://docs.discord.com/developers/reference
+    about: For questions about Discord API behavior.

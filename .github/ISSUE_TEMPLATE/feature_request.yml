@@ -1,0 +1,20 @@
+name: Feature request
+description: Suggest a new feature or improvement
+
+title: "[Feature]: "
+labels: [enhancement]
+
+body:
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Explain the feature in detail
+    validations:
+      required: true
+
+  - type: textarea
+    id: discord-docs
+    attributes:
+      label: Discord API reference
+      description: Link to the Discord API docs, if the feature maps to one

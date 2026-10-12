@@ -16,6 +16,6 @@
 
 https://zcord.rtfd.io
 
-## AI Usage Policy
+## AI Usage Disclosure
 
-AI is used to spot human errors, review code, issue security problems.
+Yes, AI is used in this project (see [`CONTRIBUTING.md`](.github/CONTRIBUTING.md#ai-usage-policy)) for our policy on AI usage.
