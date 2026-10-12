@@ -8,8 +8,8 @@ from zcord.models.base import Model
 
 
 class ActivityPartySize(NamedTuple):
-    current: int
-    max: int
+    current_size: int
+    max_size: int
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,4 +36,4 @@ class ActivityParty(Model):
         if isinstance(size, (tuple, list)):
             payload = {**payload, "size": ActivityPartySize(*size)}
 
-        return super()._from_payload(payload)
+        return Model()._from_payload.__func__(cls, payload)

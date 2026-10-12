@@ -92,9 +92,7 @@ class Activity(Model):
     @property
     def created_time(self) -> datetime | MISSING:
         """The time when this activity was added to the user's session."""
-        if self.created_at is MISSING:
-            return MISSING
-        return datetime.fromtimestamp(self.created_at / 1000, UTC)
+        return ActivityTimestamp._to_datetime(self.created_at)
 
     @classmethod
     def new(
