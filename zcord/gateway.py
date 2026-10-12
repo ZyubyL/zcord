@@ -221,9 +221,9 @@ class Gateway:
     """Fallback URL for the websocket to use."""
 
     LARGE_THRESHOLD_MIN: Final = 50
-    """The maximum value you can set to for `large_threshold`."""
-    LARGE_THRESHOLD_MAX: Final = 250
     """The minimum value you can set to for `large_threshold`."""
+    LARGE_THRESHOLD_MAX: Final = 250
+    """The maximum value you can set to for `large_threshold`."""
 
     def __init__(
         self,
