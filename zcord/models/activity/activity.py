@@ -127,6 +127,12 @@ class Activity(Model):
             }
         return Model._from_payload.__func__(cls, payload)
 
+    def _check_before(self) -> None:
+        if self.name is MISSING:
+            raise ValueError("activity name is required")
+        if self.type is MISSING:
+            raise ValueError("activity type is required")
+
     @classmethod
     def new(
         cls,
