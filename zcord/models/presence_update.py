@@ -1,0 +1,91 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import ClassVar
+
+from zcord import enums, types
+from zcord.models.activity.activity import Activity
+from zcord.models.base import Model, add_field_value, set_field_value
+
+
+@dataclass(frozen=True, slots=True)
+class PresenceUpdate(Model):
+    """Represent presence information sent in the identify payload."""
+
+    since: int | None = None
+    """Unix time (in milliseconds) of when the user went idle, \
+    or [`None`][] if the user is not idle.
+    """
+
+    activities: tuple[Activity, ...] = ()
+    """The user's activities."""
+
+    status: enums.Status = enums.Status.ONLINE
+    """The user's [`status`][zcord.enums.Status]."""
+
+    afk: bool = False
+    """Whether the user is afk."""
+
+    _transforms: ClassVar[dict] = {
+        "activities": Activity,
+        "status": enums.Status,
+    }
+
+    @classmethod
+    def new(
+        cls,
+        *,
+        since: int | None = None,
+        activity: Activity | types.TupleOrList[Activity] = (),
+        status: enums.Status = enums.Status.ONLINE,
+        afk: bool = False,
+    ) -> PresenceUpdate:
+        """Construct a presence update object."""
+        presence = cls().set_since(since).set_status(status).set_afk(afk)
+        if isinstance(activity, (list, tuple)):
+            presence = presence.set_activities(activity)
+        elif activity:
+            presence = presence.add_activity(activity)
+        return presence
+
+    def set_since(self, since: int | None = None) -> PresenceUpdate:
+        """Set the Unix timestamp (in milliseconds) of when the bot went \
+        idle.
+        """
+        return set_field_value(self, "since", since)
+
+    def set_status(
+        self, status: enums.Status = enums.Status.ONLINE
+    ) -> PresenceUpdate:
+        """Set the status of the bot."""
+        return set_field_value(self, "status", status)
+
+    def set_afk(self, afk: bool = False) -> PresenceUpdate:
+        """Set whether the bot is afk."""
+        return set_field_value(self, "afk", afk)
+
+    def set_activities(
+        self, activities: types.TupleOrList[Activity] = ()
+    ) -> PresenceUpdate:
+        """Set the bot's activities."""
+        presence = self.clear_activities()
+        if not activities:
+            return presence
+        return presence.add_activities(activities)
+
+    def clear_activities(self) -> PresenceUpdate:
+        """Clear the bot's activities."""
+        return set_field_value(self, "activities", ())
+
+    def add_activities(
+        self, activities: types.TupleOrList[Activity]
+    ) -> PresenceUpdate:
+        """Add multiple activities to the presence."""
+        presence = self
+        for a in activities:
+            presence = presence.add_activity(a)
+        return presence
+
+    def add_activity(self, activity: Activity) -> PresenceUpdate:
+        """Add an activity to the presence."""
+        return add_field_value(self, "activities", activity)
