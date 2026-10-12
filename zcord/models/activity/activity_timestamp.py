@@ -9,8 +9,23 @@ from zcord.models.base import Model
 
 @dataclass(frozen=True, slots=True)
 class ActivityTimestamp(Model):
+    """Contain the activity timestamp info."""
+
     start: int | MISSING = MISSING
+    """Unix time (in milliseconds) of when the activity started.
+
+    Notes:
+        This is what Discord send. Use `start_time` if you want a \
+        [`datetime`][datetime.datetime] object.
+    """
+
     end: int | MISSING = MISSING
+    """Unix time (in milliseconds) of when the activity ends.
+
+    Notes:
+        This is what Discord send. Use `end_time` if you want a \
+        [`datetime`][datetime.datetime] object.
+    """
 
     @staticmethod
     def _to_datetime(v: int | MISSING) -> datetime | MISSING:

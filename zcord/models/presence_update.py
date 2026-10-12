@@ -80,11 +80,12 @@ class PresenceUpdate(Model):
     def add_activities(
         self, activities: types.TupleOrList[Activity]
     ) -> PresenceUpdate:
-        """Add multiple activities to the bot."""
+        """Add multiple activities to the presence."""
         presence = self
         for a in activities:
             presence = presence.add_activity(a)
         return presence
 
     def add_activity(self, activity: Activity) -> PresenceUpdate:
+        """Add an activity to the presence."""
         return add_field_value(self, "activities", activity)

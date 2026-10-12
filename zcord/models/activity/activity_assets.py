@@ -11,6 +11,7 @@ class ActivityAssets(Model):
     """Contain images for the presence and their hover texts."""
 
     large_image: str | MISSING = MISSING
+    """The large image display in the activity card."""
 
     large_text: str | MISSING = MISSING
     """The text displayed when hovering over the large image of the activity."""
@@ -19,6 +20,7 @@ class ActivityAssets(Model):
     """The URL that is opened when clicking on the large image."""
 
     small_image: str | MISSING = MISSING
+    """The small image display in the activity card."""
 
     small_text: str | MISSING = MISSING
     """The text displayed when hovering over the small image of the activity."""
