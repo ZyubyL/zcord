@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from zcord import MISSING, Activity, PresenceUpdate
+from zcord.enums import ActivityType
 
 
 def test_activities_stacking():
@@ -15,7 +16,11 @@ def test_activities_stacking():
 def test_activity_timestamps():
     unix_timestamp_millis = 15112000660000
     activity = Activity._from_payload(
-        {"name": "foo", "timestamps": {"start": unix_timestamp_millis}}
+        {
+            "name": "foo",
+            "type": ActivityType.PLAYING,
+            "timestamps": {"start": unix_timestamp_millis},
+        }
     )
 
     assert activity.timestamps is not MISSING
