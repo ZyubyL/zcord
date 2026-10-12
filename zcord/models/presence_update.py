@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, overload
+from typing import ClassVar
 
 from zcord import enums, types
 from zcord.missing import MISSING
@@ -32,34 +32,14 @@ class PresenceUpdate(Model):
         "status": enums.Status,
     }
 
-    @overload
     @classmethod
     def new(
         cls,
         *,
         since: int | None | MISSING = MISSING,
-        activity: Activity | MISSING = MISSING,
+        activity: Activity | types.TupleOrList[Activity] | MISSING = MISSING,
         status: enums.Status = enums.Status.ONLINE,
         afk: bool | MISSING = MISSING,
-    ) -> PresenceUpdate: ...
-    @overload
-    @classmethod
-    def new(
-        cls,
-        *,
-        since: int | None | MISSING = MISSING,
-        activity: types.TupleOrList[Activity] | MISSING = MISSING,
-        status: enums.Status = enums.Status.ONLINE,
-        afk: bool | MISSING = MISSING,
-    ) -> PresenceUpdate: ...
-    @classmethod
-    def new(
-        cls,
-        *,
-        since=MISSING,
-        activity=MISSING,
-        status=enums.Status.ONLINE,
-        afk=MISSING,
     ) -> PresenceUpdate:
         """Construct a presence update object."""
         presence = cls().set_since(since).set_status(status).set_afk(afk)
