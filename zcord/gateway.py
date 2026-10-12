@@ -245,7 +245,7 @@ class Gateway:
                 The initial presence for the identify payload.
             large_threshold:
                 Total number of members where the gateway stops sending \
-                offline members in the guild member list. Betwween 50 and 250.
+                offline members in the guild member list. Between 50 and 250.
             dispatch:
                 Call when dispatch events.
             ws_connect:

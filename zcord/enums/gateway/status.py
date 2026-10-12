@@ -4,7 +4,9 @@ from enum import StrEnum
 
 
 class Status(StrEnum):
-    """The status of a [`Presence`][zcord.Presence].
+    """The status of the [`User`][zcord.User].
+
+    Can also be used to update the bot's status via gateway.
 
     | Name | Value |
     |------|-------|

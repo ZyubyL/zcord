@@ -11,7 +11,7 @@ from zcord.models.base import Model, add_field_value, set_field_value
 
 @dataclass(frozen=True, slots=True)
 class PresenceUpdate(Model):
-    """Represent presence infomation sent in the identify payload."""
+    """Represent presence information sent in the identify payload."""
 
     since: int | None | MISSING = MISSING
     """Unix time (in milliseconds) of when the user went idle, \
