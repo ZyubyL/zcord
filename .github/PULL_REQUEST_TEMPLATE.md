@@ -7,5 +7,12 @@
 - [ ] `uv run ruff check zcord` passes
 - [ ] `uv run ty check zcord` passes
 - [ ] `uv run --frozen pytest` passes
-- [ ] This contribution was made entirely by AI.
-- [ ] If the above is checked, you are responsible for all of its output.
+
+## AI disclosure
+
+Disclose any AI assistance. Leave blank for no AI assistance
+
+- [ ] Human implemented with AI assistance
+- [ ] Mostly AI-driven
+- [ ] Fully AI-driven
+- [ ] I am able to explain the contribution and the agents must have followed `AGENTS.md` and `CONTRIBUTING.md`

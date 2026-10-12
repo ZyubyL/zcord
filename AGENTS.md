@@ -27,5 +27,10 @@
 
 ## AI Usage Policy
 
-Agent may only be used to review the codebase for issues and giving suggested changes.
-All code is written by human.
+Full policy in [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md#ai-usage-policy). In short, by AI involvement:
+
+- Human written with AI assistance = project policy, acceptable baseline
+- Mostly AI-driven = small refactors or bug fixes
+- Fully AI-driven = discouraged. Only if change is reasonably small and author can explain it
+- Agent role here: review code, give suggested changes, spot errors. Human should be the one who implements
+- Disclose all AI assistance in PR

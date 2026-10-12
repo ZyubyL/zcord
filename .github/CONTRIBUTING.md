@@ -8,7 +8,15 @@ AI is used to spot human errors, review code, and flag security problems.
 **All code should be reviewed and implemented by a human**.
 Consider following the same policy in your contributions.
 
-If you don't follow the policy strictly, that's fine — as long as you can explain the contribution and the agents follow `AGENTS.md` and this `CONTRIBUTING.md`.
+How much AI is ok depends on how AI-driven the change is:
+
+- **Fully AI-driven** - not too fond of it. But the change should be reasonably small and the author can explain it
+- **Mostly AI-driven** - small refactors or bug fixes
+- **Human written with AI assistance** - this is the AI policy of this project - is accepted for feature contribution
+
+AI assistance must be disclosed in the pull request.
+
+The agents must follow `AGENTS.md` and this `CONTRIBUTING.md` guidance.
 
 The skill [`ponytail`](https://raw.githubusercontent.com/DietrichGebert/ponytail/refs/heads/main/.openclaw/skills/ponytail/SKILL.md) can be helpful for making minimal changes.
 
