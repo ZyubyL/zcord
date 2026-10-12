@@ -70,7 +70,14 @@ class Activity(Model):
     """Activity flags."""
 
     buttons: tuple[ActivityButton, ...] | MISSING = MISSING
-    """The buttons shown under the activity."""
+    """The buttons shown under the activity.
+
+    Notes:
+        Discord doesn't exposes button URL to bots. They only send a list \
+        of button labels.
+        This is wrapped as a list of [`ActivityButton`][] for compliance with \
+        Discord docs.
+    """
 
     name: str | MISSING = MISSING
     """The activity name."""
@@ -128,6 +135,11 @@ class Activity(Model):
         return Model._from_payload.__func__(cls, payload)
 
     def _check_before(self) -> None:
+        """
+        Raises:
+            ValueError:
+                `name` and `type` are required before sending.
+        """
         if self.name is MISSING:
             raise ValueError("activity name is required")
         if self.type is MISSING:
