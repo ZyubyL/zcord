@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import UTC, datetime
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from zcord import bitfields, enums
 from zcord.missing import MISSING
@@ -14,6 +13,9 @@ from zcord.models.activity.activity_secrets import ActivitySecrets
 from zcord.models.activity.activity_timestamp import ActivityTimestamp
 from zcord.models.base import Model, set_field_value
 from zcord.models.snowflake import Snowflake
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 @dataclass(frozen=True, slots=True)
