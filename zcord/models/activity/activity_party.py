@@ -36,4 +36,4 @@ class ActivityParty(Model):
         if isinstance(size, (tuple, list)):
             payload = {**payload, "size": ActivityPartySize(*size)}
 
-        return Model()._from_payload.__func__(cls, payload)
+        return Model._from_payload.__func__(cls, payload)
