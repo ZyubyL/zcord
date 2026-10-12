@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import ClassVar
 
 from zcord import bitfields, enums
@@ -18,12 +18,9 @@ from zcord.models.snowflake import Snowflake
 
 @dataclass(frozen=True, slots=True)
 class Activity(Model):
-    """Represent and activity shown in a [`Presence`][]."""
+    """Represent an activity."""
 
-    created_at: datetime | MISSING = MISSING
-    """Unix timestamp (in milliseconds) of when the activity was added to \
-    the user's session.
-    """
+    created_at: int | MISSING = MISSING
 
     timestamps: ActivityTimestamp | MISSING = MISSING
     """Unix timestamps for start/or end of the game."""
@@ -80,7 +77,6 @@ class Activity(Model):
     """The player's current party status, or text for a custom status."""
 
     _transforms: ClassVar[dict] = {
-        "created_at": datetime.fromisoformat,
         "timestamps": ActivityTimestamp,
         "application_id": Snowflake,
         "status_display_type": enums.StatusDisplayType,
@@ -92,6 +88,13 @@ class Activity(Model):
         "buttons": ActivityButton,
         "type": enums.ActivityType,
     }
+
+    @property
+    def created_time(self) -> datetime | MISSING:
+        """The time when this activity was added to the user's session."""
+        if self.created_at is MISSING:
+            return MISSING
+        return datetime.fromtimestamp(self.created_at / 1000, UTC)
 
     @classmethod
     def new(
