@@ -1,0 +1,115 @@
+name: PR labels
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+      - converted_to_draft
+      - ready_for_review
+      - closed
+  pull_request_review:
+    types:
+      - submitted
+      - edited
+      - dismissed
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Synchronize labels
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+            const pr = (
+              await github.rest.pulls.get({
+                owner, repo, pull_number: prNumber,
+              })
+            ).data;
+
+            const add = async (label) => {
+              await github.rest.issues.addLabels({
+                owner, repo, issue_number: prNumber, labels: [label],
+              });
+            };
+            const remove = async (label) => {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner, repo, issue_number: prNumber, name: label,
+                });
+              } catch (err) {
+                if (err.status !== 404) throw err;
+              }
+            };
+            const removeAll = async (...labels) => {
+              await Promise.all(labels.map(remove));
+            };
+
+            // Drop all labels when merged or manually closed
+            if (pr.state === "closed") {
+              await removeAll(
+                "waiting for merge",
+                "merge conflict",
+                "wip",
+                "change needed",
+              );
+              return;
+            }
+
+            // Draft state
+            if (pr.draft) { await add("wip"); }
+            else { await remove("wip"); }
+
+            // Merge conflict state
+            // Retry because github is so good and can return null on this
+            let mergeable = pr.mergeable;
+            let mergeableState = pr.mergeable_state;
+
+            for (let i = 0; i < 5 && mergeable === null; i++) {
+              await new Promise(resolve => setTimeout(resolve, 2000));
+
+              const latest = (
+                await github.rest.pulls.get({
+                  owner, repo, pull_number: prNumber,
+                })
+              ).data;
+
+              mergeable = latest.mergeable;
+              mergeableState = latest.mergeable_state;
+            }
+
+            if (mergeable === false || mergeableState === "dirty") {
+              await remove("waiting for merge");
+              await add("merge conflict");
+            } else if (mergeable === true) {
+              await remove("merge conflict");
+            }
+
+            // Review state
+            if (context.eventName === "pull_request_review") {
+              const reviews = (
+                await github.rest.pulls.listReviews({
+                  owner, repo, pull_number: prNumber,
+                })
+              ).data;
+
+              const latest = new Map();
+              for (const r of reviews) { latest.set(r.user.login, r); }
+
+              if ([...latest.values()].some(r => r.state === "CHANGES_REQUESTED")) {
+                await add("change needed");
+              } else {
+                await remove("change needed");
+              }
+            }
