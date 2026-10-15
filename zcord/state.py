@@ -59,16 +59,24 @@ class ConnectionState:
                     self._cache_guild_channels(data)
                 case enums.GatewayEvent.GUILD_UPDATE:
                     self._cache_guild(data)
+                case enums.GatewayEvent.GUILD_DELETE:
+                    self.guilds.remove(int(data["id"]))
                 case (
                     enums.GatewayEvent.CHANNEL_CREATE
                     | enums.GatewayEvent.CHANNEL_UPDATE
                 ):
                     self._cache_channel(data)
+                case enums.GatewayEvent.CHANNEL_DELETE:
+                    self.channels.remove(int(data["id"]))
                 case (
                     enums.GatewayEvent.MESSAGE_CREATE
                     | enums.GatewayEvent.MESSAGE_UPDATE
                 ):
                     self._cache_message(data)
+                case enums.GatewayEvent.MESSAGE_DELETE:
+                    self.messages.remove(
+                        int(data["channel_id"]), int(data["id"])
+                    )
                 case _:
                     pass
         except Exception:

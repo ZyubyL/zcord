@@ -49,6 +49,13 @@ class EventConverter:
     _UPDATE_MODELS: Final[dict[str, tuple[type[Model], str]]] = {
         enums.GatewayEvent.GUILD_UPDATE.value: (Guild, "guilds"),
         enums.GatewayEvent.CHANNEL_UPDATE.value: (Channel, "channels"),
+        enums.GatewayEvent.MESSAGE_UPDATE.value: (Message, "messages"),
+    }
+
+    _DELETE_MODELS: Final[dict[str, str]] = {
+        enums.GatewayEvent.GUILD_DELETE.value: "guilds",
+        enums.GatewayEvent.CHANNEL_DELETE.value: "channels",
+        enums.GatewayEvent.MESSAGE_DELETE.value: "messages",
     }
 
     def __init__(self, state: ConnectionState) -> None:
@@ -59,7 +66,7 @@ class EventConverter:
 
         Returns:
             - `(old, new)` for update events.
-            - `(model,)` for converted events.
+            - `(model,)` for create/delete events.
             - `(data,)` for fall through events with no registered model.
 
         Notes:
@@ -68,13 +75,27 @@ class EventConverter:
         """
         if data and event in self._UPDATE_MODELS:
             model, store_name = self._UPDATE_MODELS[event]
-            old = getattr(self._state, store_name).get(int(data["id"]))
+            if event == enums.GatewayEvent.MESSAGE_UPDATE.value:
+                old = self._state.messages.get(
+                    int(data["channel_id"]), int(data["id"])
+                )
+            else:
+                old = getattr(self._state, store_name).get(int(data["id"]))
             return old, model._from_payload(data)
         if data and event in self._CREATE_MODELS:
             payload = (
                 data["user"] if event == str(enums.GatewayEvent.READY) else data
             )
             return (self._CREATE_MODELS[event]._from_payload(payload),)
+        if data and event in self._DELETE_MODELS:
+            if event == enums.GatewayEvent.MESSAGE_DELETE.value:
+                old = self._state.messages.get(
+                    int(data["channel_id"]), int(data["id"])
+                )
+            else:
+                store_name = self._DELETE_MODELS[event]
+                old = getattr(self._state, store_name).get(int(data["id"]))
+            return (old,)
         return (data,)
 
 
@@ -319,7 +340,12 @@ class Bot:
         _decorator(callback)
 
     def _dispatch(self, event: str, data: Any) -> None:
-        args = self._converter.convert(event, data)
+        try:
+            args = self._converter.convert(event, data)
+        except Exception:
+            log.exception("Failed to convert event %s", event)
+            log.debug("%r", data)
+            return
         self._dispatcher.dispatch(event, args)
         self._state._update_cache(event, data)
 
