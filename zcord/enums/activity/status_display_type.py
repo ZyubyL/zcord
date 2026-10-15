@@ -7,13 +7,13 @@ class StatusDisplayType(IntEnum):
     """Controls which field is displayed in the user's status text \
     in the member list.
 
-    | Name (library named) | Value | Example |
-    |----------------------|-------|---------|
-    | `PLATFORM` | `0` | "Listening to Spotify" |
-    | `ARTIST` | `1` | "Listening to Rick Astley" |
-    | `SONG` | `2` | "Listening to Never Gonna Give You Up" |
+    | Name | Value | Example |
+    |------|-------|---------|
+    | `NAME` | `0` | "Listening to Spotify" |
+    | `STATE` | `1` | "Listening to Rick Astley" |
+    | `DETAILS` | `2` | "Listening to Never Gonna Give You Up" |
     """
 
-    PLATFORM = 0
-    ARTIST = 1
-    SONG = 2
+    NAME = 0
+    STATE = 1
+    DETAILS = 2
