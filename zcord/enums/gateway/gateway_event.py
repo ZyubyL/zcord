@@ -18,6 +18,8 @@ class GatewayEvent(StrEnum):
     GUILD_CREATE = "GUILD_CREATE"
     """The bot has joined a guild.
 
+    This event will also fire when the bot first connected to the gateway.
+
     This event contains the guild's [`Guild`][zcord.Guild] object.
     """
 
@@ -25,6 +27,13 @@ class GatewayEvent(StrEnum):
     """The guild has been updated.
 
     This event contains the old and updated [`Guild`][zcord.Guild] objects.
+    """
+
+    GUILD_DELETE = "GUILD_DELETE"
+    """The bot has been removed from the guild, or the guild has been deleted.
+
+    This event contains the deleted [`Guild`][zcord.Guild] object. If it is \
+    cached.
     """
 
     MESSAGE_CREATE = "MESSAGE_CREATE"
@@ -40,6 +49,20 @@ class GatewayEvent(StrEnum):
     objects.
     """
 
+    MESSAGE_DELETE = "MESSAGE_DELETE"
+    """The message has been deleted.
+
+    This event contains the deleted [`Message`][zcord.Message] object. If it \
+    is cached.
+    """
+
+    MESSAGE_DELETE_BULK = "MESSAGE_DELETE_BULK"
+    """Some messages has been deleted.
+
+    This event contains the deleted [`Message`][zcord.Message] objects. \
+    If they are cached.
+    """
+
     RESUMED = "RESUMED"
     """The connection to the websocket has been resumed."""
 
@@ -50,14 +73,20 @@ class GatewayEvent(StrEnum):
     """
 
     CHANNEL_CREATE = "CHANNEL_CREATE"
-    """A new guild channel is created.
+    """A new channel is created.
 
     This event contains a [`Channel`][zcord.Channel] object.
     """
 
     CHANNEL_UPDATE = "CHANNEL_UPDATE"
-    """A guild channel has been updated.
+    """A channel has been updated.
 
     This event contains the old and an updated \
     [`Channel`][zcord.Channel] objects.
+    """
+
+    CHANNEL_DELETE = "CHANNEL_DELETE"
+    """A channel has been deleted.
+
+    This event contains the deleted [`Channel`][zcord.Channel] object.
     """
