@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import logging
-from typing import TYPE_CHECKING, Any, Final, overload
+from typing import TYPE_CHECKING, Any, overload
 
 import aiohttp
 
@@ -38,31 +38,12 @@ log = logging.getLogger(__name__)
 class EventConverter:
     """Convert gateway event payloads to typed listener args."""
 
-    _CREATE_MODELS: Final[dict[str, type[Model]]] = {
-        enums.GatewayEvent.READY.value: User,
-        enums.GatewayEvent.GUILD_CREATE.value: Guild,
-        enums.GatewayEvent.MESSAGE_CREATE.value: Message,
-        enums.GatewayEvent.CHANNEL_CREATE.value: Channel,
-        enums.GatewayEvent.INTERACTION_CREATE.value: Interaction,
-    }
-
-    _UPDATE_MODELS: Final[dict[str, tuple[type[Model], str]]] = {
-        enums.GatewayEvent.GUILD_UPDATE.value: (Guild, "guilds"),
-        enums.GatewayEvent.CHANNEL_UPDATE.value: (Channel, "channels"),
-        enums.GatewayEvent.MESSAGE_UPDATE.value: (Message, "messages"),
-    }
-
-    _DELETE_MODELS: Final[dict[str, str]] = {
-        enums.GatewayEvent.GUILD_DELETE.value: "guilds",
-        enums.GatewayEvent.CHANNEL_DELETE.value: "channels",
-        enums.GatewayEvent.MESSAGE_DELETE.value: "messages",
-        enums.GatewayEvent.MESSAGE_DELETE_BULK.value: "messages",
-    }
-
     def __init__(self, state: ConnectionState) -> None:
         self._state = state
 
-    def convert(self, event: str, data: Any) -> tuple[Any, ...]:
+    def convert(
+        self, event: enums.GatewayEvent, data: dict
+    ) -> tuple[list[Message | None] | Model | None | dict, ...]:
         """Build the listener args for a gateway event.
 
         Returns:
@@ -74,40 +55,53 @@ class EventConverter:
             `old` could be [`None`][] if the object is not cached.
             `READY` payload is unwrapped to `user`.
         """
-        if data and event in self._UPDATE_MODELS:
-            model, store_name = self._UPDATE_MODELS[event]
-            if event == enums.GatewayEvent.MESSAGE_UPDATE.value:
+        # TODO: This also call to remove cache from _state
+        # TODO: Maybe move it out from here to there
+        match event:
+            case enums.GatewayEvent.READY:
+                return (User._from_payload(data["user"]),)
+            case enums.GatewayEvent.GUILD_CREATE:
+                return (Guild._from_payload(data),)
+            case enums.GatewayEvent.GUILD_UPDATE:
+                old = self._state.guilds.get(int(data["id"]))
+                return (old, Guild._from_payload(data))
+            case enums.GatewayEvent.GUILD_DELETE:
+                # TODO: Everything under the model within these DELETE
+                # TODO: event should be gone too, like all the channels
+                # TODO: in the guild, all the messages in the channels,...
+                old = self._state.guilds.remove(int(data["id"]))
+                return (old,)
+            case enums.GatewayEvent.CHANNEL_CREATE:
+                return (Channel._from_payload(data),)
+            case enums.GatewayEvent.CHANNEL_UPDATE:
+                old = self._state.channels.get(int(data["id"]))
+                return (old, Channel._from_payload(data))
+            case enums.GatewayEvent.CHANNEL_DELETE:
+                old = self._state.channels.remove(int(data["id"]))
+                return (old,)
+            case enums.GatewayEvent.MESSAGE_CREATE:
+                return (Message._from_payload(data),)
+            case enums.GatewayEvent.MESSAGE_UPDATE:
                 old = self._state.messages.get(
                     int(data["channel_id"]), int(data["id"])
                 )
-            else:
-                old = getattr(self._state, store_name).get(int(data["id"]))
-            return old, model._from_payload(data)
-        if data and event in self._CREATE_MODELS:
-            payload = (
-                data["user"] if event == str(enums.GatewayEvent.READY) else data
-            )
-            return (self._CREATE_MODELS[event]._from_payload(payload),)
-        if data and event in self._DELETE_MODELS:
-            if event == enums.GatewayEvent.MESSAGE_DELETE_BULK.value:
-                channel_id = int(data["channel_id"])
-                old = [
-                    m
-                    for m in [
-                        self._state.messages.remove(channel_id, int(message_id))
-                        for message_id in [int(m_id) for m_id in data["ids"]]
-                    ]
-                    if m is not None
-                ]
-            elif event == enums.GatewayEvent.MESSAGE_DELETE.value:
+                return (old, Message._from_payload(data))
+            case enums.GatewayEvent.MESSAGE_DELETE:
                 old = self._state.messages.remove(
                     int(data["channel_id"]), int(data["id"])
                 )
-            else:
-                store_name = self._DELETE_MODELS[event]
-                old = getattr(self._state, store_name).remove(int(data["id"]))
-            return (old,)
-        return (data,)
+                return (old,)
+            case enums.GatewayEvent.MESSAGE_DELETE_BULK:
+                channel_id = int(data["channel_id"])
+                old = [
+                    self._state.messages.remove(channel_id, int(message_id))
+                    for message_id in [int(m_id) for m_id in data["ids"]]
+                ]
+                return (old,)
+            case enums.GatewayEvent.INTERACTION_CREATE:
+                return (Interaction._from_payload(data),)
+            case _:
+                return (data,)
 
 
 class EventDispatcher:
@@ -350,15 +344,17 @@ class Bot:
             return _decorator
         _decorator(callback)
 
-    def _dispatch(self, event: str, data: Any) -> None:
+    def _dispatch(self, event: str, data: dict) -> None:
         try:
+            event = enums.GatewayEvent(event)
             args = self._converter.convert(event, data)
+            self._dispatcher.dispatch(event, args)
+            self._state.update_cache(event, data)
+        except ValueError:
+            log.warning("Event %s, does not")
         except Exception:
             log.exception("Failed to convert event %s", event)
             log.debug("%r", data)
-        finally:
-            self._dispatcher.dispatch(event, args)
-            self._state.update_cache(event, data)
 
     async def fetch_current_application(self) -> Application:
         """Fetch info about the current application."""

@@ -48,33 +48,30 @@ class ConnectionState:
         self.channels = SnowflakeStore[Channel]()
         self.messages = MessageStore()
 
-    def update_cache(self, event: str, data: dict) -> None:
+    def update_cache(self, event: enums.GatewayEvent, data: dict) -> None:
         """Update the cache stores from a gateway event payload."""
-        try:
-            match enums.GatewayEvent(event):
-                case enums.GatewayEvent.READY:
-                    self._cache_user(data["user"])
-                case enums.GatewayEvent.GUILD_CREATE:
-                    self._cache_guild(data)
-                    self._cache_guild_channels(data)
-                case enums.GatewayEvent.GUILD_UPDATE:
-                    self._cache_guild(data)
-                case (
-                    enums.GatewayEvent.CHANNEL_CREATE
-                    | enums.GatewayEvent.CHANNEL_UPDATE
-                ):
-                    self._cache_channel(data)
-                case (
-                    enums.GatewayEvent.MESSAGE_CREATE
-                    | enums.GatewayEvent.MESSAGE_UPDATE
-                ):
-                    self._cache_message(data)
-                case _:
-                    pass
-        except Exception:
-            log.warning(
-                "Failed to update cache for event %s", event, exc_info=True
-            )
+        # TODO: Update event should replace the field from the new
+        # TODO: object to the old one. Currently it's only replace
+        match event:
+            case enums.GatewayEvent.READY:
+                self._cache_user(data["user"])
+            case enums.GatewayEvent.GUILD_CREATE:
+                self._cache_guild(data)
+                self._cache_guild_channels(data)
+            case enums.GatewayEvent.GUILD_UPDATE:
+                self._cache_guild(data)
+            case (
+                enums.GatewayEvent.CHANNEL_CREATE
+                | enums.GatewayEvent.CHANNEL_UPDATE
+            ):
+                self._cache_channel(data)
+            case (
+                enums.GatewayEvent.MESSAGE_CREATE
+                | enums.GatewayEvent.MESSAGE_UPDATE
+            ):
+                self._cache_message(data)
+            case _:
+                pass
 
     def _cache_user(self, data: dict) -> None:
         user = User._from_payload(data)
