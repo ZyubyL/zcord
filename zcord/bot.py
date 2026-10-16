@@ -56,6 +56,7 @@ class EventConverter:
         enums.GatewayEvent.GUILD_DELETE.value: "guilds",
         enums.GatewayEvent.CHANNEL_DELETE.value: "channels",
         enums.GatewayEvent.MESSAGE_DELETE.value: "messages",
+        enums.GatewayEvent.MESSAGE_DELETE_BULK.value: "messages",
     }
 
     def __init__(self, state: ConnectionState) -> None:
@@ -88,13 +89,19 @@ class EventConverter:
             )
             return (self._CREATE_MODELS[event]._from_payload(payload),)
         if data and event in self._DELETE_MODELS:
-            if event == enums.GatewayEvent.MESSAGE_DELETE.value:
-                old = self._state.messages.get(
+            if event == enums.GatewayEvent.MESSAGE_DELETE_BULK.value:
+                channel_id = int(data["channel_id"])
+                old = [
+                    self._state.messages.remove(channel_id, int(message_id))
+                    for message_id in data["ids"]
+                ]
+            elif event == enums.GatewayEvent.MESSAGE_DELETE.value:
+                old = self._state.messages.remove(
                     int(data["channel_id"]), int(data["id"])
                 )
             else:
                 store_name = self._DELETE_MODELS[event]
-                old = getattr(self._state, store_name).get(int(data["id"]))
+                old = getattr(self._state, store_name).remove(int(data["id"]))
             return (old,)
         return (data,)
 
