@@ -48,7 +48,7 @@ class ConnectionState:
         self.channels = SnowflakeStore[Channel]()
         self.messages = MessageStore()
 
-    def _update_cache(self, event: str, data: dict) -> None:
+    def update_cache(self, event: str, data: dict) -> None:
         """Update the cache stores from a gateway event payload."""
         try:
             match enums.GatewayEvent(event):
