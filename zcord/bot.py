@@ -91,12 +91,14 @@ class EventConverter:
         if data and event in self._DELETE_MODELS:
             if event == enums.GatewayEvent.MESSAGE_DELETE_BULK.value:
                 channel_id = int(data["channel_id"])
-                message_ids = [int(message_id) for message_id in data["ids"]]
                 old = [
-                    self._state.messages.remove(channel_id, int(message_id))
-                    for message_id in message_ids
+                    m
+                    for m in [
+                        self._state.messages.remove(channel_id, int(message_id))
+                        for message_id in [int(m_id) for m_id in data["ids"]]
+                    ]
+                    if m is not None
                 ]
-                old = list(filter(lambda message: message is not None, old))
             elif event == enums.GatewayEvent.MESSAGE_DELETE.value:
                 old = self._state.messages.remove(
                     int(data["channel_id"]), int(data["id"])
