@@ -356,9 +356,9 @@ class Bot:
         except Exception:
             log.exception("Failed to convert event %s", event)
             log.debug("%r", data)
-            return
-        self._dispatcher.dispatch(event, args)
-        self._state._update_cache(event, data)
+        finally:
+            self._dispatcher.dispatch(event, args)
+            self._state.update_cache(event, data)
 
     async def fetch_current_application(self) -> Application:
         """Fetch info about the current application."""

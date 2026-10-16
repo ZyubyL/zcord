@@ -71,7 +71,7 @@ def test_message_store_get_do_refresh_lru():
 def test_update_cache_populates_stores():
     state = ConnectionState("mock.token")
 
-    state._update_cache(
+    state.update_cache(
         str(GatewayEvent.GUILD_CREATE),
         {
             "id": str(GUILD_ID),
@@ -79,7 +79,7 @@ def test_update_cache_populates_stores():
             "channels": [{"id": str(CHANNEL_ID)}],
         },
     )
-    state._update_cache(
+    state.update_cache(
         str(GatewayEvent.MESSAGE_CREATE),
         {
             "id": str(MESSAGE_ID),
