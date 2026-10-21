@@ -107,6 +107,19 @@ class Model:
             kwargs[f.name] = value
         return cls(**kwargs)
 
+    def _merge(self, other: Self) -> Self:
+        """Merge the other object of the same type to this one.
+
+        Returns:
+            The merged object.
+        """
+        updates = {}
+        for f in dataclasses.fields(self):
+            value = getattr(other, f.name)
+            if value is not MISSING:
+                updates[f.name] = value
+        return dataclasses.replace(self, **updates)
+
     def _check_before(self) -> None:
         pass
 

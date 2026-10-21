@@ -76,10 +76,16 @@ class ConnectionState:
 
     def _cache_user(self, data: dict) -> None:
         user = User._from_payload(data)
+        old = self.users.get(user.id)
+        if old is not None:
+            user = old._merge(user)
         self.users.set(user.id, user)
 
     def _cache_guild(self, data: dict) -> None:
         guild = Guild._from_payload(data)
+        old = self.guilds.get(guild.id)
+        if old is not None:
+            guild = old._merge(guild)
         self.guilds.set(guild.id, guild)
 
     def _cache_guild_channels(self, data: dict) -> None:
@@ -90,19 +96,27 @@ class ConnectionState:
 
     def _cache_channel(self, data: dict) -> None:
         channel = Channel._from_payload(data)
+        old = self.channels.get(data["id"])
+        if old is not None:
+            channel = old._merge(channel)
         if channel.id is MISSING:
+            # This should not happen
             raise RuntimeError("Failed to cache a channel with no ID")
         self.channels.set(channel.id, channel)
 
     def _cache_message(self, data: dict) -> None:
         message = Message._from_payload(data)
+        old = self.messages.get(data["channel_id"], data["id"])
+        if old is not None:
+            message = old._merge(message)
         if message.id is MISSING or message.channel_id is MISSING:
+            # This should not happen
             raise RuntimeError(
                 "Failed to cache a message with no ID or with no channel_id"
             )
         self.messages.set(message.channel_id, message.id, message)
         if message.author is not MISSING:
-            self.users.set(message.author.id, message.author)
+            self._cache_user(data["author"])
 
     async def send_message(
         self,
