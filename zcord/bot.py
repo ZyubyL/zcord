@@ -346,12 +346,15 @@ class Bot:
 
     def _dispatch(self, event: str, data: dict) -> None:
         try:
-            event = enums.GatewayEvent(event)
-            args = self._converter.convert(event, data)
-            self._dispatcher.dispatch(event, args)
-            self._state.update_cache(event, data)
-        except ValueError:
-            log.warning("Event %s, does not")
+            try:
+                parsed = enums.GatewayEvent(event)
+            except ValueError:
+                log.debug("Unhandled gateway event %s", event)
+                self._dispatcher.dispatch(event, (data,))
+                return
+            args = self._converter.convert(parsed, data)
+            self._dispatcher.dispatch(parsed, args)
+            self._state.update_cache(parsed, data)
         except Exception:
             log.exception("Failed to convert event %s", event)
             log.debug("%r", data)
