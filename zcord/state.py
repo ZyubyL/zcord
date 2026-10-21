@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import logging
 from typing import TYPE_CHECKING
 
@@ -82,7 +83,9 @@ class ConnectionState:
         self.guilds.set(guild.id, guild)
 
     def _cache_guild_channels(self, data: dict) -> None:
-        for raw_channel in data.get("channels", []):
+        for raw_channel in itertools.chain(
+            data.get("channels", []), data.get("threads", [])
+        ):
             self._cache_channel(raw_channel)
 
     def _cache_channel(self, data: dict) -> None:
