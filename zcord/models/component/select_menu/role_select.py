@@ -23,7 +23,9 @@ class RoleSelect(AutoPopulatedSelect):
 
     type: enums.ComponentType = enums.ComponentType.ROLE_SELECT
 
-    _default_value_type: ClassVar[Literal["user", "role", "channel"]] = "role"
+    _default_value_type: ClassVar[Literal["user", "role", "channel"] | None] = (
+        "role"
+    )
 
 
 Component._registry[enums.ComponentType.ROLE_SELECT] = RoleSelect

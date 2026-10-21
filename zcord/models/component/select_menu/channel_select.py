@@ -23,7 +23,7 @@ class ChannelSelect(AutoPopulatedSelect):
 
     type: enums.ComponentType = enums.ComponentType.CHANNEL_SELECT
 
-    _default_value_type: ClassVar[Literal["user", "role", "channel"]] = (
+    _default_value_type: ClassVar[Literal["user", "role", "channel"] | None] = (
         "channel"
     )
 
