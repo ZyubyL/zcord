@@ -96,27 +96,19 @@ class ConnectionState:
 
     def _cache_channel(self, data: dict) -> None:
         channel = Channel._from_payload(data)
-        old = self.channels.get(data["id"])
+        old = self.channels.get(channel.id)
         if old is not None:
             channel = old._merge(channel)
-        if channel.id is MISSING:
-            # This should not happen
-            raise RuntimeError("Failed to cache a channel with no ID")
         self.channels.set(channel.id, channel)
 
     def _cache_message(self, data: dict) -> None:
         message = Message._from_payload(data)
-        old = self.messages.get(data["channel_id"], data["id"])
+        old = self.messages.get(message.channel_id, message.id)
         if old is not None:
             message = old._merge(message)
-        if message.id is MISSING or message.channel_id is MISSING:
-            # This should not happen
-            raise RuntimeError(
-                "Failed to cache a message with no ID or with no channel_id"
-            )
         self.messages.set(message.channel_id, message.id, message)
         if message.author is not MISSING:
-            self._cache_user(data["author"])
+            self._cache_user(message.author._to_payload())
 
     async def send_message(
         self,

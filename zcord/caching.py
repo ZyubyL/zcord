@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections import OrderedDict
 from typing import TYPE_CHECKING
 
+from zcord.missing import MISSING
+
 if TYPE_CHECKING:
     from zcord.models.message import Message
     from zcord.models.snowflake import Snowflake
@@ -14,20 +16,31 @@ class SnowflakeStore[T]:
     def __init__(self) -> None:
         self._items: dict[int, T] = {}
 
-    def get(self, key: int | Snowflake) -> T | None:
+    def _make_key(self, key: int | Snowflake | None | MISSING) -> int | None:
+        if key is None or key is MISSING:
+            return None
+        return int(key)
+
+    def get(self, key: int | Snowflake | None | MISSING) -> T | None:
         """
         Returns:
             The stored object.
             Or [`None`][] if absent.
         """
+        if (key := self._make_key(key)) is None:
+            return None
         return self._items.get(key)
 
-    def set(self, key: int | Snowflake, value: T) -> None:
+    def set(self, key: int | Snowflake | None | MISSING, value: T) -> None:
         """Store `value` under `key`, replacing any existing object."""
+        if (key := self._make_key(key)) is None:
+            return
         self._items[key] = value
 
-    def remove(self, key: int | Snowflake) -> T | None:
+    def remove(self, key: int | Snowflake | None | MISSING) -> T | None:
         """Remove and return the stored object, or [`None`][] is absent."""
+        if (key := self._make_key(key)) is None:
+            return
         return self._items.pop(key, None)
 
     def all(self) -> tuple[T, ...]:
@@ -65,15 +78,32 @@ class MessageStore:
 
         self._items: OrderedDict[tuple[int, int], Message] = OrderedDict()
 
+    def _make_key(
+        self,
+        channel_id: int | Snowflake | None | MISSING,
+        message_id: int | Snowflake | None | MISSING,
+    ) -> tuple[int, int] | None:
+        if (
+            channel_id is None
+            or channel_id is MISSING
+            or message_id is None
+            or message_id is MISSING
+        ):
+            return None
+        return (int(channel_id), int(message_id))
+
     def get(
-        self, channel_id: int | Snowflake, message_id: int | Snowflake
+        self,
+        channel_id: int | Snowflake | None | MISSING,
+        message_id: int | Snowflake | None | MISSING,
     ) -> Message | None:
         """
         Returns:
             The stored message.
             Or [`None`][] if absent.
         """
-        key = (channel_id, message_id)
+        if (key := self._make_key(channel_id, message_id)) is None:
+            return
         message = self._items.get(key)
         if message is not None:
             self._items.move_to_end(key)
@@ -81,26 +111,31 @@ class MessageStore:
 
     def set(
         self,
-        channel_id: int | Snowflake,
-        message_id: int | Snowflake,
+        channel_id: int | Snowflake | None | MISSING,
+        message_id: int | Snowflake | None | MISSING,
         message: Message,
     ) -> None:
-        """Store `message`, replacing any existing one.
+        """Store [`Message`][], replacing any existing one.
 
         Notes:
             Evicts the least recently used message when over capacity.
         """
-        key = (channel_id, message_id)
+        if (key := self._make_key(channel_id, message_id)) is None:
+            return
         self._items[key] = message
         self._items.move_to_end(key)
         if len(self._items) > self._max_messages:
             self._items.popitem(last=False)
 
     def remove(
-        self, channel_id: int | Snowflake, message_id: int | Snowflake
+        self,
+        channel_id: int | Snowflake | None | MISSING,
+        message_id: int | Snowflake | None | MISSING,
     ) -> Message | None:
         """Remove and return the stored message, or [`None`][] if absent."""
-        return self._items.pop((channel_id, message_id), None)
+        if (key := self._make_key(channel_id, message_id)) is None:
+            return None
+        return self._items.pop(key, None)
 
     def all(self) -> tuple[Message, ...]:
         """
