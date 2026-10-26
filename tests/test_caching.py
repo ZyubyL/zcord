@@ -68,11 +68,45 @@ def test_message_store_get_do_refresh_lru():
     assert store.get(CHANNEL_ID, first.id) is first
 
 
+def test_message_store_update():
+    state = ConnectionState("test")
+    old = Message._from_payload(
+        {
+            "id": "1",
+            "tts": True,
+            "edited_timestamp": None,
+            "channel_id": "2",
+            "content": "This would be updated",
+        }
+    )
+    state.messages.set(old.channel_id, old.id, old)
+    assert state.messages.get(old.channel_id, old.id) == old
+
+    # NOTE: Message.tts is always False in UPDATE event
+    new = Message._from_payload(
+        {
+            "id": "1",
+            "tts": False,
+            "edited_timestamp": "2017-07-11T17:27:07.299000+00:00",
+            "channel_id": "2",
+            "content": "This is updated normally",
+        }
+    )
+    cached = state.messages.get(new.channel_id, new.id)
+    assert cached is not None
+    state._cache_message(new._to_payload())
+    updated = state.messages.get(new.channel_id, new.id)
+    assert updated is not None
+    assert updated.tts == old.tts
+    assert updated.edited_timestamp == new.edited_timestamp
+    assert updated.content == new.content
+
+
 def test_update_cache_populates_stores():
     state = ConnectionState("mock.token")
 
     state.update_cache(
-        str(GatewayEvent.GUILD_CREATE),
+        GatewayEvent.GUILD_CREATE,
         {
             "id": str(GUILD_ID),
             "name": "test",
@@ -80,7 +114,7 @@ def test_update_cache_populates_stores():
         },
     )
     state.update_cache(
-        str(GatewayEvent.MESSAGE_CREATE),
+        GatewayEvent.MESSAGE_CREATE,
         {
             "id": str(MESSAGE_ID),
             "channel_id": str(CHANNEL_ID),
