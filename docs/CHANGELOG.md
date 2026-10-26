@@ -2,6 +2,12 @@
 
 This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
+---
+
+## 2026.0.8 - [Unreleased]
+
+---
+
 ## 2026.0.7 - 2026/10/26
 
 ### The cache system has been reworked.
