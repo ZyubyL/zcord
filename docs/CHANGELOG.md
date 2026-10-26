@@ -2,6 +2,34 @@
 
 This project uses mixed Calendar versioning: YYYY.feature.patch(.tag)
 
+## 2026.0.7 - 2026/10/26
+
+### The cache system has been reworked.
+
+### Added:
+
+- Gateway:
+  - `Bot` now has 2 new init parameters.
+    - `presence` which will send the status and presence info on start up. (More below)
+    - `large_threshold` (pre-added) which limit the total number of members where the gateway stops sending offline members in the guild member list.
+- Models:
+  - `MentionableSelect`, `ChannelSelect` objects, which now are `AutoPopulatedSelect` subclasses (including previous `RoleSelect` and `UserSelect`)
+  - `PresenceUpdate` object (for `Bot`'s `presence` init field)
+  - `Activity` related objects
+  -
+- Bitfields:
+  - `ActivityFlags`
+- Enums:
+  - `ActivityType`
+  - `Status`
+  - `StatusDisplayType`
+
+### Removed:
+
+- `CDN` and `REST` classes. The static methods inside are now free functions.
+
+---
+
 ## 2026.0.6 - 2026/10/10
 
 ### Added:

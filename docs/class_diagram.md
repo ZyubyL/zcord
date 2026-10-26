@@ -10,12 +10,15 @@ classDiagram
     direction LR
 
     Component <|-- ActionRow
+    Model <|-- Activity
     Model <|-- Application
     InteractionData <|-- ApplicationCommandInteractionData
     Model <|-- Attachment
+    SelectMenu <|-- AutoPopulatedSelect
     Model <|-- AvatarDecorationData
     Component <|-- Button
     Model <|-- Channel
+    AutoPopulatedSelect <|-- ChannelSelect
     Model <|-- Collectibles
     Model <|-- Component
     InteractionData <|-- ComponentInteractionData
@@ -35,6 +38,7 @@ classDiagram
     Model <|-- InteractionData
     Model <|-- InteractionMetadata
     Model <|-- Member
+    AutoPopulatedSelect <|-- MentionableSelect
     Model <|-- Message
     InteractionData <|-- ModalSubmitInteractionData
     Model <|-- Nameplate
@@ -43,11 +47,13 @@ classDiagram
     Model <|-- PollAnswerCount
     Model <|-- PollMedia
     Model <|-- PollResults
+    Model <|-- PresenceUpdate
     Model <|-- PrimaryGuild
     Model <|-- Reaction
     Model <|-- ReactionCountDetails
     Model <|-- Role
     Model <|-- RoleColors
+    AutoPopulatedSelect <|-- RoleSelect
     Model <|-- RoleSubscriptionData
     Model <|-- RoleTags
     Component <|-- SelectMenu
@@ -60,5 +66,5 @@ classDiagram
     Model <|-- ThreadMember
     Model <|-- ThreadMetadata
     Model <|-- User
-    SelectMenu <|-- UserSelect
+    AutoPopulatedSelect <|-- UserSelect
 ```
