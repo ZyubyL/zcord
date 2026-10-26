@@ -45,7 +45,7 @@ def test_ready_payload_unwrap_to_user():
 def test_update_event_args():
     state = ConnectionState("mock.token")
     old = Guild._from_payload({"id": "456", "name": "before"})
-    state._guilds[456] = old
+    state.guilds.set(456, old)
     converter = EventConverter(state)
 
     old_arg, new = converter.convert(
