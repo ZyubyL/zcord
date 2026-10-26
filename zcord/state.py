@@ -105,7 +105,10 @@ class ConnectionState:
         message = Message._from_payload(data)
         old = self.messages.get(message.channel_id, message.id)
         if old is not None:
-            message = old._merge(message)
+            # NOTE: Message.tts in MESSAGE_UPDATE event is always False
+            # NOTE: So we have to merge it by hand
+            message = old._merge(message).set_tts(old.tts)
+
         self.messages.set(message.channel_id, message.id, message)
         if message.author is not MISSING:
             self._cache_user(message.author._to_payload())
