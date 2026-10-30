@@ -83,7 +83,7 @@ dev = [
     "mkdocs-materialx==10.2.2",
     "mkdocstrings==1.0.8",
     "mkdocstrings-python==2.0.10",
-    "pytest==9.1.1",
+    "pytest==9.2.0",
     "pytest-asyncio==1.4.1",
     "ruff==0.17.3",
     "ty==0.0.95",
