@@ -11,6 +11,7 @@ from .guild import (
     ExplicitContentFilterLevel,
     MessageNotificationLevel,
     MFALevel,
+    PremiumTier,
     VerificationLevel,
 )
 from .interaction import (
@@ -41,6 +42,7 @@ __all__ = [
     "MessageNotificationLevel",
     "MessageReferenceType",
     "MessageType",
+    "PremiumTier",
     "Status",
     "StatusDisplayType",
     "StickerFormatType",

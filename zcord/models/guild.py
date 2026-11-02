@@ -89,7 +89,7 @@ class Guild(Model):
     banner: str | None
     """The banner hash of the guild."""
 
-    premium_tier: int
+    premium_tier: enums.PremiumTier
     """Guild boost level."""
 
     preferred_locale: str
@@ -174,6 +174,7 @@ class Guild(Model):
         "widget_channel_id": Snowflake,
         "stickers": Sticker,
         "emojis": Emoji,
+        "premium_tier": enums.PremiumTier,
     }
 
     def icon_url(
