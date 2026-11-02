@@ -41,7 +41,7 @@ from .embed import (
     EmbedVideo,
 )
 from .emoji import Emoji
-from .guild import Guild
+from .guild import Guild, IncidentsData
 from .install_params import InstallParams
 from .interaction import (
     ApplicationCommandInteractionData,
@@ -99,6 +99,7 @@ __all__ = [
     "EmbedVideo",
     "Emoji",
     "Guild",
+    "IncidentsData",
     "InstallParams",
     "Interaction",
     "InteractionData",
