@@ -7,6 +7,7 @@ from zcord import bitfields, cdn, enums
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.emoji import Emoji
+from zcord.models.guild.incidents_data import IncidentsData
 from zcord.models.role import Role
 from zcord.models.snowflake import Snowflake
 from zcord.models.sticker import Sticker
@@ -111,7 +112,7 @@ class Guild(Model):
     guilds receive safety alerts from Discord.
     """
 
-    incidents_data: Any | None
+    incidents_data: IncidentsData | None
     """The incidents data of this guild."""
 
     icon_hash: str | None | MISSING = MISSING
@@ -175,6 +176,7 @@ class Guild(Model):
         "stickers": Sticker,
         "emojis": Emoji,
         "premium_tier": enums.PremiumTier,
+        "incidents_data": IncidentsData,
     }
 
     def icon_url(
