@@ -60,7 +60,7 @@ select = [
     "FURB",# refurb
 ]
 ignore = [
-    "PLR0913", # too many argumets
+    "PLR0913", # too many arguments
     "PLR2004", # magic value comparison
     "RUF036",  # None is not at the end of the union
 ]
