@@ -101,7 +101,7 @@ class Guild(Model):
     guilds receive notices from Discord.
     """
 
-    nsfw_level: int
+    nsfw_level: enums.AgeRestrictionLevel
     """Guild age-restriction level."""
 
     premium_progress_bar_enabled: bool
@@ -177,6 +177,7 @@ class Guild(Model):
         "emojis": Emoji,
         "premium_tier": enums.PremiumTier,
         "incidents_data": IncidentsData,
+        "nsfw_level": enums.AgeRestrictionLevel,
     }
 
     def icon_url(

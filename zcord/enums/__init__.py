@@ -8,6 +8,7 @@ from .channel import ChannelType
 from .component import ButtonStyle, ComponentType
 from .gateway import GatewayEvent, Status
 from .guild import (
+    AgeRestrictionLevel,
     ExplicitContentFilterLevel,
     MessageNotificationLevel,
     MFALevel,
@@ -26,6 +27,7 @@ from .team import MembershipState
 
 __all__ = [
     "ActivityType",
+    "AgeRestrictionLevel",
     "BaseThemeType",
     "ButtonStyle",
     "ChannelType",
