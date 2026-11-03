@@ -126,3 +126,13 @@ def team_icon(
     format: ImageFormat | None,
 ) -> str:
     return _build(f"/team-icons/{team_id}", hash, size, format)
+
+
+def guild_splash(
+    *,
+    guild_id: int,
+    hash: str,
+    size: int,
+    format: ImageFormat | None,
+) -> str:
+    return _build(f"/splashes/{guild_id}", hash, size, format)

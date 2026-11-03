@@ -209,3 +209,18 @@ class Guild(Model):
             size=size,
             format=format,
         )
+
+    def splash_url(
+        self,
+        size: int = cdn.MAX_SIZE,
+        format: types.ImageFormat | None = None,
+    ) -> str | None:
+        """The URL of the guild's splash."""
+        if self.splash is None:
+            return None
+        return cdn.guild_splash(
+            guild_id=self.id,
+            hash=self.splash,
+            size=size,
+            format=format,
+        )
