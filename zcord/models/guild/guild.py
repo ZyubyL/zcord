@@ -63,7 +63,7 @@ class Guild(Model):
     emojis: tuple[Emoji, ...]
     """A list of custom guild emoji."""
 
-    features: tuple[Any]
+    features: tuple[str, ...]
     """A list of enabled guild features."""
 
     mfa_level: enums.MFALevel
