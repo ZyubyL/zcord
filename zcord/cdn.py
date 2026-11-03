@@ -146,3 +146,13 @@ def guild_discovery_splash(
     format: ImageFormat | None,
 ) -> str:
     return _build(f"/discovery-splashes/{guild_id}", hash, size, format)
+
+
+def role_icon(
+    *,
+    role_id: int,
+    hash: str,
+    size: int,
+    format: ImageFormat | None,
+) -> str:
+    return _build(f"/role-icons/{role_id}", hash, size, format)

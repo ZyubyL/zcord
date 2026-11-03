@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar, Literal, overload
 
-from zcord import bitfields
+from zcord import bitfields, cdn, types
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.snowflake import Snowflake
@@ -115,6 +115,21 @@ class Role(Model):
         "flags": bitfields.RoleFlags,
         "tags": RoleTags,
     }
+
+    def icon_url(
+        self,
+        size: int = cdn.MAX_SIZE,
+        format: types.ImageFormat | None = None,
+    ) -> str | None:
+        """The URL of the role's icon."""
+        if self.icon is None or self.icon is MISSING:
+            return None
+        return cdn.role_icon(
+            role_id=self.id,
+            hash=self.icon,
+            size=size,
+            format=format,
+        )
 
 
 @dataclass(frozen=True, slots=True)
