@@ -103,7 +103,7 @@ class Member(Model):
     @property
     def guild(self) -> Guild | None:
         """The member's guild."""
-        return self.guild
+        return self._guild
 
     @property
     def id(self) -> Snowflake | None:
