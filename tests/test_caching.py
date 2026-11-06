@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from zcord import MISSING, Member
-from zcord.caching import MemberStore, MessageStore, SnowflakeStore
+from zcord.caching import PairStore, SnowflakeStore
 from zcord.enums import GatewayEvent
 from zcord.models import Guild, Message
 from zcord.state import ConnectionState
@@ -42,7 +42,7 @@ def test_snowflake_store():
 
 
 def test_message_store_evicts_lru():
-    store = MessageStore(max_messages=MAX_MESSAGES)
+    store = PairStore[Message](max_items=MAX_MESSAGES)
     first, second, third = map(make_message, (1, 2, 3))
     assert first.id is not MISSING
     assert second.id is not MISSING
@@ -57,7 +57,7 @@ def test_message_store_evicts_lru():
 
 
 def test_message_store_get_do_refresh_lru():
-    store = MessageStore(max_messages=MAX_MESSAGES)
+    store = PairStore[Message](max_items=MAX_MESSAGES)
     first, second, third = map(make_message, (1, 2, 3))
     assert first.id is not MISSING
     assert second.id is not MISSING
@@ -132,8 +132,9 @@ def test_update_cache_populates_stores():
     assert state.messages.get(CHANNEL_ID, MESSAGE_ID) is not None
     assert state.users.get(AUTHOR_ID) is not None
 
-def test_member_store():
-    store = MemberStore()
+
+def test_pair_store():
+    store = PairStore()
     member = make_members(MEMBER_ID)
     store.set(GUILD_ID, member.id, member)
 

@@ -5,7 +5,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from zcord import enums
-from zcord.caching import MemberStore, MessageStore, SnowflakeStore
+from zcord.caching import PairStore, SnowflakeStore
 from zcord.http import rest
 from zcord.http.client import HTTPClient
 from zcord.missing import MISSING
@@ -41,15 +41,16 @@ class ConnectionState:
     guilds: SnowflakeStore[Guild]
     users: SnowflakeStore[User]
     channels: SnowflakeStore[Channel]
-    messages: MessageStore
+    members: PairStore[Member]
+    messages: PairStore[Message]
 
     def __init__(self, token: str):
         self._http = HTTPClient(token)
         self.guilds = SnowflakeStore[Guild]()
         self.users = SnowflakeStore[User]()
         self.channels = SnowflakeStore[Channel]()
-        self.members = MemberStore()
-        self.messages = MessageStore()
+        self.members = PairStore()
+        self.messages = PairStore(max_items=1000)
 
     def update_cache(self, event: enums.GatewayEvent, data: dict) -> None:
         """Update the cache stores from a gateway event payload."""
