@@ -96,3 +96,9 @@ class GatewayEvent(StrEnum):
 
     This happens when requesting all guild members too often.
     """
+
+    GUILD_MEMBERS_CHUNK = "GUILD_MEMBERS_CHUNK"
+    """Discord's response to requesting guild members.
+
+    This event contains a chunk of the guild's \
+    [`Member`][zcord.Member] objects."""

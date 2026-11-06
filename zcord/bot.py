@@ -15,7 +15,7 @@ from zcord.gateway import Gateway
 from zcord.missing import MISSING
 from zcord.models.application import Application, _ApplicationUpdate
 from zcord.models.channel import Channel
-from zcord.models.guild import Guild
+from zcord.models.guild import Guild, Member
 from zcord.models.install_params import InstallParams
 from zcord.models.interaction.interaction import Interaction
 from zcord.models.message import Message
@@ -43,7 +43,9 @@ class EventConverter:
 
     def convert(
         self, event: enums.GatewayEvent, data: dict
-    ) -> tuple[list[Message | None] | Model | None | dict, ...]:
+    ) -> tuple[
+        list[Message | None] | tuple[Member, ...] | Model | None | dict, ...
+    ]:
         """Build the listener args for a gateway event.
 
         Returns:
@@ -100,6 +102,13 @@ class EventConverter:
                 return (old,)
             case enums.GatewayEvent.INTERACTION_CREATE:
                 return (Interaction._from_payload(data),)
+            case enums.GatewayEvent.GUILD_MEMBERS_CHUNK:
+                guild = self._state.guilds.get(int(data["guild_id"]))
+                members = tuple(
+                    Member._from_payload(raw).set_guild(guild)
+                    for raw in data["members"]
+                )
+                return (members,)
             case _:
                 return (data,)
 

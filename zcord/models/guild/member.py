@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, ClassVar
 from zcord import bitfields, cdn, types
 from zcord.missing import MISSING
 from zcord.models.avatar_decoration_data import AvatarDecorationData
-from zcord.models.base import Model
+from zcord.models.base import Model, set_field_value
 from zcord.models.collectibles import Collectibles
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
@@ -162,3 +162,6 @@ class Member(Model):
         ):
             return None
         return self.avatar_decoration_data.asset_url(size=size)
+
+    def set_guild(self, guild: Guild | None) -> Member:
+        return set_field_value(self, "_guild", guild)

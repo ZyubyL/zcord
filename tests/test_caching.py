@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from zcord import MISSING
-from zcord.caching import MessageStore, SnowflakeStore
+from zcord import MISSING, Member
+from zcord.caching import MemberStore, MessageStore, SnowflakeStore
 from zcord.enums import GatewayEvent
 from zcord.models import Guild, Message
 from zcord.state import ConnectionState
@@ -10,6 +10,7 @@ CHANNEL_ID = 123
 GUILD_ID = 456
 MESSAGE_ID = 789
 AUTHOR_ID = 67
+MEMBER_ID = 69
 MAX_MESSAGES = 2
 
 
@@ -21,6 +22,10 @@ def make_message(message_id: int) -> Message:
     return Message._from_payload(
         {"id": str(message_id), "channel_id": str(CHANNEL_ID)}
     )
+
+
+def make_members(user_id: int) -> Member:
+    return Member._from_payload({"user": {"id": str(user_id)}})
 
 
 def test_snowflake_store():
@@ -126,3 +131,15 @@ def test_update_cache_populates_stores():
     assert state.channels.get(CHANNEL_ID) is not None
     assert state.messages.get(CHANNEL_ID, MESSAGE_ID) is not None
     assert state.users.get(AUTHOR_ID) is not None
+
+def test_member_store():
+    store = MemberStore()
+    member = make_members(MEMBER_ID)
+    store.set(GUILD_ID, member.id, member)
+
+    assert store.get(GUILD_ID, member.id) is member
+    assert store.all() == (member,)
+    assert len(store) == 1
+
+    assert store.remove(GUILD_ID, member.id) is member
+    assert store.get(GUILD_ID, member.id) is None

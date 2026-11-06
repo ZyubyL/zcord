@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from zcord.missing import MISSING
 
 if TYPE_CHECKING:
+    from zcord.models.guild.member import Member
     from zcord.models.message import Message
     from zcord.models.snowflake import Snowflake
 
@@ -47,6 +48,72 @@ class SnowflakeStore[T]:
         """
         Returns:
             All stored objects.
+        """
+        return tuple(self._items.values())
+
+    def __len__(self) -> int:
+        return len(self._items)
+
+
+class MemberStore:
+    """Store all guild members keyed by `(guild_id, user_id)`."""
+
+    def __init__(self) -> None:
+        self._items: dict[tuple[int, int], Member] = {}
+
+    def _make_key(
+        self,
+        guild_id: int | Snowflake | None | MISSING,
+        user_id: int | Snowflake | None | MISSING,
+    ) -> tuple[int, int] | None:
+        if (
+            guild_id is None
+            or guild_id is MISSING
+            or user_id is None
+            or user_id is MISSING
+        ):
+            return None
+        return (int(guild_id), int(user_id))
+
+    def get(
+        self,
+        guild_id: int | Snowflake | None | MISSING,
+        user_id: int | Snowflake | None | MISSING,
+    ) -> Member | None:
+        """
+        Returns:
+            The stored member.
+            Or [`None`][] if absent.
+        """
+        if (key := self._make_key(guild_id, user_id)) is None:
+            return None
+        return self._items.get(key)
+
+    def set(
+        self,
+        guild_id: int | Snowflake | None | MISSING,
+        user_id: int | Snowflake | None | MISSING,
+        member: Member,
+    ) -> None:
+        """Store [`Member`][], replacing any existing one."""
+        if (key := self._make_key(guild_id, user_id)) is None:
+            return
+        self._items[key] = member
+
+    def remove(
+        self,
+        guild_id: int | Snowflake | None | MISSING,
+        user_id: int | Snowflake | None | MISSING,
+    ) -> Member | None:
+        """Remove and return the stored member, or [`None`][] if absent."""
+        if (key := self._make_key(guild_id, user_id)) is None:
+            return None
+        return self._items.pop(key, None)
+
+    def all(self) -> tuple[Member, ...]:
+        """
+        Returns:
+            All stored members.
         """
         return tuple(self._items.values())
 
