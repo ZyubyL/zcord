@@ -440,7 +440,7 @@ class Gateway:
         log.debug("Sending heartbeat...")
         await self._send(self._heartbeat_payload)
 
-    def _request_guild_member_payload(self, guild_id: int) -> dict:
+    def _request_guild_members_payload(self, guild_id: int) -> dict:
         return {
             "op": GatewayOpcode.REQUEST_GUILD_MEMBERS,
             "d": {
@@ -452,7 +452,7 @@ class Gateway:
 
     async def _send_request_guild_members(self, guild_id: int) -> None:
         log.debug("Requesting members for guild %s", guild_id)
-        await self._send(self._request_guild_member_payload(guild_id))
+        await self._send(self._request_guild_members_payload(guild_id))
 
     async def _on_guild_create(self, data: dict) -> None:
         # GUILD_MEMBERS is required to request all guild members
