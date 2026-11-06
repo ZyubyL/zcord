@@ -401,7 +401,7 @@ class Gateway:
                 await self._send_heartbeat()
             case GatewayOpcode.DISPATCH:
                 t = payload.get("t")
-                self._on_dispatch(t, d)
+                await self._on_dispatch(t, d)
             case GatewayOpcode.RECONNECT:
                 log.info("Resuming connection...")
                 await self._disconnect()
@@ -440,10 +440,41 @@ class Gateway:
         log.debug("Sending heartbeat...")
         await self._send(self._heartbeat_payload)
 
-    def _on_dispatch(self, name: str | None, data: Any) -> None:
+    def _request_guild_member_payload(self, guild_id: int) -> dict:
+        return {
+            "op": GatewayOpcode.REQUEST_GUILD_MEMBERS,
+            "d": {
+                "guild_id": guild_id,
+                "query": "",
+                "limit": 0,
+            },
+        }
+
+    async def _send_request_guild_members(self, guild_id: int) -> None:
+        log.debug("Requesting members for guild %s", guild_id)
+        await self._send(self._request_guild_member_payload(guild_id))
+
+    async def _on_guild_create(self, data: dict) -> None:
+        # GUILD_MEMBERS is required to request all guild members
+        if not self._intents & bitfields.Intents.GUILD_MEMBERS:
+            return
+        if data.get("unavailable"):
+            return
+        await self._send_request_guild_members(int(data["id"]))
+
+    def _on_rate_limited(self, data: dict) -> None:
+        log.warning(
+            "We have been rate limited, retry after %.2fs", data["retry_after"]
+        )
+
+    async def _on_dispatch(self, name: str | None, data: Any) -> None:
         log.debug("Dispatch: %s", name)
         if name == str(enums.GatewayEvent.READY):
             self._on_ready(data)
+        elif name == str(enums.GatewayEvent.GUILD_CREATE):
+            await self._on_guild_create(data)
+        elif name == str(enums.GatewayEvent.RATE_LIMITED):
+            self._on_rate_limited(data)
         # forward to external handlers
         if self._dispatch and name:
             self._dispatch(name, data)

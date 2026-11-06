@@ -90,3 +90,9 @@ class GatewayEvent(StrEnum):
 
     This event contains the deleted [`Channel`][zcord.Channel] object.
     """
+
+    RATE_LIMITED = "RATE_LIMITED"
+    """The app hit a gateway rate limit for an opcode.
+
+    This happens when requesting all guild members too often.
+    """
