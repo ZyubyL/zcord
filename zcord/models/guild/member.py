@@ -146,7 +146,7 @@ class Member(Model):
             return None
         if self.user is MISSING:
             return None
-        return cdn.guild_member_avatar(
+        return cdn.guild_member_banner(
             guild_id=self.guild.id,
             user_id=self.user.id,
             hash=self.banner,
