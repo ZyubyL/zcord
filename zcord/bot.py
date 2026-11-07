@@ -210,6 +210,7 @@ class Bot:
         Channel._state = self._state
         Application._state = self._state
         Interaction._state = self._state
+        Guild._state = self._state
 
         self._converter = EventConverter(self._state)
         self._dispatcher = EventDispatcher()

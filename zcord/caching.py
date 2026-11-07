@@ -54,7 +54,12 @@ class SnowflakeStore[T]:
 
 
 class PairStore[T]:
-    """Store objects keyed by a pair of IDs."""
+    """Store objects keyed by a pair of IDs.
+
+    Notes:
+        first key is the ID from an attribute of the value.
+        second key is the ID of the value.
+    """
 
     def __init__(self, max_items: int | None = None) -> None:
         """
@@ -103,6 +108,27 @@ class PairStore[T]:
         if value is not None:
             self._items.move_to_end(key)
         return value
+
+    def get_all_from_first_key(
+        self,
+        first: int | Snowflake | None | MISSING,
+    ) -> tuple[T, ...] | None:
+        """
+        Returns:
+            The stored object with the first key.
+            Or [`None`][] if absent.
+        """
+        values: list[T] = []
+        keys: list[tuple[int, int]] = []
+        for (f, s), value in self._items.items():
+            if f == first:
+                key = self._make_key(f, s)
+                assert key is not None
+                keys.append(key)
+                values.append(value)
+        for key in keys:
+            self._items.move_to_end(key)
+        return None if not values else tuple(values)
 
     def set(
         self,
