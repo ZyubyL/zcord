@@ -12,3 +12,4 @@ class GatewayOpcode(IntEnum):
     RESUME = 6
     RECONNECT = 7
     INVALID_SESSION = 9
+    REQUEST_GUILD_MEMBERS = 8

@@ -14,6 +14,8 @@ from zcord.models.sticker import Sticker
 
 if TYPE_CHECKING:
     from zcord import types
+    from zcord.models.guild.member import Member
+    from zcord.state import ConnectionState
 
 
 @dataclass(frozen=True, slots=True)
@@ -157,6 +159,8 @@ class Guild(Model):
     stickers: tuple[Sticker, ...] | MISSING = MISSING
     """A list of custom guild stickers."""
 
+    _state: ClassVar[ConnectionState | MISSING] = MISSING
+
     _transforms: ClassVar[dict] = {
         "id": Snowflake,
         "owner_id": Snowflake,
@@ -179,6 +183,16 @@ class Guild(Model):
         "incidents_data": IncidentsData,
         "nsfw_level": enums.AgeRestrictionLevel,
     }
+
+    @property
+    def members(self) -> tuple[Member, ...] | None:
+        """All members from the guild.
+
+        Notes:
+            This can be incomplete if the guild is still chunking.
+        """
+        assert self._state is not MISSING
+        return self._state.members.get_all_from_first_key(self.id)
 
     def icon_url(
         self,

@@ -41,7 +41,7 @@ from .embed import (
     EmbedVideo,
 )
 from .emoji import Emoji
-from .guild import Guild, IncidentsData
+from .guild import Guild, IncidentsData, Member
 from .install_params import InstallParams
 from .interaction import (
     ApplicationCommandInteractionData,
@@ -52,7 +52,6 @@ from .interaction import (
     InteractionResponse,
     ModalSubmitInteractionData,
 )
-from .member import Member
 from .message import Message, MessageActivity, MessageReference, MessageSnapshot
 from .poll import Poll, PollAnswer, PollAnswerCount, PollMedia, PollResults
 from .presence_update import PresenceUpdate

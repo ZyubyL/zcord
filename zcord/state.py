@@ -5,13 +5,14 @@ import logging
 from typing import TYPE_CHECKING
 
 from zcord import enums
-from zcord.caching import MessageStore, SnowflakeStore
+from zcord.caching import PairStore, SnowflakeStore
 from zcord.http import rest
 from zcord.http.client import HTTPClient
 from zcord.missing import MISSING
 from zcord.models import (
     Channel,
     Guild,
+    Member,
     Message,
     User,
 )
@@ -40,14 +41,16 @@ class ConnectionState:
     guilds: SnowflakeStore[Guild]
     users: SnowflakeStore[User]
     channels: SnowflakeStore[Channel]
-    messages: MessageStore
+    members: PairStore[Member]
+    messages: PairStore[Message]
 
     def __init__(self, token: str):
         self._http = HTTPClient(token)
         self.guilds = SnowflakeStore[Guild]()
         self.users = SnowflakeStore[User]()
         self.channels = SnowflakeStore[Channel]()
-        self.messages = MessageStore()
+        self.members = PairStore()
+        self.messages = PairStore(max_items=1000)
 
     def update_cache(self, event: enums.GatewayEvent, data: dict) -> None:
         """Update the cache stores from a gateway event payload."""
@@ -59,6 +62,13 @@ class ConnectionState:
             case enums.GatewayEvent.GUILD_CREATE:
                 self._cache_guild(data)
                 self._cache_guild_channels(data)
+                self._cache_guild_members(
+                    int(data["id"]), data.get("members", [])
+                )
+            case enums.GatewayEvent.GUILD_MEMBERS_CHUNK:
+                self._cache_guild_members(
+                    int(data["guild_id"]), data["members"]
+                )
             case enums.GatewayEvent.GUILD_UPDATE:
                 self._cache_guild(data)
             case (
@@ -100,6 +110,23 @@ class ConnectionState:
         if old is not None:
             channel = old._merge(channel)
         self.channels.set(channel.id, channel)
+
+    def _cache_guild_members(
+        self, guild_id: int, raw_members: list[dict]
+    ) -> None:
+        for raw_member in raw_members:
+            self._cache_guild_member(guild_id, raw_member)
+
+    def _cache_guild_member(self, guild_id: int, raw: dict) -> None:
+        member = Member._from_payload(raw)
+        user_id = member.id
+        old = self.members.get(guild_id, user_id)
+        if old is not None:
+            member = old._merge(member)
+        member = member.set_guild(self.guilds.get(guild_id))
+        self.members.set(guild_id, user_id, member)
+        if (user := raw.get("user")) is not None:
+            self._cache_user(user)
 
     def _cache_message(self, data: dict) -> None:
         message = Message._from_payload(data)
