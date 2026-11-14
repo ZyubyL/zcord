@@ -156,3 +156,29 @@ def role_icon(
     format: ImageFormat | None,
 ) -> str:
     return _build(f"/role-icons/{role_id}", hash, size, format)
+
+
+def guild_member_avatar(
+    *,
+    guild_id: int,
+    user_id: int,
+    hash: str,
+    size: int,
+    format: AnimatedFormat | None,
+) -> str:
+    return _build(
+        f"guilds/{guild_id}/users/{user_id}/avatars", hash, size, format
+    )
+
+
+def guild_member_banner(
+    *,
+    guild_id: int,
+    user_id: int,
+    hash: str,
+    size: int,
+    format: AnimatedFormat | None,
+) -> str:
+    return _build(
+        f"guilds/{guild_id}/users/{user_id}/banners", hash, size, format
+    )

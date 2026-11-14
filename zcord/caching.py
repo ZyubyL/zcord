@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 from zcord.missing import MISSING
 
 if TYPE_CHECKING:
-    from zcord.models.message import Message
     from zcord.models.snowflake import Snowflake
 
 
@@ -54,93 +53,115 @@ class SnowflakeStore[T]:
         return len(self._items)
 
 
-class MessageStore:
-    """Bounded store of messages keyed by `(channel_id, message_id)`.
+class PairStore[T]:
+    """Store objects keyed by a pair of IDs.
 
     Notes:
-        Evicts the least recently used message once `max_messages` is \
-        exceeded. Accessing a message refreshes its recency.
+        first key is the ID from an attribute of the value.
+        second key is the ID of the value.
     """
 
-    def __init__(self, max_messages: int = 1000) -> None:
+    def __init__(self, max_items: int | None = None) -> None:
         """
         Args:
-            max_messages:
-                The maximum number of messages to keep.
+            max_items:
+                Maximum number of objects to keep, or [`None`][] for \
+                unbounded.
 
         Raises:
             ValueError:
-                `max_messages` is less than 1.
+                `max_items` is less than 1.
         """
-        if max_messages < 1:
-            raise ValueError("max_messages must be at least 1")
-        self._max_messages = max_messages
+        if max_items is not None and max_items < 1:
+            raise ValueError("max_items must be at least 1")
 
-        self._items: OrderedDict[tuple[int, int], Message] = OrderedDict()
+        self._max_items = max_items
+        self._items: OrderedDict[tuple[int, int], T] = OrderedDict()
 
     def _make_key(
         self,
-        channel_id: int | Snowflake | None | MISSING,
-        message_id: int | Snowflake | None | MISSING,
+        first: int | Snowflake | None | MISSING,
+        second: int | Snowflake | None | MISSING,
     ) -> tuple[int, int] | None:
         if (
-            channel_id is None
-            or channel_id is MISSING
-            or message_id is None
-            or message_id is MISSING
+            first is None
+            or first is MISSING
+            or second is None
+            or second is MISSING
         ):
             return None
-        return (int(channel_id), int(message_id))
+        return (int(first), int(second))
 
     def get(
         self,
-        channel_id: int | Snowflake | None | MISSING,
-        message_id: int | Snowflake | None | MISSING,
-    ) -> Message | None:
+        first: int | Snowflake | None | MISSING,
+        second: int | Snowflake | None | MISSING,
+    ) -> T | None:
         """
         Returns:
-            The stored message.
+            The stored object.
             Or [`None`][] if absent.
         """
-        if (key := self._make_key(channel_id, message_id)) is None:
-            return
-        message = self._items.get(key)
-        if message is not None:
+        if (key := self._make_key(first, second)) is None:
+            return None
+        value = self._items.get(key)
+        if value is not None:
             self._items.move_to_end(key)
-        return message
+        return value
+
+    def get_all_from_first_key(
+        self,
+        first: int | Snowflake | None | MISSING,
+    ) -> tuple[T, ...] | None:
+        """
+        Returns:
+            The stored object with the first key.
+            Or [`None`][] if absent.
+        """
+        values: list[T] = []
+        keys: list[tuple[int, int]] = []
+        for (f, s), value in self._items.items():
+            if f == first:
+                key = self._make_key(f, s)
+                assert key is not None
+                keys.append(key)
+                values.append(value)
+        for key in keys:
+            self._items.move_to_end(key)
+        return None if not values else tuple(values)
 
     def set(
         self,
-        channel_id: int | Snowflake | None | MISSING,
-        message_id: int | Snowflake | None | MISSING,
-        message: Message,
+        first: int | Snowflake | None | MISSING,
+        second: int | Snowflake | None | MISSING,
+        value: T,
     ) -> None:
-        """Store [`Message`][], replacing any existing one.
+        """Store `value`, replacing any existing one.
 
         Notes:
-            Evicts the least recently used message when over capacity.
+            Evicts the LRU object when over capacity.
         """
-        if (key := self._make_key(channel_id, message_id)) is None:
+        if (key := self._make_key(first, second)) is None:
             return
-        self._items[key] = message
+        self._items[key] = value
         self._items.move_to_end(key)
-        if len(self._items) > self._max_messages:
+        if self._max_items is not None and len(self._items) > self._max_items:
             self._items.popitem(last=False)
 
     def remove(
         self,
-        channel_id: int | Snowflake | None | MISSING,
-        message_id: int | Snowflake | None | MISSING,
-    ) -> Message | None:
-        """Remove and return the stored message, or [`None`][] if absent."""
-        if (key := self._make_key(channel_id, message_id)) is None:
+        first: int | Snowflake | None | MISSING,
+        second: int | Snowflake | None | MISSING,
+    ) -> T | None:
+        """Remove and return the stored obejct, or [`None`][] if absent."""
+        if (key := self._make_key(first, second)) is None:
             return None
         return self._items.pop(key, None)
 
-    def all(self) -> tuple[Message, ...]:
+    def all(self) -> tuple[T, ...]:
         """
         Returns:
-            All stored messages.
+            All stored objects.
         """
         return tuple(self._items.values())
 
