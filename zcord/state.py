@@ -69,6 +69,11 @@ class ConnectionState:
                 self._cache_guild_members(
                     int(data["guild_id"]), data["members"]
                 )
+            case (
+                enums.GatewayEvent.GUILD_MEMBER_ADD
+                | enums.GatewayEvent.GUILD_MEMBER_UPDATE
+            ):
+                self._cache_guild_member(int(data["guild_id"]), data)
             case enums.GatewayEvent.GUILD_UPDATE:
                 self._cache_guild(data)
             case (

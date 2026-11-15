@@ -109,6 +109,21 @@ class EventConverter:
                     for raw in data["members"]
                 )
                 return (members,)
+            case enums.GatewayEvent.GUILD_MEMBER_ADD:
+                member = self._state.members.get(
+                    int(data["guild_id"]), data["user"]["id"]
+                )
+                return (member,)
+            case enums.GatewayEvent.GUILD_MEMBER_UPDATE:
+                old = self._state.members.get(
+                    int(data["guild_id"]), data["user"]["id"]
+                )
+                return (old, Member._from_payload(data))
+            case enums.GatewayEvent.GUILD_MEMBER_REMOVE:
+                old = self._state.members.remove(
+                    int(data["guild_id"]), data["user"]["id"]
+                )
+                return (old,)
             case _:
                 return (data,)
 
