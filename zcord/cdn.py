@@ -167,7 +167,7 @@ def guild_member_avatar(
     format: AnimatedFormat | None,
 ) -> str:
     return _build(
-        f"guilds/{guild_id}/users/{user_id}/avatars", hash, size, format
+        f"/guilds/{guild_id}/users/{user_id}/avatars", hash, size, format
     )
 
 
@@ -180,5 +180,5 @@ def guild_member_banner(
     format: AnimatedFormat | None,
 ) -> str:
     return _build(
-        f"guilds/{guild_id}/users/{user_id}/banners", hash, size, format
+        f"/guilds/{guild_id}/users/{user_id}/banners", hash, size, format
     )
