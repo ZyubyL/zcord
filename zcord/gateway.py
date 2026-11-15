@@ -213,6 +213,56 @@ class Heartbeat:
         self._ack.clear()
 
 
+class MemberRequestSender:
+    """Pace guild member requests to stay within gateway ratelimits."""
+
+    SEND_INTERVAL: Final = 1.0
+    """Seconds between member requests, reserving gateway capacity for \
+    heartbeats and identify traffic."""
+
+    def __init__(
+        self,
+        *,
+        send: Callable[[int], Awaitable[None]],
+        sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
+    ) -> None:
+        """
+        Args:
+            send:
+                Call to send one member request for the guild.
+            sleep:
+                Source of the delay between requests.
+        """
+        self._send = send
+        self._sleep = sleep
+
+        self._queue: asyncio.Queue[int] = asyncio.Queue()
+        self._task: asyncio.Task[None] | None = None
+
+    def enqueue(self, guild_id: int) -> None:
+        """Queue a member request for the guild."""
+        self._queue.put_nowait(guild_id)
+
+    async def start(self) -> None:
+        """Start the sender task."""
+        await self.stop()
+        self._task = asyncio.create_task(self._run())
+
+    async def stop(self) -> None:
+        """Cancel the sender task and wait for it to finish."""
+        if self._task is None:
+            return
+        self._task.cancel()
+        await asyncio.gather(self._task, return_exceptions=True)
+        self._task = None
+
+    async def _run(self) -> None:
+        while True:
+            guild_id = await self._queue.get()
+            await self._send(guild_id)
+            await self._sleep(self.SEND_INTERVAL)
+
+
 class Gateway:
     VERSION: Final = 10
     ENCODING: Final = "json"
@@ -287,6 +337,9 @@ class Gateway:
         self._heartbeat = Heartbeat(
             send=self._send_heartbeat,
             on_timeout=self._on_heartbeat_timeout,
+        )
+        self._member_requests = MemberRequestSender(
+            send=self._send_request_guild_members,
         )
 
         self._closed = False
@@ -401,7 +454,7 @@ class Gateway:
                 await self._send_heartbeat()
             case GatewayOpcode.DISPATCH:
                 t = payload.get("t")
-                await self._on_dispatch(t, d)
+                self._on_dispatch(t, d)
             case GatewayOpcode.RECONNECT:
                 log.info("Resuming connection...")
                 await self._disconnect()
@@ -417,6 +470,7 @@ class Gateway:
         interval = d["heartbeat_interval"] / 1000
         log.debug("Hello received, heartbeat interval: %s", interval)
         await self._heartbeat.start(interval)
+        await self._member_requests.start()
         if self._session_id is not None:
             await self._send_resume()
             return
@@ -454,25 +508,25 @@ class Gateway:
         log.debug("Requesting members for guild %s", guild_id)
         await self._send(self._request_guild_members_payload(guild_id))
 
-    async def _on_guild_create(self, data: dict) -> None:
+    def _on_guild_create(self, data: dict) -> None:
         # GUILD_MEMBERS is required to request all guild members
         if not self._intents & bitfields.Intents.GUILD_MEMBERS:
             return
         if data.get("unavailable"):
             return
-        await self._send_request_guild_members(int(data["id"]))
+        self._member_requests.enqueue(int(data["id"]))
 
     def _on_rate_limited(self, data: dict) -> None:
         log.warning(
             "We have been rate limited, retry after %.2fs", data["retry_after"]
         )
 
-    async def _on_dispatch(self, name: str | None, data: Any) -> None:
+    def _on_dispatch(self, name: str | None, data: Any) -> None:
         log.debug("Dispatch: %s", name)
         if name == str(enums.GatewayEvent.READY):
             self._on_ready(data)
         elif name == str(enums.GatewayEvent.GUILD_CREATE):
-            await self._on_guild_create(data)
+            self._on_guild_create(data)
         elif name == str(enums.GatewayEvent.RATE_LIMITED):
             self._on_rate_limited(data)
         # forward to external handlers
@@ -567,6 +621,7 @@ class Gateway:
     ) -> None:
         log.debug("Gateway disconnected (code=%s)", code)
         await self._heartbeat.stop()
+        await self._member_requests.stop()
         await self._close_session(code=code, message=message)
 
     async def close(self) -> None:
