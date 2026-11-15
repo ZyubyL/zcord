@@ -259,7 +259,15 @@ class MemberRequestSender:
     async def _run(self) -> None:
         while True:
             guild_id = await self._queue.get()
-            await self._send(guild_id)
+            try:
+                await self._send(guild_id)
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                log.exception(
+                    "Failed to request guild members for guild %s", guild_id
+                )
+                self.enqueue(guild_id)
             await self._sleep(self.SEND_INTERVAL)
 
 
@@ -526,7 +534,10 @@ class Gateway:
         if name == str(enums.GatewayEvent.READY):
             self._on_ready(data)
         elif name == str(enums.GatewayEvent.GUILD_CREATE):
+            if self._dispatch and name:
+                self._dispatch(name, data)
             self._on_guild_create(data)
+            return
         elif name == str(enums.GatewayEvent.RATE_LIMITED):
             self._on_rate_limited(data)
         # forward to external handlers
