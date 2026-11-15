@@ -90,3 +90,31 @@ class GatewayEvent(StrEnum):
 
     This event contains the deleted [`Channel`][zcord.Channel] object.
     """
+
+    RATE_LIMITED = "RATE_LIMITED"
+    """The app hit a gateway rate limit for an opcode.
+
+    This happens when requesting all guild members too often.
+    """
+
+    GUILD_MEMBERS_CHUNK = "GUILD_MEMBERS_CHUNK"
+    """Discord's response to requesting guild members.
+
+    This event contains a chunk of the guild's \
+    [`Member`][zcord.Member] objects."""
+
+    GUILD_MEMBER_ADD = "GUILD_MEMBER_ADD"
+    """A user joined the guild.
+
+    This event contains the added [`Member`][zcord.Member] object."""
+
+    GUILD_MEMBER_UPDATE = "GUILD_MEMBER_UPDATE"
+    """A guild member was updated.
+
+    This event contains the old and updated \
+    [`Member`][zcord.Member] objects."""
+
+    GUILD_MEMBER_REMOVE = "GUILD_MEMBER_REMOVE"
+    """A guild member was removed.
+
+    This event contains the deleted [`Member`][zcord.Member] object."""

@@ -8,9 +8,9 @@ from zcord.missing import MISSING
 from zcord.models.base import Model, set_field_value
 from zcord.models.channel import Channel
 from zcord.models.guild import Guild
+from zcord.models.guild.member import Member
 from zcord.models.interaction.interaction_data.base import InteractionData
 from zcord.models.interaction.interaction_response import InteractionResponse
-from zcord.models.member import Member
 from zcord.models.snowflake import Snowflake
 from zcord.models.user import User
 

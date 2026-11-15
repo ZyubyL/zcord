@@ -7,6 +7,7 @@ class MemberFlags(IntFlag):
     """
     | Flag | Value | Description |
     |------|-------|-------------|
+    | `UNKNOWN` | `0` | Default flag from Discord docs. |
     | `DID_REJOIN` | `1 << 0` | Member has left and rejoin the guild. |
     | `COMPLETED_ONBOARDING` | `1 << 1` | Member has completed the onboarding \
     process. |
@@ -27,6 +28,8 @@ class MemberFlags(IntFlag):
     | `AUTOMOD_QUARANTINED_GUILD_TAG` | `1 << 10` | Member has been \
     quarantined by the automod system because of their guild tag. |
     """
+
+    UNKNOWN = 0
 
     DID_REJOIN = 1 << 0
     COMPLETED_ONBOARDING = 1 << 1
