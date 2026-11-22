@@ -148,7 +148,7 @@ class Application(Model):
         """The application icon URL if available."""
         if not self.icon:
             return None
-        return cdn.application_icon(
+        return cdn.application_assets(
             app_id=self.id,
             hash=self.icon,
             size=size,
@@ -164,7 +164,7 @@ class Application(Model):
         """The application default rich presence invite cover image."""
         if self.cover_image is MISSING:
             return None
-        return cdn.application_icon(
+        return cdn.application_assets(
             app_id=self.id,
             hash=self.cover_image,
             size=size,

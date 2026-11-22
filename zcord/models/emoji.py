@@ -88,7 +88,7 @@ class Emoji(Model):
         """The URL of the emoji."""
         if self.id is None:
             return None
-        return cdn.emoji(
+        return cdn.custom_emoji(
             hash=str(self.id),
             size=size,
             format=format,

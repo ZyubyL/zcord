@@ -43,7 +43,7 @@ class PrimaryGuild(Model):
         """The URL of the user's primary guild's badge."""
         if self.identity_guild_id is None or self.badge is None:
             return None
-        return cdn.badge(
+        return cdn.guild_tag_badge(
             guild_id=self.identity_guild_id,
             hash=self.badge,
             size=size,
