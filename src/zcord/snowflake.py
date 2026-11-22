@@ -13,7 +13,7 @@ class Snowflake(int):
         value = int(value)
 
         if value < 0:
-            raise ValueError("Snowflake cannot be nagative")
+            raise ValueError("Snowflake cannot be negative")
 
         return super().__new__(cls, value)
 

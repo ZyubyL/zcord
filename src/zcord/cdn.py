@@ -68,7 +68,7 @@ def user_banner(
     user_id: int,
     hash: str,
     size: int,
-    format: str | None,
+    format: AnimatedFormat | None,
 ) -> str:
     return _build(f"/banners/{user_id}", hash, size, format)
 
