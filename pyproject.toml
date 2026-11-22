@@ -73,10 +73,6 @@ indent-style = "space"
 requires = ["uv_build>=0.13,<0.14"]
 build-backend = "uv_build"
 
-# TODO: Remove this if moving zcord to src/zcord
-[tool.uv.build-backend]
-module-root = ""
-
 [dependency-groups]
 dev = [
     "mkdocs==1.6.1",
