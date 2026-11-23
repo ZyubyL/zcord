@@ -8,6 +8,7 @@ from zcord.missing import MISSING
 from zcord.models.application.install_params import InstallParams
 from zcord.models.base import Model
 from zcord.models.team.team import Team
+from zcord.models.user.user import User
 from zcord.snowflake import Snowflake
 
 if TYPE_CHECKING:
