@@ -66,7 +66,7 @@ class Member(Model):
 
     _transforms: ClassVar[dict] = {
         "roles": Snowflake,
-        "flags": bitfields.MemberFlags,
+        "flags": bitfields.GuildMemberFlags,
         "user": User,
         "joined_at": datetime.fromisoformat,
         "premium_since": datetime.fromisoformat,

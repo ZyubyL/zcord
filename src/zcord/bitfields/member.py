@@ -1,7 +1,7 @@
 from enum import IntFlag
 
 
-class MemberFlags(IntFlag):
+class GuildMemberFlags(IntFlag):
     """
     | Flag | Value | Description |
     |------|-------|-------------|
@@ -26,6 +26,8 @@ class MemberFlags(IntFlag):
     quarantined by the automod system because of their guild tag. |
     """
 
+    DEFAULT = 0
+
     DID_REJOIN = 1 << 0
     COMPLETED_ONBOARDING = 1 << 1
     BYPASSES_VERIFICATION = 1 << 2
@@ -36,3 +38,7 @@ class MemberFlags(IntFlag):
     AUTOMOD_QUARANTINED_USERNAME = 1 << 7
     DM_SETTINGS_UPSELL_ACKNOWLEDGED = 1 << 9
     AUTOMOD_QUARANTINED_GUILD_TAG = 1 << 10
+
+
+type MemberFlags = GuildMemberFlags
+"""An alias to GuildMemberFlags."""
