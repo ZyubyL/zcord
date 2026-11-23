@@ -7,6 +7,7 @@ from typing import Any, ClassVar, Literal
 from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.base import Model
+from zcord.models.guild.integration_account import IntegrationAccount
 from zcord.snowflake import Snowflake
 
 

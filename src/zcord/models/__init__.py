@@ -7,6 +7,7 @@ from .guild import (
     GuildWidgetSettings,
     IncidentsData,
     Integration,
+    IntegrationAccount,
 )
 from .team import Team, TeamMember
 from .user import AvatarDecorationData, Collectibles, Nameplate, User
@@ -22,6 +23,7 @@ __all__ = [
     "IncidentsData",
     "InstallParams",
     "Integration",
+    "IntegrationAccount",
     "Model",
     "Nameplate",
     "Team",

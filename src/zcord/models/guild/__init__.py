@@ -4,6 +4,7 @@ from .guild_widget import GuildWidget
 from .guild_widget_settings import GuildWidgetSettings
 from .incidents_data import IncidentsData
 from .integration import Integration
+from .integration_account import IntegrationAccount
 
 __all__ = [
     "Guild",
@@ -12,4 +13,5 @@ __all__ = [
     "GuildWidgetSettings",
     "IncidentsData",
     "Integration",
+    "IntegrationAccount",
 ]
