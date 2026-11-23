@@ -60,7 +60,9 @@ class Integration(Model):
     application: IntegrationApplication | MISSING = MISSING
     """The bot/OAuth2 appliction for Discord integration."""
 
-    scopes: tuple[OAuth2Scope, ...] | MISSING = MISSING
+    # NOTE: Maybe OAuth2 Scopes
+    # https://docs.discord.com/developers/topics/oauth2#shared-resources-oauth2-scopes
+    scopes: tuple[str, ...] | MISSING = MISSING
     """The scopes the application has been authorized for."""
 
     _transforms: ClassVar[dict[str, Any]] = {
@@ -71,5 +73,4 @@ class Integration(Model):
         "user": User,
         "synced_at": datetime.fromisoformat,
         "application": IntegrationApplication,
-        "scopes": OAuth2Scope,
     }

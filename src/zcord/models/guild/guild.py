@@ -8,6 +8,7 @@ from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.emoji import Emoji
 from zcord.models.guild.incidents_data import IncidentsData
+from zcord.models.permissons.role.role import Role
 from zcord.snowflake import Snowflake
 
 

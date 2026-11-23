@@ -19,6 +19,7 @@ from .guild import (
     WelcomeScreen,
     WelcomeScreenChannel,
 )
+from .permissons import Role, RoleColors, RoleTags
 from .team import Team, TeamMember
 from .user import AvatarDecorationData, Collectibles, Nameplate, User
 
@@ -44,6 +45,9 @@ __all__ = [
     "Nameplate",
     "OnboardingPrompt",
     "PromptOption",
+    "Role",
+    "RoleColors",
+    "RoleTags",
     "Team",
     "TeamMember",
     "User",
