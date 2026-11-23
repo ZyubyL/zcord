@@ -8,6 +8,7 @@ from zcord import enums
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.guild.integration_account import IntegrationAccount
+from zcord.models.guild.integration_application import IntegrationApplication
 from zcord.snowflake import Snowflake
 
 
