@@ -3,7 +3,7 @@
 from ._logging import setup_logging
 from ._version import __version__
 from .missing import MISSING
-from .models import Model
+from .models import Model, Application, InstallParams,
 from .snowflake import Snowflake
 
 __all__ = [

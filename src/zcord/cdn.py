@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Final, Literal
 
 if TYPE_CHECKING:
     from zcord.types import AnimatedFormat, ImageFormat
@@ -12,6 +12,8 @@ VALID_FORMATS = frozenset[str]({"png", "jpg", "jpeg", "webp", "gif", "json"})
 """The valid formats of a CDN image."""
 
 BASE_URL = "https://cdn.discordapp.com"
+
+MAX_SIZE: Final = 4096
 
 
 def custom_emoji(
