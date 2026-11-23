@@ -1,5 +1,6 @@
 from .application import Application, InstallParams
 from .base import Model
+from .emoji import Emoji
 from .guild import (
     Ban,
     Guild,
@@ -26,6 +27,7 @@ __all__ = [
     "AvatarDecorationData",
     "Ban",
     "Collectibles",
+    "Emoji",
     "Guild",
     "GuildMember",
     "GuildOnboarding",

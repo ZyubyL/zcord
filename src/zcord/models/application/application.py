@@ -140,8 +140,6 @@ class Application(Model):
         "webhook_event_types": enums.WebhookEventTypes,
     }
 
-    _state: ClassVar[ConnectionState | MISSING] = MISSING
-
     def icon_url(
         self,
         *,
