@@ -10,6 +10,8 @@ from .guild import (
     Integration,
     IntegrationAccount,
     IntegrationApplication,
+    WelcomeScreen,
+    WelcomeScreenChannel,
 )
 from .team import Team, TeamMember
 from .user import AvatarDecorationData, Collectibles, Nameplate, User
@@ -33,4 +35,6 @@ __all__ = [
     "Team",
     "TeamMember",
     "User",
+    "WelcomeScreen",
+    "WelcomeScreenChannel",
 ]

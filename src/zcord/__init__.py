@@ -22,6 +22,8 @@ from .models import (
     Team,
     TeamMember,
     User,
+    WelcomeScreen,
+    WelcomeScreenChannel,
 )
 from .snowflake import Snowflake
 
@@ -46,6 +48,8 @@ __all__ = [
     "Team",
     "TeamMember",
     "User",
+    "WelcomeScreen",
+    "WelcomeScreenChannel",
     "__version__",
     "setup_logging",
 ]

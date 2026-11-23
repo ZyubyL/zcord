@@ -7,6 +7,7 @@ from .incidents_data import IncidentsData
 from .integration import Integration
 from .integration_account import IntegrationAccount
 from .integration_application import IntegrationApplication
+from .welcome_screen import WelcomeScreen, WelcomeScreenChannel
 
 __all__ = [
     "Ban",
@@ -18,4 +19,6 @@ __all__ = [
     "Integration",
     "IntegrationAccount",
     "IntegrationApplication",
+    "WelcomeScreen",
+    "WelcomeScreenChannel",
 ]

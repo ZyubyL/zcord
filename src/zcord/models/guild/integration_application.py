@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
+from zcord import cdn, types
 from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.snowflake import Snowflake
@@ -29,3 +30,19 @@ class IntegrationApplication(Model):
         "id": Snowflake,
         "bot": User,
     }
+
+    def icon_url(
+        self,
+        *,
+        size: int = cdn.MAX_SIZE,
+        format: types.ImageFormat | None = None,
+    ) -> str | None:
+        """The application icon URL if available."""
+        if not self.icon:
+            return None
+        return cdn.application_icon_cover(
+            app_id=self.id,
+            hash=self.icon,
+            size=size,
+            format=format,
+        )
