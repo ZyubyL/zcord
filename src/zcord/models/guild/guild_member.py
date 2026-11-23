@@ -9,6 +9,7 @@ from zcord.missing import MISSING
 from zcord.models.base import Model
 from zcord.models.user.avatar_decoration_data import AvatarDecorationData
 from zcord.models.user.collectibles.collectibles import Collectibles
+from zcord.models.user.user import User
 from zcord.snowflake import Snowflake
 
 

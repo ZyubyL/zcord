@@ -7,6 +7,7 @@ from zcord import bitfields, cdn, enums
 from zcord.missing import MISSING
 from zcord.models.application.install_params import InstallParams
 from zcord.models.base import Model
+from zcord.models.guild.guild import Guild
 from zcord.models.team.team import Team
 from zcord.models.user.user import User
 from zcord.snowflake import Snowflake

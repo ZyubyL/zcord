@@ -6,6 +6,7 @@ from typing import Any, ClassVar
 from zcord import cdn, types
 from zcord.missing import MISSING
 from zcord.models.base import Model
+from zcord.models.user.user import User
 from zcord.snowflake import Snowflake
 
 

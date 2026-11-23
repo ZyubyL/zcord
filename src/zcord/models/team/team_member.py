@@ -5,6 +5,7 @@ from typing import Any, ClassVar
 
 from zcord import enums
 from zcord.models.base import Model
+from zcord.models.user.user import User
 from zcord.snowflake import Snowflake
 
 

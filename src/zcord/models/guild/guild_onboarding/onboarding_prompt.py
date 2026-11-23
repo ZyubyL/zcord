@@ -3,9 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from zcord import cdn, enums, types
-from zcord.missing import MISSING
+from zcord import enums
 from zcord.models.base import Model
+from zcord.models.guild.guild_onboarding.prompt_option import PromptOption
 from zcord.snowflake import Snowflake
 
 
