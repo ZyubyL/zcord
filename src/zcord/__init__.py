@@ -6,6 +6,7 @@ from .missing import MISSING
 from .models import (
     Application,
     AvatarDecorationData,
+    Ban,
     Collectibles,
     Guild,
     GuildPreview,
@@ -28,6 +29,7 @@ __all__ = [
     "MISSING",
     "Application",
     "AvatarDecorationData",
+    "Ban",
     "Collectibles",
     "Guild",
     "GuildPreview",

@@ -1,6 +1,7 @@
 from .application import Application, InstallParams
 from .base import Model
 from .guild import (
+    Ban,
     Guild,
     GuildPreview,
     GuildWidget,
@@ -16,6 +17,7 @@ from .user import AvatarDecorationData, Collectibles, Nameplate, User
 __all__ = [
     "Application",
     "AvatarDecorationData",
+    "Ban",
     "Collectibles",
     "Guild",
     "GuildPreview",

@@ -1,3 +1,4 @@
+from .ban import Ban
 from .guild import Guild
 from .guild_preview import GuildPreview
 from .guild_widget import GuildWidget
@@ -8,6 +9,7 @@ from .integration_account import IntegrationAccount
 from .integration_application import IntegrationApplication
 
 __all__ = [
+    "Ban",
     "Guild",
     "GuildPreview",
     "GuildWidget",
