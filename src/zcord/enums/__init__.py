@@ -6,7 +6,9 @@ from .guild import (
     ExplicitContentFilterLevel,
     IntegrationExpireBehavior,
     MFALevel,
+    OnboardingMode,
     PremiumTier,
+    PromptTypes,
     VerificationLevel,
 )
 from .message_formatting import GuildNavigationTypes, TimestampStyles
@@ -21,7 +23,9 @@ __all__ = [
     "IntegrationExpireBehavior",
     "MFALevel",
     "MembershipState",
+    "OnboardingMode",
     "PremiumTier",
+    "PromptTypes",
     "TimestampStyles",
     "VerificationLevel",
     "WebhookEventTypes",

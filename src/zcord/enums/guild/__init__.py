@@ -1,6 +1,7 @@
 from .age_restriction_level import AgeRestrictionLevel
 from .default_message_notification_level import DefaultMessageNotificationLevel
 from .explicit_content_filter_level import ExplicitContentFilterLevel
+from .guild_onboarding import OnboardingMode, PromptTypes
 from .integration_expire_behavior import IntegrationExpireBehavior
 from .mfa_level import MFALevel
 from .premium_tier import PremiumTier
@@ -12,6 +13,8 @@ __all__ = [
     "ExplicitContentFilterLevel",
     "IntegrationExpireBehavior",
     "MFALevel",
+    "OnboardingMode",
     "PremiumTier",
+    "PromptTypes",
     "VerificationLevel",
 ]

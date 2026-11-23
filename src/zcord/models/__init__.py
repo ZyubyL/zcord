@@ -3,6 +3,7 @@ from .base import Model
 from .guild import (
     Ban,
     Guild,
+    GuildOnboarding,
     GuildPreview,
     GuildWidget,
     GuildWidgetSettings,
@@ -10,6 +11,8 @@ from .guild import (
     Integration,
     IntegrationAccount,
     IntegrationApplication,
+    OnboardingPrompt,
+    PromptOption,
     WelcomeScreen,
     WelcomeScreenChannel,
 )
@@ -22,6 +25,7 @@ __all__ = [
     "Ban",
     "Collectibles",
     "Guild",
+    "GuildOnboarding",
     "GuildPreview",
     "GuildWidget",
     "GuildWidgetSettings",
@@ -32,6 +36,8 @@ __all__ = [
     "IntegrationApplication",
     "Model",
     "Nameplate",
+    "OnboardingPrompt",
+    "PromptOption",
     "Team",
     "TeamMember",
     "User",

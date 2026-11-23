@@ -1,5 +1,6 @@
 from .ban import Ban
 from .guild import Guild
+from .guild_onboarding import GuildOnboarding, OnboardingPrompt, PromptOption
 from .guild_preview import GuildPreview
 from .guild_widget import GuildWidget
 from .guild_widget_settings import GuildWidgetSettings
@@ -12,6 +13,7 @@ from .welcome_screen import WelcomeScreen, WelcomeScreenChannel
 __all__ = [
     "Ban",
     "Guild",
+    "GuildOnboarding",
     "GuildPreview",
     "GuildWidget",
     "GuildWidgetSettings",
@@ -19,6 +21,8 @@ __all__ = [
     "Integration",
     "IntegrationAccount",
     "IntegrationApplication",
+    "OnboardingPrompt",
+    "PromptOption",
     "WelcomeScreen",
     "WelcomeScreenChannel",
 ]
