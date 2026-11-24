@@ -4,6 +4,9 @@ from dataclasses import dataclass
 from typing import Any, ClassVar
 
 from zcord.models.audit_log.audit_log_entry import AuditLogEntry
+from zcord.models.auto_moderation.auto_moderation_rule import (
+    AutoModerationRule,
+)
 from zcord.models.base import Model
 from zcord.models.guild.integration import Integration
 from zcord.models.user.user import User

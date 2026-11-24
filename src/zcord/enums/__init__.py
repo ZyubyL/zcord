@@ -4,6 +4,12 @@ from .application_role_connection_metadata import (
     ApplicationRoleConnectionMetadataTypes,
 )
 from .audit_log import AuditLogEvent
+from .auto_moderation import (
+    ActionType,
+    EventType,
+    KeywordPresetType,
+    TriggerType,
+)
 from .events import WebhookEventTypes
 from .guild import (
     AgeRestrictionLevel,
@@ -20,21 +26,25 @@ from .message_formatting import GuildNavigationTypes, TimestampStyles
 from .team import MembershipState
 
 __all__ = [
+    "ActionType",
     "AgeRestrictionLevel",
     "ApplicationRoleConnectionMetadataTypes",
     "AuditLogEvent",
     "DefaultMessageNotificationLevel",
     "DynamicFieldTypes",
+    "EventType",
     "EventWebhookStatus",
     "ExplicitContentFilterLevel",
     "GuildNavigationTypes",
     "IntegrationExpireBehavior",
+    "KeywordPresetType",
     "MFALevel",
     "MembershipState",
     "OnboardingMode",
     "PremiumTier",
     "PromptTypes",
     "TimestampStyles",
+    "TriggerType",
     "VerificationLevel",
     "WebhookEventTypes",
 ]

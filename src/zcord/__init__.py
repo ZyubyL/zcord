@@ -4,10 +4,13 @@ from ._logging import setup_logging
 from ._version import __version__
 from .missing import MISSING
 from .models import (
+    ActionMetadata,
     Application,
     AuditLog,
     AuditLogChange,
     AuditLogEntry,
+    AutoModerationAction,
+    AutoModerationRule,
     AvatarDecorationData,
     Ban,
     Collectibles,
@@ -31,6 +34,7 @@ from .models import (
     RoleTags,
     Team,
     TeamMember,
+    TriggerMetadata,
     User,
     WelcomeScreen,
     WelcomeScreenChannel,
@@ -39,10 +43,13 @@ from .snowflake import Snowflake
 
 __all__ = [
     "MISSING",
+    "ActionMetadata",
     "Application",
     "AuditLog",
     "AuditLogChange",
     "AuditLogEntry",
+    "AutoModerationAction",
+    "AutoModerationRule",
     "AvatarDecorationData",
     "Ban",
     "Collectibles",
@@ -67,6 +74,7 @@ __all__ = [
     "Snowflake",
     "Team",
     "TeamMember",
+    "TriggerMetadata",
     "User",
     "WelcomeScreen",
     "WelcomeScreenChannel",

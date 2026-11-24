@@ -14,6 +14,12 @@ from .audit_log import (
     AuditLogEntry,
     OptionalAuditEntryInfo,
 )
+from .auto_moderation import (
+    ActionMetadata,
+    AutoModerationAction,
+    AutoModerationRule,
+    TriggerMetadata,
+)
 from .base import Model
 from .emoji import Emoji
 from .guild import (
@@ -39,6 +45,7 @@ from .team import Team, TeamMember
 from .user import AvatarDecorationData, Collectibles, Nameplate, User
 
 __all__ = [
+    "ActionMetadata",
     "Application",
     "ApplicationIdentity",
     "ApplicationIdentityProfile",
@@ -46,6 +53,8 @@ __all__ = [
     "AuditLog",
     "AuditLogChange",
     "AuditLogEntry",
+    "AutoModerationAction",
+    "AutoModerationRule",
     "AvatarDecorationData",
     "Ban",
     "Collectibles",
@@ -74,6 +83,7 @@ __all__ = [
     "RoleTags",
     "Team",
     "TeamMember",
+    "TriggerMetadata",
     "User",
     "WelcomeScreen",
     "WelcomeScreenChannel",
