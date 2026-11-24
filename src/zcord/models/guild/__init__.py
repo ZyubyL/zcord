@@ -1,3 +1,5 @@
+"""Read more at https://docs.discord.com/developers/resources/guild"""
+
 from .ban import Ban
 from .guild import Guild
 from .guild_member import GuildMember, Member
