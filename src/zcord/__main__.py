@@ -3,6 +3,7 @@ from pathlib import Path
 
 
 def new_model(path: Path):
+    class_name = str(path).split("/")[-1].split(".")[0].title().replace("_", "")
     src = """from __future__ import annotations
 
 from dataclasses import dataclass
@@ -18,7 +19,7 @@ from zcord.snowflake import Snowflake
 class Foo(Model):
     _transforms: ClassVar[dict[str, Any]] = {
     }
-"""
+""".replace("Foo", class_name)
     path.write_text(src, encoding="utf-8")
 
 
