@@ -1,4 +1,10 @@
 from .application import Application, InstallParams
+from .application_identity_profile import (
+    ApplicationIdentity,
+    ApplicationIdentityProfile,
+    PrimaryProfileData,
+    ProfileData,
+)
 from .base import Model
 from .emoji import Emoji
 from .guild import (
@@ -25,6 +31,8 @@ from .user import AvatarDecorationData, Collectibles, Nameplate, User
 
 __all__ = [
     "Application",
+    "ApplicationIdentity",
+    "ApplicationIdentityProfile",
     "AvatarDecorationData",
     "Ban",
     "Collectibles",
@@ -44,6 +52,8 @@ __all__ = [
     "Model",
     "Nameplate",
     "OnboardingPrompt",
+    "PrimaryProfileData",
+    "ProfileData",
     "PromptOption",
     "Role",
     "RoleColors",

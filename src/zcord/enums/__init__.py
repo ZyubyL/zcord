@@ -1,4 +1,5 @@
 from .application import EventWebhookStatus
+from .application_identity_profile import DynamicFieldTypes
 from .events import WebhookEventTypes
 from .guild import (
     AgeRestrictionLevel,
@@ -17,6 +18,7 @@ from .team import MembershipState
 __all__ = [
     "AgeRestrictionLevel",
     "DefaultMessageNotificationLevel",
+    "DynamicFieldTypes",
     "EventWebhookStatus",
     "ExplicitContentFilterLevel",
     "GuildNavigationTypes",
