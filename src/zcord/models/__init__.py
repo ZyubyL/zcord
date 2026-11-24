@@ -21,6 +21,7 @@ from .auto_moderation import (
     TriggerMetadata,
 )
 from .base import Model
+from .channel import Channel
 from .emoji import Emoji
 from .guild import (
     Ban,
@@ -57,6 +58,7 @@ __all__ = [
     "AutoModerationRule",
     "AvatarDecorationData",
     "Ban",
+    "Channel",
     "Collectibles",
     "Emoji",
     "Guild",

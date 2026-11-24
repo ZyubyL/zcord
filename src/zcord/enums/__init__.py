@@ -10,6 +10,12 @@ from .auto_moderation import (
     KeywordPresetType,
     TriggerType,
 )
+from .channel import (
+    ChannelType,
+    DefaultForumLayoutType,
+    DefaultSortOrderType,
+    VideoQualityMode,
+)
 from .events import WebhookEventType
 from .guild import (
     AgeRestrictionLevel,
@@ -30,7 +36,10 @@ __all__ = [
     "AgeRestrictionLevel",
     "ApplicationRoleConnectionMetadataType",
     "AuditLogEvent",
+    "ChannelType",
+    "DefaultForumLayoutType",
     "DefaultMessageNotificationLevel",
+    "DefaultSortOrderType",
     "DynamicFieldType",
     "EventType",
     "EventWebhookStatus",
@@ -46,5 +55,6 @@ __all__ = [
     "TimestampStyle",
     "TriggerType",
     "VerificationLevel",
+    "VideoQualityMode",
     "WebhookEventType",
 ]
