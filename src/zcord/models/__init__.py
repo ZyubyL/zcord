@@ -5,6 +5,9 @@ from .application_identity_profile import (
     PrimaryProfileData,
     ProfileData,
 )
+from .application_role_connection_metadata import (
+    ApplicationRoleConnectionMetadata,
+)
 from .base import Model
 from .emoji import Emoji
 from .guild import (
@@ -33,6 +36,7 @@ __all__ = [
     "Application",
     "ApplicationIdentity",
     "ApplicationIdentityProfile",
+    "ApplicationRoleConnectionMetadata",
     "AvatarDecorationData",
     "Ban",
     "Collectibles",
