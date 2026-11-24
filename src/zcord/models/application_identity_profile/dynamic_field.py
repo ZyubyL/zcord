@@ -19,7 +19,7 @@ def _dynamic_field_value(value: Any) -> str | float | Media:
 
 @dataclass(frozen=True, slots=True)
 class DynamicField(Model):
-    type: enums.DynamicFieldTypes
+    type: enums.DynamicFieldType
     """Field type."""
 
     name: str
@@ -38,6 +38,6 @@ class DynamicField(Model):
     """
 
     _transforms: ClassVar[dict[str, Any]] = {
-        "type": enums.DynamicFieldTypes,
+        "type": enums.DynamicFieldType,
         "value": _dynamic_field_value,
     }

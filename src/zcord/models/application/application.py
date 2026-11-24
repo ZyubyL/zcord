@@ -107,7 +107,7 @@ class Application(Model):
     event_webhooks_status: enums.EventWebhookStatus | MISSING = MISSING
     """Status of the app's webhook events."""
 
-    event_webhooks_types: tuple[enums.WebhookEventTypes, ...] | MISSING = (
+    event_webhooks_types: tuple[enums.WebhookEventType, ...] | MISSING = (
         MISSING
     )
     """A list of webhook event types the app subscribes to."""
@@ -137,7 +137,7 @@ class Application(Model):
         "team": Team,
         "install_params": InstallParams,
         "event_webhooks_status": enums.EventWebhookStatus,
-        "webhook_event_types": enums.WebhookEventTypes,
+        "webhook_event_types": enums.WebhookEventType,
     }
 
     def icon_url(
@@ -193,6 +193,6 @@ class _ApplicationUpdate(Model):
     tags: tuple[str, ...] | MISSING = MISSING
     event_webhooks_url: str | MISSING = MISSING
     event_webhooks_status: enums.EventWebhookStatus | MISSING = MISSING
-    event_webhooks_types: tuple[enums.WebhookEventTypes, ...] | MISSING = (
+    event_webhooks_types: tuple[enums.WebhookEventType, ...] | MISSING = (
         MISSING
     )

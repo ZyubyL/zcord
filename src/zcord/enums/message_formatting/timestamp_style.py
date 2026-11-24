@@ -1,7 +1,7 @@
 from enum import StrEnum
 
 
-class TimestampStyles(StrEnum):
+class TimestampStyle(StrEnum):
     """Unix timestamp format type.
 
     See this for more info: https://docs.discord.com/developers/reference#message-formatting

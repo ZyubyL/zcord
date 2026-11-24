@@ -1,6 +1,6 @@
 from enum import IntEnum
 
 
-class PromptTypes(IntEnum):
+class PromptType(IntEnum):
     MULTIPLE_CHOICE = 0
     DROPDOWN = 1

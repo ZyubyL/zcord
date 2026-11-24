@@ -1,7 +1,7 @@
 from enum import IntEnum
 
 
-class DynamicFieldTypes(IntEnum):
+class DynamicFieldType(IntEnum):
     STRING = 0
     """A text value."""
 

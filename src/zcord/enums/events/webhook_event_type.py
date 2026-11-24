@@ -1,7 +1,7 @@
 from enum import StrEnum
 
 
-class WebhookEventTypes(StrEnum):
+class WebhookEventType(StrEnum):
     """Webhook event types an application can subscribe to."""
 
     APPLICATION_AUTHORIZED = "APPLICATION_AUTHORIZED"

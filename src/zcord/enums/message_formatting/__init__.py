@@ -1,7 +1,7 @@
-from .guild_navigation_types import GuildNavigationTypes
-from .timestamp_styles import TimestampStyles
+from .guild_navigation_type import GuildNavigationType
+from .timestamp_style import TimestampStyle
 
 __all__ = [
-    "GuildNavigationTypes",
-    "TimestampStyles",
+    "GuildNavigationType",
+    "TimestampStyle",
 ]

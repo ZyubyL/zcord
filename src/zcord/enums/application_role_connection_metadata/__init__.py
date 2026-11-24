@@ -1,7 +1,7 @@
-from .application_role_connection_metadata_types import (
-    ApplicationRoleConnectionMetadataTypes,
+from .application_role_connection_metadata_type import (
+    ApplicationRoleConnectionMetadataType,
 )
 
 __all__ = [
-    "ApplicationRoleConnectionMetadataTypes",
+    "ApplicationRoleConnectionMetadataType",
 ]

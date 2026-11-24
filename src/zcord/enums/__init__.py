@@ -1,7 +1,7 @@
 from .application import EventWebhookStatus
-from .application_identity_profile import DynamicFieldTypes
+from .application_identity_profile import DynamicFieldType
 from .application_role_connection_metadata import (
-    ApplicationRoleConnectionMetadataTypes,
+    ApplicationRoleConnectionMetadataType,
 )
 from .audit_log import AuditLogEvent
 from .auto_moderation import (
@@ -10,7 +10,7 @@ from .auto_moderation import (
     KeywordPresetType,
     TriggerType,
 )
-from .events import WebhookEventTypes
+from .events import WebhookEventType
 from .guild import (
     AgeRestrictionLevel,
     DefaultMessageNotificationLevel,
@@ -19,32 +19,32 @@ from .guild import (
     MFALevel,
     OnboardingMode,
     PremiumTier,
-    PromptTypes,
+    PromptType,
     VerificationLevel,
 )
-from .message_formatting import GuildNavigationTypes, TimestampStyles
+from .message_formatting import GuildNavigationType, TimestampStyle
 from .team import MembershipState
 
 __all__ = [
     "ActionType",
     "AgeRestrictionLevel",
-    "ApplicationRoleConnectionMetadataTypes",
+    "ApplicationRoleConnectionMetadataType",
     "AuditLogEvent",
     "DefaultMessageNotificationLevel",
-    "DynamicFieldTypes",
+    "DynamicFieldType",
     "EventType",
     "EventWebhookStatus",
     "ExplicitContentFilterLevel",
-    "GuildNavigationTypes",
+    "GuildNavigationType",
     "IntegrationExpireBehavior",
     "KeywordPresetType",
     "MFALevel",
     "MembershipState",
     "OnboardingMode",
     "PremiumTier",
-    "PromptTypes",
-    "TimestampStyles",
+    "PromptType",
+    "TimestampStyle",
     "TriggerType",
     "VerificationLevel",
-    "WebhookEventTypes",
+    "WebhookEventType",
 ]

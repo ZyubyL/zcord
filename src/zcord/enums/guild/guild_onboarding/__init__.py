@@ -1,7 +1,7 @@
 from .onboarding_mode import OnboardingMode
-from .prompt_types import PromptTypes
+from .prompt_type import PromptType
 
 __all__ = [
     "OnboardingMode",
-    "PromptTypes",
+    "PromptType",
 ]

@@ -1,5 +1,5 @@
-from .dynamic_field_types import DynamicFieldTypes
+from .dynamic_field_type import DynamicFieldType
 
 __all__ = [
-    "DynamicFieldTypes",
+    "DynamicFieldType",
 ]

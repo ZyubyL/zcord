@@ -12,7 +12,7 @@ from zcord.models.base import Model
 
 @dataclass(frozen=True, slots=True)
 class ApplicationRoleConnectionMetadata(Model):
-    type: enums.ApplicationRoleConnectionMetadataTypes
+    type: enums.ApplicationRoleConnectionMetadataType
     """Type of metadata value."""
 
     key: str
@@ -31,5 +31,5 @@ class ApplicationRoleConnectionMetadata(Model):
     """Translations of the description."""
 
     _transforms: ClassVar[dict[str, Any]] = {
-        "type": enums.ApplicationRoleConnectionMetadataTypes
+        "type": enums.ApplicationRoleConnectionMetadataType
     }

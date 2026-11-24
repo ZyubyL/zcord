@@ -1,7 +1,7 @@
 from enum import StrEnum
 
 
-class GuildNavigationTypes(StrEnum):
+class GuildNavigationType(StrEnum):
     """The corresponding resource in the current server."""
 
     CHANNEL_AND_ROLE = "customize"

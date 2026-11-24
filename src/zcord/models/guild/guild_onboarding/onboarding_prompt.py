@@ -14,7 +14,7 @@ class OnboardingPrompt(Model):
     id: Snowflake
     """ID of the prompt."""
 
-    type: enums.PromptTypes
+    type: enums.PromptType
     """Type of prompt."""
 
     options: tuple[PromptOption, ...]
@@ -38,6 +38,6 @@ class OnboardingPrompt(Model):
 
     _transforms: ClassVar[dict[str, Any]] = {
         "id": Snowflake,
-        "type": enums.PromptTypes,
+        "type": enums.PromptType,
         "options": PromptOption,
     }

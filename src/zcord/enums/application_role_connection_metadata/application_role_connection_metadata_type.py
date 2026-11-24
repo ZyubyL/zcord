@@ -1,7 +1,7 @@
 from enum import IntEnum
 
 
-class ApplicationRoleConnectionMetadataTypes(IntEnum):
+class ApplicationRoleConnectionMetadataType(IntEnum):
     INTEGER_LESS_THAN_OR_EQUAL = 1
     """The metadata value (int) is less than or equal to the guild's \
     configured value (int)."""

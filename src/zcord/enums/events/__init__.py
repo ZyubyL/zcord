@@ -1,5 +1,5 @@
-from .webhook_event_types import WebhookEventTypes
+from .webhook_event_type import WebhookEventType
 
 __all__ = [
-    "WebhookEventTypes",
+    "WebhookEventType",
 ]
