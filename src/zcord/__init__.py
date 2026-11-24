@@ -5,6 +5,9 @@ from ._version import __version__
 from .missing import MISSING
 from .models import (
     Application,
+    AuditLog,
+    AuditLogChange,
+    AuditLogEntry,
     AvatarDecorationData,
     Ban,
     Collectibles,
@@ -22,6 +25,7 @@ from .models import (
     Model,
     Nameplate,
     OnboardingPrompt,
+    OptionalAuditEntryInfo,
     Role,
     RoleColors,
     RoleTags,
@@ -36,6 +40,9 @@ from .snowflake import Snowflake
 __all__ = [
     "MISSING",
     "Application",
+    "AuditLog",
+    "AuditLogChange",
+    "AuditLogEntry",
     "AvatarDecorationData",
     "Ban",
     "Collectibles",
@@ -53,6 +60,7 @@ __all__ = [
     "Model",
     "Nameplate",
     "OnboardingPrompt",
+    "OptionalAuditEntryInfo",
     "Role",
     "RoleColors",
     "RoleTags",

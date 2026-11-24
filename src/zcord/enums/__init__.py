@@ -3,6 +3,7 @@ from .application_identity_profile import DynamicFieldTypes
 from .application_role_connection_metadata import (
     ApplicationRoleConnectionMetadataTypes,
 )
+from .audit_log import AuditLogEvent
 from .events import WebhookEventTypes
 from .guild import (
     AgeRestrictionLevel,
@@ -21,6 +22,7 @@ from .team import MembershipState
 __all__ = [
     "AgeRestrictionLevel",
     "ApplicationRoleConnectionMetadataTypes",
+    "AuditLogEvent",
     "DefaultMessageNotificationLevel",
     "DynamicFieldTypes",
     "EventWebhookStatus",

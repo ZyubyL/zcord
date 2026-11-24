@@ -8,6 +8,12 @@ from .application_identity_profile import (
 from .application_role_connection_metadata import (
     ApplicationRoleConnectionMetadata,
 )
+from .audit_log import (
+    AuditLog,
+    AuditLogChange,
+    AuditLogEntry,
+    OptionalAuditEntryInfo,
+)
 from .base import Model
 from .emoji import Emoji
 from .guild import (
@@ -37,6 +43,9 @@ __all__ = [
     "ApplicationIdentity",
     "ApplicationIdentityProfile",
     "ApplicationRoleConnectionMetadata",
+    "AuditLog",
+    "AuditLogChange",
+    "AuditLogEntry",
     "AvatarDecorationData",
     "Ban",
     "Collectibles",
@@ -56,6 +65,7 @@ __all__ = [
     "Model",
     "Nameplate",
     "OnboardingPrompt",
+    "OptionalAuditEntryInfo",
     "PrimaryProfileData",
     "ProfileData",
     "PromptOption",
