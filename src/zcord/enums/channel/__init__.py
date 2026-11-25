@@ -1,11 +1,13 @@
 from .channel_type import ChannelType
-from .default_forum_layout_type import DefaultForumLayoutType
-from .default_sort_order_type import DefaultSortOrderType
+from .forum_layout_type import ForumLayoutType
+from .overwrite_type import OverwriteType
+from .sort_order_type import SortOrderType
 from .video_quality_mode import VideoQualityMode
 
 __all__ = [
     "ChannelType",
-    "DefaultForumLayoutType",
-    "DefaultSortOrderType",
+    "ForumLayoutType",
+    "OverwriteType",
+    "SortOrderType",
     "VideoQualityMode",
 ]

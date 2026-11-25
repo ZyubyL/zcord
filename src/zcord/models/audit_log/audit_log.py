@@ -8,6 +8,7 @@ from zcord.models.auto_moderation.auto_moderation_rule import (
     AutoModerationRule,
 )
 from zcord.models.base import Model
+from zcord.models.channel.channel import Channel
 from zcord.models.guild.integration import Integration
 from zcord.models.user.user import User
 

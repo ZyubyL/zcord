@@ -4,10 +4,15 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, ClassVar
 
-from src.zcord.missing import MISSING
-from src.zcord.models.user.user import User
 from zcord import bitfields, enums
+from zcord.missing import MISSING
 from zcord.models.base import Model
+from zcord.models.channel.default_reaction import DefaultReaction
+from zcord.models.channel.forum_tag import ForumTag
+from zcord.models.channel.overwrite import Overwrite
+from zcord.models.channel.thread_member import ThreadMember
+from zcord.models.channel.thread_metadata import ThreadMetadata
+from zcord.models.user.user import User
 from zcord.snowflake import Snowflake
 
 
@@ -155,7 +160,7 @@ class Channel(Model):
     it's similar to message_count on message creation, \
     but will not decrement the number when a message is deleted."""
 
-    available_tags: tuple[Tag, ...] | MISSING = MISSING
+    available_tags: tuple[ForumTag, ...] | MISSING = MISSING
     """The set of tags that can be used in a `GUILD_FORUM` or a `GUILD_MEDIA` \
     channel."""
 
@@ -176,7 +181,7 @@ class Channel(Model):
         and does not live update.
     """
 
-    default_sort_order: enums.DefaultSortOrderType | None | MISSING = MISSING
+    default_sort_order: enums.SortOrderType | None | MISSING = MISSING
     """The default sort order type used to order posts \
     in `GUILD_FORUM` and `GUILD_MEDIA` channels.
 
@@ -185,7 +190,7 @@ class Channel(Model):
         hasn't been set by a channel admin.
     """
 
-    default_forum_layout: enums.DefaultForumLayoutType | MISSING = MISSING
+    default_forum_layout: enums.ForumLayoutType | MISSING = MISSING
     """The default forum layout view used to display posts \
     in `GUILD_FORUM` channels.
 
@@ -209,9 +214,9 @@ class Channel(Model):
         "thread_metadata": ThreadMetadata,
         "member": ThreadMember,
         "flags": bitfields.ChannelFlags,
-        "available_tags": Tag,
+        "available_tags": ForumTag,
         "applied_tags": Snowflake,
         "default_reaction_emoji": DefaultReaction,
-        "default_sort_order": enums.DefaultSortOrderType,
-        "default_forum_layout": enums.DefaultForumLayoutType,
+        "default_sort_order": enums.SortOrderType,
+        "default_forum_layout": enums.ForumLayoutType,
     }

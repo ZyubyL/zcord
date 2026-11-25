@@ -1,7 +1,7 @@
 from enum import IntEnum
 
 
-class DefaultSortOrderType(IntEnum):
+class SortOrderType(IntEnum):
     LATEST_ACTIVITY = 0
     """Sort forum posts by activity."""
 

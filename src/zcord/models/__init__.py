@@ -21,7 +21,15 @@ from .auto_moderation import (
     TriggerMetadata,
 )
 from .base import Model
-from .channel import Channel
+from .channel import (
+    Channel,
+    DefaultReaction,
+    FollowedChannel,
+    ForumTag,
+    Overwrite,
+    ThreadMember,
+    ThreadMetadata,
+)
 from .emoji import Emoji
 from .guild import (
     Ban,
@@ -60,7 +68,10 @@ __all__ = [
     "Ban",
     "Channel",
     "Collectibles",
+    "DefaultReaction",
     "Emoji",
+    "FollowedChannel",
+    "ForumTag",
     "Guild",
     "GuildMember",
     "GuildOnboarding",
@@ -77,6 +88,7 @@ __all__ = [
     "Nameplate",
     "OnboardingPrompt",
     "OptionalAuditEntryInfo",
+    "Overwrite",
     "PrimaryProfileData",
     "ProfileData",
     "PromptOption",
@@ -85,6 +97,8 @@ __all__ = [
     "RoleTags",
     "Team",
     "TeamMember",
+    "ThreadMember",
+    "ThreadMetadata",
     "TriggerMetadata",
     "User",
     "WelcomeScreen",
