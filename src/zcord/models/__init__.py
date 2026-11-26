@@ -31,6 +31,7 @@ from .channel import (
     ThreadMetadata,
 )
 from .emoji import Emoji
+from .entitlement import Entitlement
 from .guild import (
     Ban,
     Guild,
@@ -70,6 +71,7 @@ __all__ = [
     "Collectibles",
     "DefaultReaction",
     "Emoji",
+    "Entitlement",
     "FollowedChannel",
     "ForumTag",
     "Guild",

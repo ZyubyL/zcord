@@ -17,6 +17,7 @@ from .channel import (
     SortOrderType,
     VideoQualityMode,
 )
+from .entitlement import EntitlementType
 from .events import WebhookEventType
 from .guild import (
     AgeRestrictionLevel,
@@ -40,6 +41,7 @@ __all__ = [
     "ChannelType",
     "DefaultMessageNotificationLevel",
     "DynamicFieldType",
+    "EntitlementType",
     "EventType",
     "EventWebhookStatus",
     "ExplicitContentFilterLevel",
