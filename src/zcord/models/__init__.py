@@ -58,6 +58,7 @@ from .guild_scheduled_event import (
     GuildScheduledEventUser,
 )
 from .guild_template import GuildTemplate
+from .lobby import Lobby, LobbyMember
 from .permissons import Role, RoleColors, RoleTags
 from .team import Team, TeamMember
 from .user import AvatarDecorationData, Collectibles, Nameplate, User
@@ -99,6 +100,8 @@ __all__ = [
     "Integration",
     "IntegrationAccount",
     "IntegrationApplication",
+    "Lobby",
+    "LobbyMember",
     "Member",
     "Model",
     "Nameplate",
