@@ -50,6 +50,18 @@ from .guild import (
     WelcomeScreen,
     WelcomeScreenChannel,
 )
+from .guild_scheduled_event import (
+    GuildScheduledEvent,
+    GuildScheduledEventEntityMetadata,
+    GuildScheduledEventRecurrenceRule,
+    GuildScheduledEventRecurrenceRuleNWeekday,
+    GuildScheduledEventUser,
+    ScheduledEvent,
+    ScheduledEventEntityMetadata,
+    ScheduledEventRecurrenceRule,
+    ScheduledEventRecurrenceRuleNWeekday,
+    ScheduledEventUser,
+)
 from .permissons import Role, RoleColors, RoleTags
 from .team import Team, TeamMember
 from .user import AvatarDecorationData, Collectibles, Nameplate, User
@@ -78,6 +90,11 @@ __all__ = [
     "GuildMember",
     "GuildOnboarding",
     "GuildPreview",
+    "GuildScheduledEvent",
+    "GuildScheduledEventEntityMetadata",
+    "GuildScheduledEventRecurrenceRule",
+    "GuildScheduledEventRecurrenceRuleNWeekday",
+    "GuildScheduledEventUser",
     "GuildWidget",
     "GuildWidgetSettings",
     "IncidentsData",
@@ -97,6 +114,11 @@ __all__ = [
     "Role",
     "RoleColors",
     "RoleTags",
+    "ScheduledEvent",
+    "ScheduledEventEntityMetadata",
+    "ScheduledEventRecurrenceRule",
+    "ScheduledEventRecurrenceRuleNWeekday",
+    "ScheduledEventUser",
     "Team",
     "TeamMember",
     "ThreadMember",

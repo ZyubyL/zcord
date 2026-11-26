@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from zcord.enums import GuildNavigationTypes
+from zcord.enums import GuildNavigationType
 from zcord.missing import MISSING
 
 if TYPE_CHECKING:
-    from zcord.enums import TimestampStyles
+    from zcord.enums import TimestampStyle
     from zcord.snowflake import Snowflake
 
 
@@ -65,14 +65,14 @@ def animated_custom_emoji(name: str, id: Snowflake | int | str) -> str:
 
 
 def unix_timestamp(
-    timestamp: int, format: TimestampStyles | str | MISSING = MISSING
+    timestamp: int, format: TimestampStyle | str | MISSING = MISSING
 ) -> str:
     """Convert this Unix timestamp to Discord message format."""
     format = f":{format}" if format is not MISSING else ""
     return f"<t:{timestamp}{format}>"
 
 
-def guild_navigation(type: GuildNavigationTypes | str) -> str:
+def guild_navigation(type: GuildNavigationType | str) -> str:
     """Convert this guild nagivation type to its Discord message format."""
     return f"<id:{type}>"
 
@@ -80,4 +80,4 @@ def guild_navigation(type: GuildNavigationTypes | str) -> str:
 # TODO: Role object too?
 def linked_role(id: Snowflake | int | str) -> str:
     """Convert this linked role ID to Discord message format."""
-    return f"<id:{GuildNavigationTypes.LINKED_ROLES}:{id}>"
+    return f"<id:{GuildNavigationType.LINKED_ROLES}:{id}>"

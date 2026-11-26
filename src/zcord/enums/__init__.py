@@ -30,6 +30,14 @@ from .guild import (
     PromptType,
     VerificationLevel,
 )
+from .guild_scheduled_event import (
+    PrivacyLevel,
+    ScheduledEntityType,
+    ScheduledEventRecurrenceRuleFrequency,
+    ScheduledEventRecurrenceRuleMonth,
+    ScheduledEventRecurrenceRuleWeekday,
+    ScheduledEventStatus,
+)
 from .message_formatting import GuildNavigationType, TimestampStyle
 from .team import MembershipState
 
@@ -54,7 +62,13 @@ __all__ = [
     "OnboardingMode",
     "OverwriteType",
     "PremiumTier",
+    "PrivacyLevel",
     "PromptType",
+    "ScheduledEntityType",
+    "ScheduledEventRecurrenceRuleFrequency",
+    "ScheduledEventRecurrenceRuleMonth",
+    "ScheduledEventRecurrenceRuleWeekday",
+    "ScheduledEventStatus",
     "SortOrderType",
     "TimestampStyle",
     "TriggerType",
