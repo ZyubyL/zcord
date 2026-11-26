@@ -1,19 +1,16 @@
 """Read more at https://docs.discord.com/developers/resources/guild-scheduled-event"""
 
-from .scheduled_event import GuildScheduledEvent, ScheduledEvent
+from .scheduled_event import GuildScheduledEvent
 from .scheduled_event_entity_metadata import (
     GuildScheduledEventEntityMetadata,
-    ScheduledEventEntityMetadata,
 )
 from .scheduled_event_recurrence_rule import (
     GuildScheduledEventRecurrenceRule,
-    ScheduledEventRecurrenceRule,
 )
 from .scheduled_event_recurrence_rule_n_weekday import (
     GuildScheduledEventRecurrenceRuleNWeekday,
-    ScheduledEventRecurrenceRuleNWeekday,
 )
-from .scheduled_event_user import GuildScheduledEventUser, ScheduledEventUser
+from .scheduled_event_user import GuildScheduledEventUser
 
 __all__ = [
     "GuildScheduledEvent",
@@ -21,9 +18,4 @@ __all__ = [
     "GuildScheduledEventRecurrenceRule",
     "GuildScheduledEventRecurrenceRuleNWeekday",
     "GuildScheduledEventUser",
-    "ScheduledEvent",
-    "ScheduledEventEntityMetadata",
-    "ScheduledEventRecurrenceRule",
-    "ScheduledEventRecurrenceRuleNWeekday",
-    "ScheduledEventUser",
 ]

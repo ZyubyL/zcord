@@ -11,7 +11,7 @@ from zcord.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
-class ScheduledEventUser(Model):
+class GuildScheduledEventUser(Model):
     guild_scheduled_event_id: Snowflake
     """The scheduled event ID which the user subscribed to."""
 
@@ -27,7 +27,3 @@ class ScheduledEventUser(Model):
         "user": User,
         "member": GuildMember,
     }
-
-
-type GuildScheduledEventUser = ScheduledEventUser
-"""An alias to ScheduledEventUser."""

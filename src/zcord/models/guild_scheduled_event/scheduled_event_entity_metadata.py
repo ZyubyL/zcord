@@ -7,10 +7,6 @@ from zcord.models.base import Model
 
 
 @dataclass(frozen=True, slots=True)
-class ScheduledEventEntityMetadata(Model):
+class GuildScheduledEventEntityMetadata(Model):
     location: str | MISSING = MISSING
     """Location of the event."""
-
-
-type GuildScheduledEventEntityMetadata = ScheduledEventEntityMetadata
-"""An alias for ScheduledEventEntityMetadata."""

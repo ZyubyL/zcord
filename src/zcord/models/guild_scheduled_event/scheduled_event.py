@@ -18,7 +18,7 @@ from zcord.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
-class ScheduledEvent(Model):
+class GuildScheduledEvent(Model):
     id: Snowflake
     """The ID of the scheduled event."""
 
@@ -99,7 +99,3 @@ class ScheduledEvent(Model):
         "creator": User,
         "recurrence_rule": GuildScheduledEventRecurrenceRule,
     }
-
-
-type GuildScheduledEvent = ScheduledEvent
-"""An alias to ScheduledEvent."""

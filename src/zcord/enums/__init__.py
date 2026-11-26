@@ -38,6 +38,7 @@ from .guild_scheduled_event import (
     ScheduledEventRecurrenceRuleWeekday,
     ScheduledEventStatus,
 )
+from .invite import InviteTargetType, InviteType
 from .message_formatting import GuildNavigationType, TimestampStyle
 from .team import MembershipState
 
@@ -56,6 +57,8 @@ __all__ = [
     "ForumLayoutType",
     "GuildNavigationType",
     "IntegrationExpireBehavior",
+    "InviteTargetType",
+    "InviteType",
     "KeywordPresetType",
     "MFALevel",
     "MembershipState",

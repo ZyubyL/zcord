@@ -8,7 +8,7 @@ from zcord.models.base import Model
 
 
 @dataclass(frozen=True, slots=True)
-class ScheduledEventRecurrenceRuleNWeekday(Model):
+class GuildScheduledEventRecurrenceRuleNWeekday(Model):
     n: int
     """The week to reoccur on (1-5)."""
 
@@ -18,9 +18,3 @@ class ScheduledEventRecurrenceRuleNWeekday(Model):
     _transforms: ClassVar[dict[str, Any]] = {
         "day": enums.ScheduledEventRecurrenceRuleWeekday
     }
-
-
-type GuildScheduledEventRecurrenceRuleNWeekday = (
-    ScheduledEventRecurrenceRuleNWeekday
-)
-"""An alias to ScheduledEventRecurrenceRuleNWeekday."""

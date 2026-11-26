@@ -7,6 +7,7 @@ from .channel import ChannelFlags
 from .embed import EmbedFlags, EmbedMediaFlags
 from .guild import GuildMemberFlags, MemberFlags, SystemChannelFlags
 from .intents import Intents
+from .invite import GuildInviteFlags
 from .message import MessageFlags
 from .role import RoleFlags
 from .user import UserFlags
@@ -18,6 +19,7 @@ __all__ = [
     "ChannelFlags",
     "EmbedFlags",
     "EmbedMediaFlags",
+    "GuildInviteFlags",
     "GuildMemberFlags",
     "Intents",
     "MemberFlags",

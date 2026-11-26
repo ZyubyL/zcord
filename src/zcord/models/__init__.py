@@ -56,11 +56,6 @@ from .guild_scheduled_event import (
     GuildScheduledEventRecurrenceRule,
     GuildScheduledEventRecurrenceRuleNWeekday,
     GuildScheduledEventUser,
-    ScheduledEvent,
-    ScheduledEventEntityMetadata,
-    ScheduledEventRecurrenceRule,
-    ScheduledEventRecurrenceRuleNWeekday,
-    ScheduledEventUser,
 )
 from .guild_template import GuildTemplate
 from .permissons import Role, RoleColors, RoleTags
@@ -116,11 +111,6 @@ __all__ = [
     "Role",
     "RoleColors",
     "RoleTags",
-    "ScheduledEvent",
-    "ScheduledEventEntityMetadata",
-    "ScheduledEventRecurrenceRule",
-    "ScheduledEventRecurrenceRuleNWeekday",
-    "ScheduledEventUser",
     "Team",
     "TeamMember",
     "ThreadMember",

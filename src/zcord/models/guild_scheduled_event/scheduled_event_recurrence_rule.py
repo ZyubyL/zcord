@@ -12,7 +12,7 @@ from zcord.models.guild_scheduled_event.scheduled_event_recurrence_rule_n_weekda
 
 
 @dataclass(frozen=True, slots=True)
-class ScheduledEventRecurrenceRule(Model):
+class GuildScheduledEventRecurrenceRule(Model):
     frequency: enums.ScheduledEventRecurrenceRuleFrequency
     """How often the event occurs."""
 
@@ -67,7 +67,3 @@ class ScheduledEventRecurrenceRule(Model):
         "by_n_weekday": GuildScheduledEventRecurrenceRuleNWeekday,
         "by_month": enums.ScheduledEventRecurrenceRuleMonth,
     }
-
-
-type GuildScheduledEventRecurrenceRule = ScheduledEventRecurrenceRule
-"""An alias to ScheduledEventRecurrenceRule."""
