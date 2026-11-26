@@ -62,6 +62,7 @@ from .guild_scheduled_event import (
     ScheduledEventRecurrenceRuleNWeekday,
     ScheduledEventUser,
 )
+from .guild_template import GuildTemplate
 from .permissons import Role, RoleColors, RoleTags
 from .team import Team, TeamMember
 from .user import AvatarDecorationData, Collectibles, Nameplate, User
@@ -95,6 +96,7 @@ __all__ = [
     "GuildScheduledEventRecurrenceRule",
     "GuildScheduledEventRecurrenceRuleNWeekday",
     "GuildScheduledEventUser",
+    "GuildTemplate",
     "GuildWidget",
     "GuildWidgetSettings",
     "IncidentsData",
