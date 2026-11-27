@@ -1,17 +1,17 @@
 """Discord API bitfield flags module."""
 
+from zcord.api.application.bitfields import ApplicationFlags
+from zcord.api.channel.bitfields import ChannelFlags
+from zcord.api.guild.bitfields import GuildMemberFlags, SystemChannelFlags
+from zcord.api.invite.bitfields import GuildInviteFlags
+from zcord.api.lobby.bitfields import LobbyMemberFlags
+from zcord.api.permissons.bitfields import RoleFlags
+from zcord.api.user.bitfields import UserFlags
+
 from .activity import ActivityFlags
-from .application import ApplicationFlags
 from .attachment import AttachmentFlags
-from .channel import ChannelFlags
 from .embed import EmbedFlags, EmbedMediaFlags
-from .guild import GuildMemberFlags, MemberFlags, SystemChannelFlags
 from .intents import Intents
-from .invite import GuildInviteFlags
-from .lobby import LobbyMemberFlags
-from .message import MessageFlags
-from .role import RoleFlags
-from .user import UserFlags
 
 __all__ = [
     "ActivityFlags",
@@ -24,8 +24,6 @@ __all__ = [
     "GuildMemberFlags",
     "Intents",
     "LobbyMemberFlags",
-    "MemberFlags",
-    "MessageFlags",
     "RoleFlags",
     "SystemChannelFlags",
     "UserFlags",
