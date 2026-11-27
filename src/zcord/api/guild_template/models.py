@@ -4,9 +4,9 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, ClassVar
 
-from zcord.models.base import Model
-from zcord.models.guild.guild import Guild
-from zcord.models.user.user import User
+from zcord.api.guild.models import Guild
+from zcord.api.model import Model
+from zcord.api.user.models import User
 from zcord.snowflake import Snowflake
 
 

@@ -5,8 +5,8 @@ from datetime import datetime
 from typing import Any, ClassVar
 
 from zcord import enums
+from zcord.api.model import Model
 from zcord.missing import MISSING
-from zcord.models.base import Model
 from zcord.snowflake import Snowflake
 
 

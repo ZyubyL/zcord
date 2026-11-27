@@ -51,6 +51,7 @@ from .channel import (
     ThreadMetadata,
     VideoQualityMode,
 )
+from .entitlement import Entitlement, EntitlementType
 from .guild import (
     Ban,
     Guild,
@@ -120,6 +121,8 @@ __all__ = [
     "DefaultReaction",
     "DynamicField",
     "DynamicFieldType",
+    "Entitlement",
+    "EntitlementType",
     "EventType",
     "EventWebhookStatus",
     "FollowedChannel",

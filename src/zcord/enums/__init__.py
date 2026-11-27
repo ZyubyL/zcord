@@ -17,6 +17,7 @@ from zcord.api.channel.enums import (
     SortOrderType,
     VideoQualityMode,
 )
+from zcord.api.entitlement.enums import EntitlementType
 from zcord.api.guild.enums import (
     AgeRestrictionLevel,
     DefaultMessageNotificationLevel,
@@ -39,7 +40,6 @@ from zcord.api.guild_scheduled_event.enums import (
 from zcord.api.invite.enums import InviteTargetType, InviteType
 from zcord.api.team.enums import MembershipState
 
-from .entitlement import EntitlementType
 from .events import WebhookEventType
 from .message_formatting import GuildNavigationType, TimestampStyle
 

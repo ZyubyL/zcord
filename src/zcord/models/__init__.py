@@ -30,6 +30,7 @@ from zcord.api.channel.models import (
     ThreadMetadata,
 )
 from zcord.api.emoji.models import Emoji
+from zcord.api.entitlement.models import Entitlement
 from zcord.api.guild.models import (
     Ban,
     Guild,
@@ -54,6 +55,7 @@ from zcord.api.guild_scheduled_event.models import (
     GuildScheduledEventRecurrenceRuleNWeekday,
     GuildScheduledEventUser,
 )
+from zcord.api.guild_template.models import GuildTemplate
 from zcord.api.invite.models import Invite, InviteMetadata
 from zcord.api.lobby.models import Lobby, LobbyMember
 from zcord.api.model import Model
@@ -65,9 +67,6 @@ from zcord.api.user.models import (
     Nameplate,
     User,
 )
-
-from .entitlement import Entitlement
-from .guild_template import GuildTemplate
 
 __all__ = [
     "ActionMetadata",
