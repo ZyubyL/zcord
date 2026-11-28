@@ -27,6 +27,17 @@ class InstallParams(Model):
 
 
 @dataclass(frozen=True, slots=True)
+class ApplicationIntegrationTypeConfiguration(Model):
+    oauth2_install_params: InstallParams | MISSING = MISSING
+    """Install params for each installation context's \
+    default in-app authorization link."""
+
+    _transforms: ClassVar[dict[str, Any]] = {
+        "oauth2_install_params": InstallParams,
+    }
+
+
+@dataclass(frozen=True, slots=True)
 class Application(Model):
     """Represent a Discord application."""
 

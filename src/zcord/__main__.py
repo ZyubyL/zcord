@@ -2,25 +2,57 @@ import sys
 from pathlib import Path
 
 
-def new_model(path: Path):
-    class_name = str(path).split("/")[-1].split(".")[0].title().replace("_", "")
-    src = """from __future__ import annotations
+def new_api_model(name: str):
+    path = Path() / "src" / "zcord" / "api" / name
+    if not path.exists():
+        path.mkdir()
+
+    models = """from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
-from zcord import cdn, enums, types
+from zcord import bitfields, cdn, enums, types
 from zcord.missing import MISSING
-from zcord.models.base import Model
+from zcord.api.model import Model
 from zcord.snowflake import Snowflake
 
 
 @dataclass(frozen=True, slots=True)
 class Foo(Model):
+
+
     _transforms: ClassVar[dict[str, Any]] = {
     }
-""".replace("Foo", class_name)
-    path.write_text(src, encoding="utf-8")
+""".replace("Foo", name.title().replace("_", ""))
+    (path / "models.py").write_text(models, encoding="utf-8")
+
+    enums = """from enum import IntEnum, StrEnum
+
+class Foo(IntEnum):
+    pass
+
+
+class Bar(StrEnum):
+    pass
+"""
+    (path / "enums.py").write_text(enums, encoding="utf-8")
+
+    bitfields = """from enum import IntFlag
+
+class Foo(IntFlag):
+    pass
+"""
+    (path / "bitfields.py").write_text(bitfields, encoding="utf-8")
+
+    init = """from .bitfields import _
+from .enums import _
+from .models import _
+
+__all__ = [
+
+]"""
+    (path / "__init__.py").write_text(init, encoding="utf-8")
 
 
 def main():
@@ -34,13 +66,9 @@ def main():
                 sys.exit("not enough arguments")
             subcommand = sys.argv[2]
             match subcommand:
-                case "model":
-                    path = Path(sys.argv[3])
-                    if path.is_dir():
-                        sys.exit("cannot write to a directory")
-                    if path.exists():
-                        sys.exit("cannot write to existing file")
-                    new_model(path)
+                case "new":
+                    model_name = sys.argv[3]
+                    new_api_model(model_name)
                 case _:
                     sys.exit("unknown subcommand")
         case _:

@@ -13,3 +13,11 @@ class EventWebhookStatus(IntEnum):
 
     DISABLED_BY_DISCORD = 3
     """Webhook events are disabled by Discord, usually due to inactivity."""
+
+
+class ApplicationIntegrationType(IntEnum):
+    GUILD_INSTALL = 0
+    """App is installable to servers."""
+
+    USER_INSTALL = 1
+    """App is installable to users."""

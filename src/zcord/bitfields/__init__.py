@@ -5,12 +5,16 @@ from zcord.api.channel.bitfields import ChannelFlags
 from zcord.api.guild.bitfields import GuildMemberFlags, SystemChannelFlags
 from zcord.api.invite.bitfields import GuildInviteFlags
 from zcord.api.lobby.bitfields import LobbyMemberFlags
+from zcord.api.message.bitfields import (
+    AttachmentFlags,
+    EmbedFlags,
+    EmbedMediaFlags,
+    MessageFlags,
+)
 from zcord.api.permissons.bitfields import RoleFlags
 from zcord.api.user.bitfields import UserFlags
 
 from .activity import ActivityFlags
-from .attachment import AttachmentFlags
-from .embed import EmbedFlags, EmbedMediaFlags
 from .intents import Intents
 
 __all__ = [
@@ -24,6 +28,7 @@ __all__ = [
     "GuildMemberFlags",
     "Intents",
     "LobbyMemberFlags",
+    "MessageFlags",
     "RoleFlags",
     "SystemChannelFlags",
     "UserFlags",

@@ -11,6 +11,6 @@ MISSING = sentinel("MISSING")
 """A marker for a value that was not provided.
 
 Notes:
-    This is different from [`None`][], which means the value is explicitly \
+    This is different from [`None`][], `None` means the value is explicitly \
     set to "no value."
 """

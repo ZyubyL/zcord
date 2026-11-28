@@ -120,6 +120,7 @@ Zcord is split into submodules:
 
 - [`zcord`](api/zcord.md) - Contains the core classes.
 - [`zcord.errors`](api/errors.md) - Contains error from the library.
+- [`zcord.models`](api/models.md) - Contains all API models.
 - [`zcord.bitfields`](api/bitfields.md) - Contains bitfield flag types.
 - [`zcord.enums`](api/enums.md) - Contains enum types.
 - [`zcord.types`](api/types.md) - Contains zcord's type aliases.
