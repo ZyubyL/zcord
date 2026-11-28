@@ -102,6 +102,7 @@ from zcord.api.user.models import (
     Nameplate,
     User,
 )
+from zcord.api.voice.models import VoiceRegion, VoiceState
 
 __all__ = [
     "ActionMetadata",
@@ -194,6 +195,8 @@ __all__ = [
     "ThreadMetadata",
     "TriggerMetadata",
     "User",
+    "VoiceRegion",
+    "VoiceState",
     "WelcomeScreen",
     "WelcomeScreenChannel",
 ]
