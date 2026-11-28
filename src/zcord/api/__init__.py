@@ -106,13 +106,17 @@ from .sticker import (
 from .subscription import Subscription, SubscriptionStatus
 from .team import MembershipState, Team, TeamMember
 from .user import (
+    ApplicationRoleConnection,
     AvatarDecorationData,
     Collectibles,
+    Connection,
     Nameplate,
     PremiumType,
+    Service,
     User,
     UserFlags,
     UserPrimaryGuild,
+    VisibilityType,
 )
 
 __all__ = [
@@ -122,6 +126,7 @@ __all__ = [
     "ApplicationFlags",
     "ApplicationIdentity",
     "ApplicationIdentityProfile",
+    "ApplicationRoleConnection",
     "ApplicationRoleConnectionMetadata",
     "ApplicationRoleConnectionMetadataType",
     "AuditLog",
@@ -136,6 +141,7 @@ __all__ = [
     "ChannelFlags",
     "ChannelType",
     "Collectibles",
+    "Connection",
     "DefaultReaction",
     "DynamicField",
     "DynamicFieldType",
@@ -194,6 +200,7 @@ __all__ = [
     "ScheduledEventRecurrenceRuleMonth",
     "ScheduledEventRecurrenceRuleWeekday",
     "ScheduledEventStatus",
+    "Service",
     "SortOrderType",
     "SoundboardSound",
     "StageInstance",
@@ -215,6 +222,7 @@ __all__ = [
     "UserFlags",
     "UserPrimaryGuild",
     "VideoQualityMode",
+    "VisibilityType",
     "WelcomeScreen",
     "WelcomeScreenChannel",
 ]

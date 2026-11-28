@@ -1,12 +1,72 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 from zcord import bitfields, cdn, enums, errors, types
+from zcord.api.guild.models import Integration
 from zcord.api.model import Model
 from zcord.missing import MISSING
 from zcord.snowflake import Snowflake
+
+if TYPE_CHECKING:
+    from zcord.api.application_role_connection_metadata.models import (
+        ApplicationRoleConnectionMetadata,
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class ApplicationRoleConnection(Model):
+    platform_name: str | None | MISSING = MISSING
+    """The vanity name of the platform a bot has connected."""
+
+    platform_username: str | None | MISSING = MISSING
+    """The username on the platform a bot has connected."""
+
+    metadata: dict[ApplicationRoleConnectionMetadata, str] | MISSING = MISSING
+    """Dictionary mapping ApplicationRoleConnectionMetadata keys \
+    to their `str`-ified value for the user on the platform \
+    a bot has connected."""
+
+
+@dataclass(frozen=True, slots=True)
+class Connection(Model):
+    id: str
+    """ID of the connection account."""
+
+    name: str
+    """The username of the connection account."""
+
+    type: enums.Service
+    """The service of this connection."""
+
+    verified: bool
+    """Whether the connection is verified."""
+
+    friend_sync: bool
+    """Whether friend sync is enabled for this connection."""
+
+    show_activity: bool
+    """Whether activities related to this connection \
+    will be shown in presence updates."""
+
+    two_way_link: bool
+    """Whether this connection has a corresponding third party OAuth2 token."""
+
+    visibility: enums.VisibilityType
+    """Visibility of this connection."""
+
+    revoked: bool | MISSING = MISSING
+    """Whether the connection is revoked."""
+
+    integrations: tuple[Integration, ...] | MISSING = MISSING
+    """Server integrations."""
+
+    _transforms: ClassVar[dict[str, Any]] = {
+        "type": enums.Service,
+        "integrations": Integration,
+        "visibility": enums.VisibilityType,
+    }
 
 
 @dataclass(frozen=True, slots=True)

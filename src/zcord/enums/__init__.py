@@ -53,7 +53,7 @@ from zcord.api.sku.enums import SkuType
 from zcord.api.sticker.enums import StickerFormatType, StickerType
 from zcord.api.subscription.enums import SubscriptionStatus
 from zcord.api.team.enums import MembershipState
-from zcord.api.user.enums import PremiumType
+from zcord.api.user.enums import PremiumType, Service, VisibilityType
 
 from .events import WebhookEventType
 from .message_formatting import GuildNavigationType, TimestampStyle
@@ -96,6 +96,7 @@ __all__ = [
     "ScheduledEventRecurrenceRuleMonth",
     "ScheduledEventRecurrenceRuleWeekday",
     "ScheduledEventStatus",
+    "Service",
     "SkuType",
     "SortOrderType",
     "StickerFormatType",
@@ -105,5 +106,6 @@ __all__ = [
     "TriggerType",
     "VerificationLevel",
     "VideoQualityMode",
+    "VisibilityType",
     "WebhookEventType",
 ]
