@@ -11,7 +11,7 @@ from zcord.api.message.bitfields import (
     EmbedMediaFlags,
     MessageFlags,
 )
-from zcord.api.permissons.bitfields import RoleFlags
+from zcord.api.permissons.bitfields import Permission, RoleFlags
 from zcord.api.sku.bitfields import SkuFlags
 from zcord.api.user.bitfields import UserFlags
 
@@ -30,6 +30,7 @@ __all__ = [
     "Intents",
     "LobbyMemberFlags",
     "MessageFlags",
+    "Permission",
     "RoleFlags",
     "SkuFlags",
     "SystemChannelFlags",

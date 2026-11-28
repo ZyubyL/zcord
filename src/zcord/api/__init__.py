@@ -93,7 +93,7 @@ from .invite import (
 )
 from .lobby import Lobby, LobbyMember, LobbyMemberFlags
 from .model import Model
-from .permissons import Role, RoleColors, RoleFlags, RoleTags
+from .permissons import Permission, Role, RoleColors, RoleFlags, RoleTags
 from .soundboard import SoundboardSound
 from .stage_instance import StageInstance
 from .sticker import (
@@ -186,6 +186,7 @@ __all__ = [
     "OptionalAuditEntryInfo",
     "Overwrite",
     "OverwriteType",
+    "Permission",
     "PremiumType",
     "PrimaryProfileData",
     "PrivacyLevel",
