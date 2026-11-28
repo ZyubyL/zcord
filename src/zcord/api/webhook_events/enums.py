@@ -1,8 +1,21 @@
-from enum import StrEnum
+from enum import IntEnum, StrEnum
 
 
-class WebhookEventType(StrEnum):
-    """Webhook event types an application can subscribe to."""
+# Thank you Discord for a duplicated name
+class WebhookEventType(IntEnum):
+    """https://docs.discord.com/developers/events/webhook-events#webhook-types"""
+
+    PING = 0
+    """PING event sent to verify your Webhook Event URL is active."""
+
+    EVENT = 1
+    """Webhook event."""
+
+
+class EventBodyType(StrEnum):
+    """Webhook event types an application can subscribe to.
+
+    https://docs.discord.com/developers/events/webhook-events#event-types"""
 
     APPLICATION_AUTHORIZED = "APPLICATION_AUTHORIZED"
     """Sent when an app was authorized by a user to a server or their \

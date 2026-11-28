@@ -63,8 +63,8 @@ from zcord.api.subscription.enums import SubscriptionStatus
 from zcord.api.team.enums import MembershipState
 from zcord.api.user.enums import PremiumType, Service, VisibilityType
 from zcord.api.webhook.enums import WebhookType
+from zcord.api.webhook_events.enums import EventBodyType, WebhookEventType
 
-from .events import WebhookEventType
 from .message_formatting import GuildNavigationType, TimestampStyle
 
 __all__ = [
@@ -79,6 +79,7 @@ __all__ = [
     "DynamicFieldType",
     "EmbedType",
     "EntitlementType",
+    "EventBodyType",
     "EventType",
     "EventWebhookStatus",
     "ExplicitContentFilterLevel",

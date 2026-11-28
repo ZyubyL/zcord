@@ -118,6 +118,7 @@ from .user import (
     UserPrimaryGuild,
     VisibilityType,
 )
+from .webhook_events import EventBody, LobbyMessage, Payload, SDKDMMessage
 
 __all__ = [
     "ActionMetadata",
@@ -147,6 +148,7 @@ __all__ = [
     "DynamicFieldType",
     "Entitlement",
     "EntitlementType",
+    "EventBody",
     "EventType",
     "EventWebhookStatus",
     "FollowedChannel",
@@ -178,6 +180,7 @@ __all__ = [
     "Lobby",
     "LobbyMember",
     "LobbyMemberFlags",
+    "LobbyMessage",
     "Media",
     "MembershipState",
     "Model",
@@ -186,6 +189,7 @@ __all__ = [
     "OptionalAuditEntryInfo",
     "Overwrite",
     "OverwriteType",
+    "Payload",
     "Permission",
     "PremiumType",
     "PrimaryProfileData",
@@ -196,6 +200,7 @@ __all__ = [
     "RoleColors",
     "RoleFlags",
     "RoleTags",
+    "SDKDMMessage",
     "ScheduledEntityType",
     "ScheduledEventRecurrenceRuleFrequency",
     "ScheduledEventRecurrenceRuleMonth",

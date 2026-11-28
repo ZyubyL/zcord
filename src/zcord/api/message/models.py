@@ -592,6 +592,14 @@ class Message(Model):
     shared_client_theme: SharedClientTheme | MISSING = MISSING
     """The custom client-side theme shared via the message."""
 
+    # https://docs.discord.com/developers/events/webhook-events#message-object
+    lobby_id: Snowflake | MISSING = MISSING
+    """ID of the lobby where the message was created \
+    (only present in Linked Channel messages)."""
+
+    channel: Channel | MISSING = MISSING
+    """Channel object with recipient information."""
+
     _transforms: ClassVar[dict[str, Any]] = {
         "id": Snowflake,
         "channel_id": Snowflake,
@@ -621,6 +629,8 @@ class Message(Model):
         "poll": Poll,
         "call": MessageCall,
         "shared_client_theme": SharedClientTheme,
+        "lobby_id": Snowflake,
+        "channel": Channel,
     }
 
 
