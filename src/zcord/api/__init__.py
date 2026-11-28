@@ -105,7 +105,15 @@ from .sticker import (
 )
 from .subscription import Subscription, SubscriptionStatus
 from .team import MembershipState, Team, TeamMember
-from .user import AvatarDecorationData, Collectibles, Nameplate, User, UserFlags
+from .user import (
+    AvatarDecorationData,
+    Collectibles,
+    Nameplate,
+    PremiumType,
+    User,
+    UserFlags,
+    UserPrimaryGuild,
+)
 
 __all__ = [
     "ActionMetadata",
@@ -172,6 +180,7 @@ __all__ = [
     "OptionalAuditEntryInfo",
     "Overwrite",
     "OverwriteType",
+    "PremiumType",
     "PrimaryProfileData",
     "PrivacyLevel",
     "ProfileData",
@@ -204,6 +213,7 @@ __all__ = [
     "TriggerType",
     "User",
     "UserFlags",
+    "UserPrimaryGuild",
     "VideoQualityMode",
     "WelcomeScreen",
     "WelcomeScreenChannel",

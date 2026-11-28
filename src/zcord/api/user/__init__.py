@@ -1,10 +1,19 @@
 from .bitfields import UserFlags
-from .models import AvatarDecorationData, Collectibles, Nameplate, User
+from .enums import PremiumType
+from .models import (
+    AvatarDecorationData,
+    Collectibles,
+    Nameplate,
+    User,
+    UserPrimaryGuild,
+)
 
 __all__ = [
     "AvatarDecorationData",
     "Collectibles",
     "Nameplate",
+    "PremiumType",
     "User",
     "UserFlags",
+    "UserPrimaryGuild",
 ]

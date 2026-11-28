@@ -3,10 +3,32 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar, Literal
 
-from zcord import bitfields, cdn, errors, types
+from zcord import bitfields, cdn, enums, errors, types
 from zcord.api.model import Model
 from zcord.missing import MISSING
 from zcord.snowflake import Snowflake
+
+
+@dataclass(frozen=True, slots=True)
+class UserPrimaryGuild(Model):
+    identity_guild_id: Snowflake | None = None
+    """The ID of the user's primary guild."""
+
+    identity_enabled: bool | None = None
+    """Whether the user is displaying the primary guild's server tag. \
+    This can be [`None`][] if the system clears the identity, \
+    e.g. the server no longer supports tags. \
+    This will be [`False`][] if the user manually removes their tag."""
+
+    tag: str | None = None
+    """The text of the user's server tag. Limited to 4 characters."""
+
+    badge: str | None = None
+    """The server tag badge hash."""
+
+    _transforms: ClassVar[dict[str, Any]] = {
+        "identity_guild_id": Snowflake,
+    }
 
 
 @dataclass(frozen=True, slots=True)
@@ -113,10 +135,10 @@ class User(Model):
     [^1]: Except bots, this field will be `"0"`.
     """
 
-    global_name: str | None
+    global_name: str | None = None
     """The user's display name if it is set."""
 
-    avatar: str | None
+    avatar: str | None = None
     """The user's avatar hash."""
 
     bot: bool | MISSING = MISSING
@@ -147,7 +169,7 @@ class User(Model):
     flags: bitfields.UserFlags | MISSING = MISSING
     """The user account's flags."""
 
-    premium_type: int | MISSING = MISSING
+    premium_type: enums.PremiumType | MISSING = MISSING
     """The type of Nitro subsciption on this user account."""
 
     public_flags: bitfields.UserFlags | MISSING = MISSING
@@ -159,16 +181,17 @@ class User(Model):
     collectibles: Collectibles | None | MISSING = MISSING
     """The user's collectibles data."""
 
-    primary_guild: PrimaryGuild | None | MISSING = MISSING
+    primary_guild: UserPrimaryGuild | None | MISSING = MISSING
     """The user's primary guild."""
 
     _transforms: ClassVar[dict[str, Any]] = {
         "id": Snowflake,
         "flags": bitfields.UserFlags,
+        "premium_type": enums.PremiumType,
         "public_flags": bitfields.UserFlags,
         "avatar_decoration_data": AvatarDecorationData,
         "collectibles": Collectibles,
-        "primary_guild": PrimaryGuild,
+        "primary_guild": UserPrimaryGuild,
     }
 
     def avatar_url(

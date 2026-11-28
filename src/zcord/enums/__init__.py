@@ -53,6 +53,7 @@ from zcord.api.sku.enums import SkuType
 from zcord.api.sticker.enums import StickerFormatType, StickerType
 from zcord.api.subscription.enums import SubscriptionStatus
 from zcord.api.team.enums import MembershipState
+from zcord.api.user.enums import PremiumType
 
 from .events import WebhookEventType
 from .message_formatting import GuildNavigationType, TimestampStyle
@@ -87,6 +88,7 @@ __all__ = [
     "OnboardingMode",
     "OverwriteType",
     "PremiumTier",
+    "PremiumType",
     "PrivacyLevel",
     "PromptType",
     "ScheduledEntityType",
