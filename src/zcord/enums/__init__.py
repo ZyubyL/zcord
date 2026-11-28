@@ -20,6 +20,14 @@ from zcord.api.channel.enums import (
     SortOrderType,
     VideoQualityMode,
 )
+from zcord.api.codes.enums import (
+    GatewayCloseEventCode,
+    GatewayOpCode,
+    RpcCloseEventCode,
+    RpcErrorCode,
+    VoiceCloseEventCode,
+    VoiceOpcode,
+)
 from zcord.api.entitlement.enums import EntitlementType
 from zcord.api.guild.enums import (
     AgeRestrictionLevel,
@@ -75,6 +83,8 @@ __all__ = [
     "EventWebhookStatus",
     "ExplicitContentFilterLevel",
     "ForumLayoutType",
+    "GatewayCloseEventCode",
+    "GatewayOpCode",
     "GuildNavigationType",
     "IntegrationExpireBehavior",
     "InviteTargetType",
@@ -92,6 +102,8 @@ __all__ = [
     "PremiumType",
     "PrivacyLevel",
     "PromptType",
+    "RpcCloseEventCode",
+    "RpcErrorCode",
     "ScheduledEntityType",
     "ScheduledEventRecurrenceRuleFrequency",
     "ScheduledEventRecurrenceRuleMonth",
@@ -108,6 +120,8 @@ __all__ = [
     "VerificationLevel",
     "VideoQualityMode",
     "VisibilityType",
+    "VoiceCloseEventCode",
+    "VoiceOpcode",
     "WebhookEventType",
     "WebhookType",
 ]

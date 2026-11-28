@@ -10,6 +10,7 @@ from zcord.api.guild.models import Integration
 from zcord.api.guild_scheduled_event.models import GuildScheduledEvent
 from zcord.api.model import Model
 from zcord.api.user.models import User
+from zcord.api.webhook.models import Webhook
 from zcord.missing import MISSING
 from zcord.snowflake import Snowflake
 
