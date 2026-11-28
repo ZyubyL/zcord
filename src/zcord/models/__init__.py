@@ -103,6 +103,7 @@ from zcord.api.user.models import (
     User,
 )
 from zcord.api.voice.models import VoiceRegion, VoiceState
+from zcord.api.webhook.models import Webhook
 
 __all__ = [
     "ActionMetadata",
@@ -197,6 +198,7 @@ __all__ = [
     "User",
     "VoiceRegion",
     "VoiceState",
+    "Webhook",
     "WelcomeScreen",
     "WelcomeScreenChannel",
 ]
