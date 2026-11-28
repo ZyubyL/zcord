@@ -247,6 +247,10 @@ def guild_tag_badge(
     return _build(f"/guild-tag-badges/{guild_id}", hash, size, format)
 
 
+def sound_file(*, sound_id: str) -> str:
+    return f"{BASE_URL}/soundboard-sounds/{sound_id}"
+
+
 def _build(path: str, hash: str, size: int, format: str | None) -> str:
     if size not in VALID_SIZES:
         raise ValueError(f"Size must be one of {VALID_SIZES}, got {size}")

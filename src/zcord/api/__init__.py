@@ -94,6 +94,7 @@ from .invite import (
 from .lobby import Lobby, LobbyMember, LobbyMemberFlags
 from .model import Model
 from .permissons import Role, RoleColors, RoleFlags, RoleTags
+from .soundboard import SoundboardSound
 from .team import MembershipState, Team, TeamMember
 from .user import AvatarDecorationData, Collectibles, Nameplate, User, UserFlags
 
@@ -176,6 +177,7 @@ __all__ = [
     "ScheduledEventRecurrenceRuleWeekday",
     "ScheduledEventStatus",
     "SortOrderType",
+    "SoundboardSound",
     "SystemChannelFlags",
     "Team",
     "TeamMember",

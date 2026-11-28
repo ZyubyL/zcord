@@ -92,6 +92,7 @@ from zcord.api.poll.models import (
     PollResults,
 )
 from zcord.api.sku.models import Sku
+from zcord.api.soundboard.models import SoundboardSound
 from zcord.api.team.models import Team, TeamMember
 from zcord.api.user.models import (
     AvatarDecorationData,
@@ -180,6 +181,7 @@ __all__ = [
     "RoleTags",
     "SharedClientTheme",
     "Sku",
+    "SoundboardSound",
     "Team",
     "TeamMember",
     "ThreadMember",
