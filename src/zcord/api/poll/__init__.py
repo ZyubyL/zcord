@@ -1,3 +1,5 @@
+"""Read more at https://docs.discord.com/developers/resources/poll"""
+
 from .enums import LayoutType
 from .models import (
     Poll,
