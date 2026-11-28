@@ -50,6 +50,7 @@ from zcord.api.message.enums import (
 )
 from zcord.api.poll.enums import LayoutType
 from zcord.api.sku.enums import SkuType
+from zcord.api.sticker.enums import StickerFormatType, StickerType
 from zcord.api.team.enums import MembershipState
 
 from .events import WebhookEventType
@@ -94,6 +95,8 @@ __all__ = [
     "ScheduledEventStatus",
     "SkuType",
     "SortOrderType",
+    "StickerFormatType",
+    "StickerType",
     "TimestampStyle",
     "TriggerType",
     "VerificationLevel",

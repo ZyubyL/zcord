@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, ClassVar, Literal
 
-from zcord import bitfields, cdn, types
+from zcord import bitfields, cdn, errors, types
 from zcord.api.model import Model
 from zcord.missing import MISSING
 from zcord.snowflake import Snowflake

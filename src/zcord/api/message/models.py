@@ -4,11 +4,13 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, ClassVar, Self
 
-from zcord import bitfields, cdn, enums, types
+from zcord import bitfields, enums
 from zcord.api.application.models import Application
 from zcord.api.channel.models import Channel
 from zcord.api.emoji.models import Emoji
 from zcord.api.model import Model
+from zcord.api.poll.models import Poll
+from zcord.api.sticker.models import StickerItem
 from zcord.api.user.models import User
 from zcord.missing import MISSING
 from zcord.snowflake import Snowflake
@@ -566,7 +568,7 @@ class Message(Model):
     components: tuple[MessageComponent, ...] | MISSING = MISSING
     """Components inside the message."""
 
-    sticker_items: tuple[MessageStickerItem, ...] | MISSING = MISSING
+    sticker_items: tuple[StickerItem, ...] | MISSING = MISSING
     """Stickers in the message."""
 
     position: int | MISSING = MISSING
@@ -613,7 +615,7 @@ class Message(Model):
         "interaction_metadata": MessageInteractionMetadata,
         "thread": Channel,
         "components": MessageComponent,
-        "sticker_items": MessageStickerItem,
+        "sticker_items": StickerItem,
         "role_subscription_data": RoleSubscriptionData,
         "resolved": Resolved,
         "poll": Poll,

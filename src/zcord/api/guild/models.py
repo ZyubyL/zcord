@@ -8,7 +8,9 @@ from zcord import bitfields, cdn, enums, types
 from zcord.api.channel.models import Channel
 from zcord.api.emoji.models import Emoji
 from zcord.api.model import Model
-from zcord.api.user.models import User
+from zcord.api.permissons.models import Role
+from zcord.api.sticker.models import Sticker
+from zcord.api.user.models import AvatarDecorationData, Collectibles, User
 from zcord.missing import MISSING
 from zcord.snowflake import Snowflake
 
@@ -680,7 +682,7 @@ class GuildMember(Model):
     """Whether the user has not yet passed the guild's membership screening \
     requirement."""
 
-    communication_diabled_until: datetime | None | MISSING = MISSING
+    communication_disabled_until: datetime | None | MISSING = MISSING
     """When the user's timeout will expire and the user will be able to \
     communicate in the guild again, [`None`][] or time in the past if \
     the user is not timed out."""
@@ -697,7 +699,7 @@ class GuildMember(Model):
         "joined_at": datetime.fromisoformat,
         "premium_since": datetime.fromisoformat,
         "flags": bitfields.GuildMemberFlags,
-        "communication_diabled_until": datetime.fromisoformat,
+        "communication_disabled_until": datetime.fromisoformat,
         "avatar_decoration_data": AvatarDecorationData,
         "collectibles": Collectibles,
     }

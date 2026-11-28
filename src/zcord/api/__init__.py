@@ -95,6 +95,13 @@ from .lobby import Lobby, LobbyMember, LobbyMemberFlags
 from .model import Model
 from .permissons import Role, RoleColors, RoleFlags, RoleTags
 from .soundboard import SoundboardSound
+from .sticker import (
+    Sticker,
+    StickerFormatType,
+    StickerItem,
+    StickerPack,
+    StickerType,
+)
 from .team import MembershipState, Team, TeamMember
 from .user import AvatarDecorationData, Collectibles, Nameplate, User, UserFlags
 
@@ -178,6 +185,11 @@ __all__ = [
     "ScheduledEventStatus",
     "SortOrderType",
     "SoundboardSound",
+    "Sticker",
+    "StickerFormatType",
+    "StickerItem",
+    "StickerPack",
+    "StickerType",
     "SystemChannelFlags",
     "Team",
     "TeamMember",
