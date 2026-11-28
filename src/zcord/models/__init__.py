@@ -56,6 +56,7 @@ from zcord.api.guild_scheduled_event.models import (
     GuildScheduledEventUser,
 )
 from zcord.api.guild_template.models import GuildTemplate
+from zcord.api.interaction.models import Interaction
 from zcord.api.invite.models import Invite, InviteMetadata
 from zcord.api.lobby.models import Lobby, LobbyMember
 from zcord.api.message.models import (
@@ -104,6 +105,12 @@ from zcord.api.user.models import (
 )
 from zcord.api.voice.models import VoiceRegion, VoiceState
 from zcord.api.webhook.models import Webhook
+from zcord.api.webhook_events import (
+    EventBody,
+    LobbyMessage,
+    Payload,
+    SDKDMMessage,
+)
 
 __all__ = [
     "ActionMetadata",
@@ -133,6 +140,7 @@ __all__ = [
     "EmbedVideo",
     "Emoji",
     "Entitlement",
+    "EventBody",
     "FollowedChannel",
     "ForumTag",
     "Guild",
@@ -152,10 +160,12 @@ __all__ = [
     "Integration",
     "IntegrationAccount",
     "IntegrationApplication",
+    "Interaction",
     "Invite",
     "InviteMetadata",
     "Lobby",
     "LobbyMember",
+    "LobbyMessage",
     "Message",
     "MessageActivity",
     "MessageCall",
@@ -168,6 +178,7 @@ __all__ = [
     "OnboardingPrompt",
     "OptionalAuditEntryInfo",
     "Overwrite",
+    "Payload",
     "Poll",
     "PollAnswer",
     "PollAnswerCount",
@@ -183,6 +194,7 @@ __all__ = [
     "RoleColors",
     "RoleSubscriptionData",
     "RoleTags",
+    "SDKDMMessage",
     "SharedClientTheme",
     "Sku",
     "SoundboardSound",

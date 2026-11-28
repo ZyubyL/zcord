@@ -565,7 +565,7 @@ class Message(Model):
     thread: Channel | MISSING = MISSING
     """The thread that was started from this message."""
 
-    components: tuple[MessageComponent, ...] | MISSING = MISSING
+    components: tuple[Component, ...] | MISSING = MISSING
     """Components inside the message."""
 
     sticker_items: tuple[StickerItem, ...] | MISSING = MISSING
@@ -622,7 +622,7 @@ class Message(Model):
         "message_snapshots": MessageSnapshot,
         "interaction_metadata": MessageInteractionMetadata,
         "thread": Channel,
-        "components": MessageComponent,
+        "components": Component,
         "sticker_items": StickerItem,
         "role_subscription_data": RoleSubscriptionData,
         "resolved": Resolved,

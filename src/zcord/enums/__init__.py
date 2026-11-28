@@ -48,6 +48,7 @@ from zcord.api.guild_scheduled_event.enums import (
     ScheduledEventRecurrenceRuleWeekday,
     ScheduledEventStatus,
 )
+from zcord.api.interaction.enums import InteractionContextType, InteractionType
 from zcord.api.invite.enums import InviteTargetType, InviteType
 from zcord.api.message.enums import (
     BaseTheme,
@@ -88,6 +89,8 @@ __all__ = [
     "GatewayOpCode",
     "GuildNavigationType",
     "IntegrationExpireBehavior",
+    "InteractionContextType",
+    "InteractionType",
     "InviteTargetType",
     "InviteType",
     "KeywordPresetType",

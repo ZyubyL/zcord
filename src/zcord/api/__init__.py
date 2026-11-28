@@ -84,6 +84,7 @@ from .guild_scheduled_event import (
     ScheduledEventRecurrenceRuleWeekday,
     ScheduledEventStatus,
 )
+from .interaction import Interaction, InteractionContextType, InteractionType
 from .invite import (
     GuildInviteFlags,
     Invite,
@@ -172,6 +173,9 @@ __all__ = [
     "Integration",
     "IntegrationAccount",
     "IntegrationApplication",
+    "Interaction",
+    "InteractionContextType",
+    "InteractionType",
     "Invite",
     "InviteMetadata",
     "InviteTargetType",
