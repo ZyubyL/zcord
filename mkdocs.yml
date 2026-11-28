@@ -116,6 +116,7 @@ nav:
   - Home: index.md
   - API Reference:
     - zcord: api/zcord.md
+    - models: api/models.md
     - enums: api/enums.md
     - bitfields: api/bitfields.md
     - errors: api/errors.md

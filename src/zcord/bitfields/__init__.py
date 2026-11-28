@@ -12,6 +12,7 @@ from zcord.api.message.bitfields import (
     MessageFlags,
 )
 from zcord.api.permissons.bitfields import RoleFlags
+from zcord.api.sku.bitfields import SkuFlags
 from zcord.api.user.bitfields import UserFlags
 
 from .activity import ActivityFlags
@@ -30,6 +31,7 @@ __all__ = [
     "LobbyMemberFlags",
     "MessageFlags",
     "RoleFlags",
+    "SkuFlags",
     "SystemChannelFlags",
     "UserFlags",
 ]
